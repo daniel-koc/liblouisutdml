@@ -64,3 +64,12 @@ tools/file2brl
 # Eclipse
 .cproject
 .project
+
+build-aux/config.guess
+build-aux/config.sub
+build-aux/depcomp
+build-aux/install-sh
+build-aux/ltmain.sh
+build-aux/mdate-sh
+build-aux/missing
+build-aux/texinfo.tex
