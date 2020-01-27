@@ -1,0 +1,173 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{8C7FB8E0-3FD0-434F-B1A6-3C6A0F4DE6E1}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>liblouisutdml2</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;WIDECHAR_TYPE="unsigned short int";UNICODEBITS=16;VERSION="libxml2-1.2.7.2";WIN32;_DEBUG;_WINDOWS;_USRDLL;LIBLOUISUTDML2_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\liblouis-2\liblouis;..\liblouis-2\windows\include;include;..\libxml2-2;..\libxml2-2\include</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4996;4703</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ModuleDefinitionFile>windows/liblouisutdml.def</ModuleDefinitionFile>
+      <AdditionalDependencies>liblouis-2.lib;wsock32.lib;ws2_32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+      <OutputFile>$(OutDir)liblouisutdml$(TargetExt)</OutputFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;WIDECHAR_TYPE="unsigned short int";UNICODEBITS=16;VERSION="libxml2-1.2.7.2";WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBLOUISUTDML2_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\liblouis-2\liblouis;..\liblouis-2\windows\include;include;..\libxml2-2;..\libxml2-2\include</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4996;4703</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <ModuleDefinitionFile>windows/liblouisutdml.def</ModuleDefinitionFile>
+      <AdditionalDependencies>liblouis-2.lib;wsock32.lib;ws2_32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+      <OutputFile>$(OutDir)liblouisutdml$(TargetExt)</OutputFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\libxml2-2\c14n.c" />
+    <ClCompile Include="..\libxml2-2\catalog.c" />
+    <ClCompile Include="..\libxml2-2\chvalid.c" />
+    <ClCompile Include="..\libxml2-2\debugXML.c" />
+    <ClCompile Include="..\libxml2-2\dict.c" />
+    <ClCompile Include="..\libxml2-2\DOCBparser.c" />
+    <ClCompile Include="..\libxml2-2\encoding.c" />
+    <ClCompile Include="..\libxml2-2\entities.c" />
+    <ClCompile Include="..\libxml2-2\error.c" />
+    <ClCompile Include="..\libxml2-2\globals.c" />
+    <ClCompile Include="..\libxml2-2\hash.c" />
+    <ClCompile Include="..\libxml2-2\HTMLparser.c" />
+    <ClCompile Include="..\libxml2-2\HTMLtree.c" />
+    <ClCompile Include="..\libxml2-2\legacy.c" />
+    <ClCompile Include="..\libxml2-2\list.c" />
+    <ClCompile Include="..\libxml2-2\nanoftp.c" />
+    <ClCompile Include="..\libxml2-2\nanohttp.c" />
+    <ClCompile Include="..\libxml2-2\parser.c" />
+    <ClCompile Include="..\libxml2-2\parserInternals.c" />
+    <ClCompile Include="..\libxml2-2\pattern.c" />
+    <ClCompile Include="..\libxml2-2\relaxng.c" />
+    <ClCompile Include="..\libxml2-2\SAX.c" />
+    <ClCompile Include="..\libxml2-2\SAX2.c" />
+    <ClCompile Include="..\libxml2-2\schematron.c" />
+    <ClCompile Include="..\libxml2-2\threads.c" />
+    <ClCompile Include="..\libxml2-2\tree.c" />
+    <ClCompile Include="..\libxml2-2\uri.c" />
+    <ClCompile Include="..\libxml2-2\valid.c" />
+    <ClCompile Include="..\libxml2-2\xinclude.c" />
+    <ClCompile Include="..\libxml2-2\xlink.c" />
+    <ClCompile Include="..\libxml2-2\xmlIO.c" />
+    <ClCompile Include="..\libxml2-2\xmlmemory.c" />
+    <ClCompile Include="..\libxml2-2\xmlmodule.c" />
+    <ClCompile Include="..\libxml2-2\xmlreader.c" />
+    <ClCompile Include="..\libxml2-2\xmlregexp.c" />
+    <ClCompile Include="..\libxml2-2\xmlsave.c" />
+    <ClCompile Include="..\libxml2-2\xmlschemas.c" />
+    <ClCompile Include="..\libxml2-2\xmlschemastypes.c" />
+    <ClCompile Include="..\libxml2-2\xmlstring.c" />
+    <ClCompile Include="..\libxml2-2\xmlunicode.c" />
+    <ClCompile Include="..\libxml2-2\xmlwriter.c" />
+    <ClCompile Include="..\libxml2-2\xpath.c" />
+    <ClCompile Include="..\libxml2-2\xpointer.c" />
+    <ClCompile Include="liblouisutdml\change_table.c" />
+    <ClCompile Include="liblouisutdml\convert_utd.c" />
+    <ClCompile Include="liblouisutdml\examine_document.c" />
+    <ClCompile Include="liblouisutdml\liblouisutdml.c" />
+    <ClCompile Include="liblouisutdml\makeContents.c" />
+    <ClCompile Include="liblouisutdml\paths.c" />
+    <ClCompile Include="liblouisutdml\readconfig.c" />
+    <ClCompile Include="liblouisutdml\semantics.c" />
+    <ClCompile Include="liblouisutdml\transcriber.c" />
+    <ClCompile Include="liblouisutdml\transcribe_cdataSection.c" />
+    <ClCompile Include="liblouisutdml\transcribe_chemistry.c" />
+    <ClCompile Include="liblouisutdml\transcribe_computerCode.c" />
+    <ClCompile Include="liblouisutdml\transcribe_document.c" />
+    <ClCompile Include="liblouisutdml\transcribe_graphic.c" />
+    <ClCompile Include="liblouisutdml\transcribe_math.c" />
+    <ClCompile Include="liblouisutdml\transcribe_music.c" />
+    <ClCompile Include="liblouisutdml\transcribe_paragraph.c" />
+    <ClCompile Include="liblouisutdml\utd2brf.c" />
+    <ClCompile Include="liblouisutdml\utd2dsbible.c" />
+    <ClCompile Include="liblouisutdml\utd2pef.c" />
+    <ClCompile Include="liblouisutdml\utd2transinxml.c" />
+    <ClCompile Include="liblouisutdml\utd2volumes.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="liblouisutdml\liblouisutdml.h" />
+    <ClInclude Include="liblouisutdml\louisutdml.h" />
+    <ClInclude Include="liblouisutdml\sem_enum.h" />
+    <ClInclude Include="liblouisutdml\sem_names.h" />
+    <ClInclude Include="windows\include\config.h" />
+    <ClInclude Include="windows\include\xmlversion.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="windows\liblouisutdml.def" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
