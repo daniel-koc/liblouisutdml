@@ -50,12 +50,23 @@ documentation see liblouisutdml.html or type info liblouisutdml. */
 #endif
 #endif
 
-  char *EXPORT_CALL lbu_version (void);
-/* Returns the version of liblouisutdml and liblouis. */
+#ifdef _WIN32
+#define _DLL_EXPORT __declspec(dllexport)
+#else
+#define _DLL_EXPORT
+#endif
 
-  void *EXPORT_CALL lbu_initialize (const char *configFileList,
+  _DLL_EXPORT char *EXPORT_CALL lbu_version (void);
+  _DLL_EXPORT widechar *EXPORT_CALL lbu_versionW (void);
+
+  /* Returns the version of liblouisutdml and liblouis. */
+
+  _DLL_EXPORT void *EXPORT_CALL lbu_initialize (const char *configFileList,
 				    const char *logFileName,
 				    const char *settingsString);
+  _DLL_EXPORT void *EXPORT_CALL lbu_initializeW (widechar *configFileList,
+				    widechar *logFileName,
+				    widechar *settingsString);
 
 /* This function initializes the libxml2 library, runs liblouisutdml.ini and
 processes the configuration file given in configFileList, sets up a log
@@ -79,10 +90,18 @@ include louisutdml.h */
     louisDots = 1<<24
   } ProcessingModes;
 
-  int EXPORT_CALL lbu_translateString
+  _DLL_EXPORT int EXPORT_CALL lbu_translateString
     (const char *configFileList,
      const char *inbuf, int inlen, widechar *outbuf, int *outlen,
      const char *logFileName, const char *settingsString, unsigned int mode);
+  _DLL_EXPORT int EXPORT_CALL lbu_translateStringW
+    (widechar *configFileList,
+     widechar *inbuf, int inlen, widechar *outbuf, int *outlen,
+     widechar *logFileName, widechar *settingsString, unsigned int mode);
+  _DLL_EXPORT int EXPORT_CALL lbu_translateStringArrayW
+    (widechar *configFileList,
+     widechar *inbuf, int* inlens, widechar *outbuf, int* outlens, int count,
+     widechar *logFileName, widechar *settingsString, unsigned int mode);
 
 /* This function takes a well-formed xml expression in inbuf and
 translates it into a string of 16- or 32-bit braille characters in
@@ -102,32 +121,55 @@ function returns 1 if no errors were encountered and a negative number
 if a conplete translation could not be done.  */
 
 
-  int EXPORT_CALL lbu_backTranslateString
+  _DLL_EXPORT int EXPORT_CALL lbu_backTranslateString
     (const char *configFileList,
      const char *inbuf, int inlen, widechar *outbuf, int *outlen,
      const char *logFileName, const char *settingsString, unsigned int mode);
+  _DLL_EXPORT int EXPORT_CALL lbu_backTranslateStringW
+    (widechar *configFileList,
+     widechar *inbuf, int inlen, widechar *outbuf, int *outlen,
+     widechar *logFileName, widechar *settingsString, unsigned int mode);
 
-  int EXPORT_CALL lbu_translateFile (const char *configFileList, const char
+  _DLL_EXPORT int EXPORT_CALL lbu_translateFile (const char *configFileList, const char
 				     *inputFileName,
 				     const char *outputFileName,
 				     const char *logFileName,
 				     const char *settingsString,
 				     unsigned int mode);
+  _DLL_EXPORT int EXPORT_CALL lbu_translateFileW (widechar *configFileList, widechar
+				     *inputFileName,
+				     widechar *outputFileName,
+				     widechar *logFileName,
+				     widechar *settingsString,
+				     unsigned int mode);
 
-  int EXPORT_CALL lbu_translateTextFile (const char *configFileList,
+  _DLL_EXPORT int EXPORT_CALL lbu_translateTextFile (const char *configFileList,
 					 const char *inputFileName,
 					 const char *outputFileName,
 					 const char *logFileName,
 					 const char *settingsString,
 					 unsigned int mode);
-  int EXPORT_CALL lbu_backTranslateFile (const char *configFileList,
+  _DLL_EXPORT int EXPORT_CALL lbu_translateTextFileW (widechar *configFileList,
+					 widechar *inputFileName,
+					 widechar *outputFileName,
+					 widechar *logFileName,
+					 widechar *settingsString,
+					 unsigned int mode);
+
+  _DLL_EXPORT int EXPORT_CALL lbu_backTranslateFile (const char *configFileList,
 					 const char *inputFileName,
 					 const char *outputFileName,
 					 const char *logFileName,
 					 const char *settingsString,
 					 unsigned int mode);
+  _DLL_EXPORT int EXPORT_CALL lbu_backTranslateFileW (widechar *configFileList,
+					 widechar *inputFileName,
+					 widechar *outputFileName,
+					 widechar *logFileName,
+					 widechar *settingsString,
+					 unsigned int mode);
 
-  int EXPORT_CALL
+  _DLL_EXPORT int EXPORT_CALL
     lbu_charToDots (const char *tableList, const unsigned char *inbuf,
 		    unsigned char *outbuf, int length, const char 
 *logFile,
@@ -136,7 +178,7 @@ if a conplete translation could not be done.  */
 /* Convert the utf8 character string in inbuf to Unicode braille dot 
 patterns and place the result as a utf8 string in outbuf. */
 
-  int EXPORT_CALL
+  _DLL_EXPORT int EXPORT_CALL
     lbu_dotsToChar (const char *tableList, const unsigned char *inbuf,
 		    unsigned char *outbuf, int length, const char 
 *logFile,
@@ -145,7 +187,7 @@ patterns and place the result as a utf8 string in outbuf. */
 /* Convert the utf8 string of dot patterns in inbuf to characters and 
 place the result as a utf8 string in outbuf. */
 
-  int EXPORT_CALL
+  _DLL_EXPORT int EXPORT_CALL
     lbu_checkTable (const char *tableList, const char *logFile, unsigned 
 int 
 mode);
@@ -154,12 +196,15 @@ mode);
 found logFile will be empty. */
 
 /* Set/get  the path to which temporary files will be written */
-char *EXPORT_CALL lbu_setWriteablePath (const char *path);
-char *EXPORT_CALL lbu_getWriteablePath ();
+  _DLL_EXPORT char *EXPORT_CALL lbu_setWriteablePath (const char *path);
+  _DLL_EXPORT widechar *EXPORT_CALL lbu_setWriteablePathW (widechar *path);
+
+  _DLL_EXPORT char *EXPORT_CALL lbu_getWriteablePath ();
+  _DLL_EXPORT widechar *EXPORT_CALL lbu_getWriteablePathW ();
 
 /* This function should be called at the end of the application to free
 all memory allocated by liblouisutdml or liblouis. */
-void EXPORT_CALL lbu_free (void);
+  _DLL_EXPORT void EXPORT_CALL lbu_free (void);
 
 #ifdef __cplusplus
 }

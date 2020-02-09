@@ -99,7 +99,7 @@ typedef struct
 #define CHARSIZE sizeof (widechar)
 #endif
 
-#define BUFSIZE 8192
+#define BUFSIZE 10*8192
 #define BIG_BUFSIZE 4 * BUFSIZE - 8
 #define MAX_LENGTH BUFSIZE - 4
 #define MAX_TEXT_LENGTH 2 * BUFSIZE - 4
@@ -107,7 +107,7 @@ typedef struct
 #define MAXNAMELEN 1024
 #define MAXNUMLEN 32
 #define STACKSIZE 100
-#define MAXLINES 512
+#define MAXLINES 10*512
 
 typedef enum
 {
@@ -278,8 +278,10 @@ typedef struct
   const char *compbrl_table_name;
   const char *mathtext_table_name;
   const char *mathexpr_table_name;
+  const char *forback_mathexpr_table_name;
   const char *edit_table_name;
   const char *main_braille_table;
+  const char *forback_math_symbol_definitions_file;
   const char *semantic_files;
   const char *converter_sem;
   const char *pass2_conv_sem;
@@ -319,6 +321,7 @@ int read_configuration_file (const char *configFileName,
 			     const char *logFileName, const char
 			     *settingsString, unsigned int mode);
 int config_compileSettings (const char *fileName);
+int read_symbol_definitions_file (const char *symbolDefsFileList);
 int do_xpath_expr ();
 int examine_document (xmlNode * node);
 int transcribe_document (xmlNode * node);
@@ -381,9 +384,11 @@ int write_buffer (int from, int skip);
 int link_brl_node (xmlNode * node);
 void clean_semantic_table ();
 int back_translate_braille_string ();
+void utf8_to_wchar(char* lpMultiByteStr, widechar* lpWideCharStr, int cchWideCharStrLen);
 int utf8_string_to_wc (const unsigned char *instr, int *inSize, widechar
 		       * outstr, 
 int *outSize);
+void wchar_to_utf8(widechar* lpWideCharStr, char* lpMultiByteStr, int cbMultiByteStrLen);
 int wc_string_to_utf8 (const widechar * instr, int *inSize, unsigned
 		       char *outstr, int *outSize);
 void output_xml (xmlDoc *doc);
@@ -412,4 +417,13 @@ unsigned char *get_sem_name (xmlNode *node);
 void set_runninghead_string (widechar *chars, int length);
 void set_footer_string (widechar *chars, int length);
 void do_utdxxxximg (xmlNode *node);
+
+int
+back_translate_with_main_table(widechar* text_buffer, int textLength, widechar** translated_buffer, int* translatedLength);
+int
+back_translate_with_mathexpr_table(widechar* text_buffer, int textLength, widechar** translated_buffer, int* translatedLength);
+
+int
+back_translate_math_string(widechar* text_buffer, int textLength, widechar* translated_buffer, int* translatedLength);
+
 #endif /*louisutdml_h */

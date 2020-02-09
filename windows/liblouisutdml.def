@@ -2,15 +2,26 @@ LIBRARY liblouisutdml
 
 EXPORTS
 	lbu_version
+	lbu_versionW
 	lbu_initialize
+	lbu_initializeW
 	lbu_translateString
+	lbu_translateStringW
+	lbu_translateStringArrayW
 	lbu_backTranslateString
+	lbu_backTranslateStringW
 	lbu_translateFile
+	lbu_translateFileW
 	lbu_translateTextFile
+	lbu_translateTextFileW
 	lbu_backTranslateFile
+	lbu_backTranslateFileW
 	lbu_charToDots
 	lbu_dotsToChar
 	lbu_checkTable
 	lbu_setWriteablePath
+	lbu_setWriteablePathW
+	lbu_getWriteablePath
+	lbu_getWriteablePathW
 	lbu_free
 
