@@ -29,11 +29,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include "louisutdml.h"
-//#include <getopt.h>
-//#include "progname.h"
-//#include "version-etc.h"
+#include <getopt.h>
+#include "progname.h"
+#include "version-etc.h"
 
-/*
 static const struct option longopts[] = {
   {"help", no_argument, NULL, 'h'},
   {"version", no_argument, NULL, 'v'},
@@ -48,9 +47,6 @@ static const struct option longopts[] = {
   {"writeable-path", required_argument, NULL, 'w'},
   {NULL, 0, NULL, 0}
 };
-*/
-
-const char program_name[] = "file2brl";
 
 const char version_etc_copyright[] =
   "Copyright %s %d ViewPlus Technologies, Inc. and JJB Software, Inc.";
@@ -90,8 +86,8 @@ is not specified the output is sent to stdout.\n\n", stdout);
   stdout);
 
   printf ("\n");
-//  printf ("\
-//Report bugs to <%s>.\n", PACKAGE_BUGREPORT);
+  printf ("\
+Report bugs to <%s>.\n", PACKAGE_BUGREPORT);
 }
 
 int
@@ -115,51 +111,18 @@ main (int argc, char **argv)
   UserData *ud;
 
   int optc;
-//  set_program_name (argv[0]);
+  set_program_name (argv[0]);
   logFileName[0] = 0;
   
-//  while ((optc =
-//	  getopt_long (argc, argv, "hvf:brptlw:TC:", longopts, NULL)) != 
-//	  -1)
-int i = 1;
-for (; i < argc; i++) {
-if (strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0)
-optc = 'h';
-else
-if (strcmp(argv[i], "-f") == 0 || strcmp(argv[i], "--config-file") == 0)
-optc = 'f';
-else
-if (strcmp(argv[i], "-b") == 0 || strcmp(argv[i], "--backward") == 0)
-optc = 'b';
-else
-if (strcmp(argv[i], "-r") == 0 || strcmp(argv[i], "--reformat") == 0)
-optc = 'r';
-else
-if (strcmp(argv[i], "-p") == 0 || strcmp(argv[i], "--poorly-formatted") == 0)
-optc = 'p';
-else
-if (strcmp(argv[i], "-t") == 0 || strcmp(argv[i], "--html") == 0)
-optc = 't';
-else
-if (strcmp(argv[i], "-T") == 0 || strcmp(argv[i], "--text") == 0)
-optc = 'T';
-else
-if (strcmp(argv[i], "-l") == 0 || strcmp(argv[i], "--log-file") == 0)
-optc = 'l';
-else
-if (strcmp(argv[i], "-C") == 0 || strcmp(argv[i], "--config-setting") == 0)
-optc = 'C';
-else
-if (strcmp(argv[i], "-w") == 0 || strcmp(argv[i], "--writeable-path") == 0)
-optc = 'w';
-else break;
-
+  while ((optc =
+	  getopt_long (argc, argv, "hvf:brptlw:TC:", longopts, NULL)) != 
+	  -1)
     switch (optc)
       {
 	/* --help and --version exit immediately, per GNU coding standards.  */
       case 'v':
-//	version_etc (stdout, program_name, PACKAGE_NAME, VERSION, AUTHORS,
-//		     (char *) NULL);
+	version_etc (stdout, program_name, PACKAGE_NAME, VERSION, AUTHORS,
+		     (char *) NULL);
 	exit (EXIT_SUCCESS);
 	break;
       case 'h':
@@ -173,7 +136,7 @@ else break;
 	mode |= htmlDoc;
 	break;
       case 'f':
-	configFileList = argv[++i];
+	configFileList = optarg;
 	break;
       case 'b':
       case 'p':
@@ -188,11 +151,11 @@ else break;
 	    configSettings = malloc (BUFSIZE);
 	    configSettings[0] = 0;
 	  }
-	strcat (configSettings, argv[++i]);
+	strcat (configSettings, optarg);
 	strcat (configSettings, "\n");
 	break;
        case 'w':
-        lbu_setWriteablePath (argv[++i]);
+        lbu_setWriteablePath (optarg);
         break;
       default:
 	fprintf (stderr, "Try `%s --help' for more information.\n",
@@ -200,24 +163,23 @@ else break;
 	exit (EXIT_FAILURE);
 	break;
       }
-}
 
-  if (i < argc)
+  if (optind < argc)
     {
-      if (i == argc - 1)
+      if (optind == argc - 1)
 	{
-	  inputFileName = argv[i];
+	  inputFileName = argv[optind];
 	}
-      else if (i == argc - 2)
+      else if (optind == argc - 2)
 	{
-	  if (strcmp (argv[i], "-") != 0)
-	    inputFileName = argv[i];
-	  outputFileName = argv[i + 1];
+	  if (strcmp (argv[optind], "-") != 0)
+	    inputFileName = argv[optind];
+	  outputFileName = argv[optind + 1];
 	}
       else
 	{
 	  fprintf (stderr, "%s: extra operand: %s\n",
-		   program_name, argv[i + 2]);
+		   program_name, argv[optind + 2]);
 	  fprintf (stderr, "Try `%s --help' for more information.\n",
 		   program_name);
 	  exit (EXIT_FAILURE);

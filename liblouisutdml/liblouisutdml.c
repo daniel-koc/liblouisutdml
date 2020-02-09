@@ -38,7 +38,7 @@
 
 UserData *ud = NULL;
 
-char *EXPORT_CALL
+_DLL_EXPORT char *EXPORT_CALL
 lbu_version ()
 {
   static char *version = PACKAGE_VERSION;
@@ -47,6 +47,11 @@ lbu_version ()
   strcat (bothVersions, " ");
   strcat (bothVersions, lou_version ());
   return bothVersions;
+}
+
+_DLL_EXPORT void EXPORT_CALL
+lbu_print_version () {
+printf("%s\n", lbu_version());
 }
 
 void
@@ -183,7 +188,7 @@ malformed or contain illegal characters");
   return 1;
 }
 
-void *EXPORT_CALL
+_DLL_EXPORT void *EXPORT_CALL
 lbu_initialize (const char *configFileList,
 		const char *logFileName, const char *settingsString)
 {
@@ -193,7 +198,7 @@ lbu_initialize (const char *configFileList,
   return (void *) ud;
 }
 
-int EXPORT_CALL
+_DLL_EXPORT int EXPORT_CALL
 lbu_translateString (const char *configFileList,
 		     const char *inbuf, int inlen, widechar * outbuf,
 		     int *outlen,
@@ -250,7 +255,7 @@ lbu_translateString (const char *configFileList,
   return k;
 }
 
-int
+_DLL_EXPORT int
   EXPORT_CALL lbu_translateFile
   (const char *configFileList, const char *inFileName,
    const char *outFileName, const char *logFileName,
@@ -283,7 +288,7 @@ int
   return k;
 }
 
-int
+_DLL_EXPORT int
   EXPORT_CALL lbu_translateTextFile
   (const char *configFileList, const char *inFileName,
    const char *outFileName, const char *logFileName,
@@ -338,7 +343,7 @@ int
   return k;
 }
 
-int EXPORT_CALL
+_DLL_EXPORT int EXPORT_CALL
 lbu_backTranslateString (const char *configFileList,
 			 const char *inbuf, int inlen, widechar
 			 * outbuf,
@@ -371,7 +376,7 @@ lbu_backTranslateString (const char *configFileList,
   return 1;
 }
 
-int
+_DLL_EXPORT int
   EXPORT_CALL lbu_backTranslateFile
   (const char *configFileList, const char *inFileName,
    const char *outFileName, const char *logFileName,
@@ -430,7 +435,7 @@ int
 static char writeablePath[MAXNAMELEN];
 static char *writeablePathPtr = NULL;
 
-char *EXPORT_CALL
+_DLL_EXPORT char *EXPORT_CALL
 lbu_setWriteablePath (const char *path)
 {
   writeablePathPtr = NULL;
@@ -441,13 +446,13 @@ lbu_setWriteablePath (const char *path)
   return writeablePathPtr;
 }
 
-char *EXPORT_CALL
+_DLL_EXPORT char *EXPORT_CALL
 lbu_getWriteablePath ()
 {
   return writeablePathPtr;
 }
 
-int EXPORT_CALL
+_DLL_EXPORT int EXPORT_CALL
 lbu_charToDots (const char *tableList, const unsigned char *inbuf,
 		unsigned char *outbuf, int length, const char *logFile,
 		unsigned int mode)
@@ -475,7 +480,7 @@ lbu_charToDots (const char *tableList, const unsigned char *inbuf,
   return result;
 }
 
-int EXPORT_CALL
+_DLL_EXPORT int EXPORT_CALL
 lbu_dotsToChar (const char *tableList, const unsigned char *inbuf,
 		unsigned char *outbuf, int length, const char *logFile,
 		unsigned int mode)
@@ -502,7 +507,7 @@ lbu_dotsToChar (const char *tableList, const unsigned char *inbuf,
   return result;
 }
 
-int EXPORT_CALL
+_DLL_EXPORT int EXPORT_CALL
 lbu_checkTable (const char *tableList, const char *logFile, unsigned int mode)
 {
   int result = 1;
@@ -513,7 +518,7 @@ lbu_checkTable (const char *tableList, const char *logFile, unsigned int mode)
   return result;
 }
 
-void EXPORT_CALL
+_DLL_EXPORT void EXPORT_CALL
 lbu_free ()
 {
 /* Free all memory used by liblouisutdml. You MUST call this function at 

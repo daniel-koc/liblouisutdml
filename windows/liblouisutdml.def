@@ -2,6 +2,7 @@ LIBRARY liblouisutdml
 
 EXPORTS
 	lbu_version
+	lbu_print_version
 	lbu_initialize
 	lbu_translateString
 	lbu_backTranslateString
@@ -12,5 +13,6 @@ EXPORTS
 	lbu_dotsToChar
 	lbu_checkTable
 	lbu_setWriteablePath
+	lbu_getWriteablePath
 	lbu_free
 
