@@ -6,7 +6,8 @@ liblouisutdmlincludedir = $(includedir)/liblouisutdml
 
 liblouisutdmlinclude_HEADERS = \
 	liblouisutdml.h \
-	louisutdml.h
+	louisutdml.h \
+	louisutdml_backtranslation.h
 
 lib_LTLIBRARIES = liblouisutdml.la
 
@@ -28,7 +29,9 @@ liblouisutdml_la_SOURCES =			\
 	liblouisutdml.c \
 	liblouisutdml.h \
 	louisutdml.h \
+	louisutdml_backtranslation.h \
 	paths.c \
+	readbacktranslationconfig.c \
 	readconfig.c \
 	semantics.c \
 	sem_enum.h \
