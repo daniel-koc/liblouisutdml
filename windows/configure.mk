@@ -2,7 +2,6 @@
 # The values given here should be treated as examp.les.
 # They apply only to the development machine.
 
-LIBLOUIS_PATH = c:\liblouis
-JAVA_HEADERS_PATH = "c:\Program Files\Java\jdk1.6.0_23\include"
-LIBXML2_PATH = c:\libxml2-2.7.2
-
+LIBLOUIS_PATH = ..\..\liblouis-2
+JAVA_HEADERS_PATH = "C:\Program Files\Java\jdk-13\include"
+LIBXML2_PATH = ..\..\libxml2-2
