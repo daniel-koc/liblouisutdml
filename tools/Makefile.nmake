@@ -1,0 +1,30 @@
+!include ..\windows\configure.mk
+!include $(LIBLOUIS_PATH)\windows\configure.mk
+SRCDIR = ..\liblouisutdml
+HEADERS = $(SRCDIR)\louisutdml.h $(SRCDIR)\liblouisutdml.h
+INCLUDES = /I$(LIBLOUIS_PATH)\liblouis /I$(LIBLOUIS_PATH)\windows\include
+INCLUDES = $(INCLUDES) /I$(LIBXML2_PATH)\include
+INCLUDES = $(INCLUDES) /I..\liblouisutdml
+
+CCFLAGS =  /nologo /O2 /W1 /c $(INCLUDES)
+CCFLAGS = $(CCFLAGS) $(INCLUDES)
+exeFLAGS =  /nologo /OUT:file2brl.exe
+!if "$(UCS)" == "2"
+CCFLAGS = $(CCFLAGS) /DWIDECHAR_TYPE="unsigned short int"
+!else
+CCFLAGS = $(CCFLAGS) /DWIDECHAR_TYPE="unsigned int"
+!endif
+CC = cl.exe
+
+OBJ = file2brl.obj
+
+all:  $(OBJ)
+    link  $(DLLFLAGS) $(OBJ)  \
+..\windows\libslib\liblouis.lib \
+..\windows\libslib\liblouisutdml.lib \
+    wsock32.lib ws2_32.lib kernel32.lib \
+$(exeFLAGS)
+
+file2brl.obj: file2brl.c \
+    $(HEADERS)
+    $(CC) $(CCFLAGS) file2brl.c
