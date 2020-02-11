@@ -381,9 +381,11 @@ int write_buffer (int from, int skip);
 int link_brl_node (xmlNode * node);
 void clean_semantic_table ();
 int back_translate_braille_string ();
+void utf8_to_wchar(char* lpMultiByteStr, widechar* lpWideCharStr, int cchWideCharStrLen);
 int utf8_string_to_wc (const unsigned char *instr, int *inSize, widechar
 		       * outstr, 
 int *outSize);
+void wchar_to_utf8(widechar* lpWideCharStr, char* lpMultiByteStr, int cbMultiByteStrLen);
 int wc_string_to_utf8 (const widechar * instr, int *inSize, unsigned
 		       char *outstr, int *outSize);
 void output_xml (xmlDoc *doc);
