@@ -1,4 +1,4 @@
-!include configure.mk
+!include ..\windows\configure.mk
 !include $(LIBLOUIS_PATH)\windows\configure.mk
 SRCDIR = ..\liblouisutdml
 HEADERS = $(SRCDIR)\louisutdml.h $(SRCDIR)\liblouisutdml.h
@@ -20,7 +20,7 @@ OBJ = file2brl.obj
 
 all:  $(OBJ)
     link  $(DLLFLAGS) $(OBJ)  \
-..\windows\libslib\liblouis-2.lib \
+..\windows\libslib\liblouis.lib \
 ..\windows\libslib\liblouisutdml.lib \
     wsock32.lib ws2_32.lib kernel32.lib \
 $(exeFLAGS)
