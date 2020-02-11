@@ -414,4 +414,13 @@ unsigned char *get_sem_name (xmlNode *node);
 void set_runninghead_string (widechar *chars, int length);
 void set_footer_string (widechar *chars, int length);
 void do_utdxxxximg (xmlNode *node);
+
+int
+back_translate_with_main_table(widechar* text_buffer, int textLength, widechar** translated_buffer, int* translatedLength);
+int
+back_translate_with_mathexpr_table(widechar* text_buffer, int textLength, widechar** translated_buffer, int* translatedLength);
+
+int
+back_translate_math_string(widechar* text_buffer, int textLength, widechar* translated_buffer, int* translatedLength);
+
 #endif /*louisutdml_h */

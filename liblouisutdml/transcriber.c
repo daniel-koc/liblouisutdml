@@ -38,6 +38,49 @@
 #include <windows.h>
 #endif
 
+#define INBUFSIZE 16*BUFSIZE
+
+static unsigned char char_inbuf[INBUFSIZE];
+static widechar widechar_inbuf[INBUFSIZE];
+static int inbuf_size = 0;
+static int inbuf_pos = 0;
+
+int
+convert_to_wide_inbuf(char* inbuf, int inlen)
+{
+  inbuf_size = 0;
+  inbuf_pos = 0;
+  int outSize = INBUFSIZE-1;
+  utf8_string_to_wc(inbuf, &inlen, widechar_inbuf, &outSize);
+  widechar_inbuf[outSize] = 0;
+  inbuf_size = outSize;
+return 1;
+}
+
+int
+read_file_to_wide_inbuf(FILE *inFile)
+{
+  inbuf_size = 0;
+  inbuf_pos = 0;
+  int inSize = (int) fread(char_inbuf, 1, INBUFSIZE-1 , inFile);
+  if (inSize  == 0)
+    return 0;
+  int outSize = INBUFSIZE-1;
+  utf8_string_to_wc(char_inbuf, &inSize, widechar_inbuf, &outSize);
+  widechar_inbuf[outSize] = 0;
+  inbuf_size = outSize;
+  return 1;
+}
+
+int
+get_next_widechar_from_inbuf()
+{
+  if (inbuf_pos >= inbuf_size)
+    return EOF;
+    return widechar_inbuf[inbuf_pos++];
+}
+
+
 static StyleRecord *styleSpec;
 /* Note that the following is an actual data area, not a pointer*/
 static StyleRecord prevStyleSpec;
@@ -360,7 +403,7 @@ lpWideCharStr[0] = 0;
 #ifdef _WIN32
 MultiByteToWideChar( CP_UTF8, 0, lpMultiByteStr, cbMultiByteStrLen, lpWideCharStr, cchWideCharStrLen);
 #else
-utf8_string_to_wc(lpMultiByteStr, &cbMultiByteStrLen, lpWideCharStr, &cchWideCharStrLen);(
+utf8_string_to_wc(lpMultiByteStr, &cbMultiByteStrLen, lpWideCharStr, &cchWideCharStrLen);
 #endif
 }
 
@@ -822,6 +865,22 @@ insertCharacters (char *chars, int length)
 }
 
 static int
+insert2Characters (char *chars, int length)
+{
+/* Put chars in outbuf, checking for overflow.*/
+  int k;
+  if (chars == NULL || length < 0)
+    return 0;
+  if (length == 0)
+    return 1;
+  if ((ud->outbuf2_len_so_far + length) >= ud->outbuf2_len)
+    return 0;
+  for (k = 0; k < length; k++)
+    ud->outbuf2[ud->outbuf2_len_so_far++] = (widechar) chars[k];
+  return 1;
+}
+
+static int
 insertDubChars (char *chars, int length)
 {
 /* Put chars in outbuf, checking for overflow.*/
@@ -906,6 +965,49 @@ insertWidechars (widechar * chars, int length)
     }
   return 1;
 }
+
+static int
+insert2Widechars (widechar * chars, int length)
+{
+/* Put chars in outbuf, checking for overflow.*/
+  int k;
+  if (chars == NULL || length < 0)
+    return 0;
+  while (length > 0 && chars[length - 1] == ' ')
+    length--;
+  if (length == 0)
+    return 1;
+  if ((ud->outbuf2_len_so_far + length) >= ud->outbuf2_len)
+    return 0;
+  switch (ud->format_for)
+    {
+    case textDevice:
+      memcpy (&ud->outbuf2[ud->outbuf2_len_so_far], chars, length * CHARSIZE);
+      ud->outbuf2_len_so_far += length;
+      break;
+    case browser:
+      for (k = 0; k < length; k++)
+	{
+	  if (chars[k] == '<')
+	    {
+	      if (!insert2Characters ("&lt;", 4))
+		return 0;
+	    }
+	  else if (chars[k] == '&')
+	    {
+	      if (!insert2Characters ("&amp;", 5))
+		return 0;
+	    }
+	  else
+	    ud->outbuf2[ud->outbuf2_len_so_far++] = chars[k];
+	}
+      break;
+    default:
+      break;
+    }
+  return 1;
+}
+
 
 static int startLine ();
 static int finishLine ();
@@ -3038,13 +3140,150 @@ insertEscapeChars (int number)
   return 1;
 }
 
+int
+insert_translated_buffer()
+{
+  int charactersWritten = 0;
+  int pieceStart;
+  int k;
+  for (k = 0; k < ud->translated_length; k++)
+    if (ud->translated_buffer[k] == 0)
+      ud->translated_buffer[k] = 32;
+  while (charactersWritten < ud->translated_length)
+    {
+      int lineLength;
+      if ((charactersWritten + ud->back_line_length) > ud->translated_length)
+	lineLength = ud->translated_length - charactersWritten;
+      else
+	{
+	  lineLength = ud->back_line_length;
+	  while (lineLength > 0
+		 && ud->translated_buffer[charactersWritten +
+					  lineLength] != 32)
+	    lineLength--;
+	  if (lineLength == 0)
+	    {
+	      lineLength = ud->back_line_length;
+	      while ((charactersWritten + lineLength) < ud->translated_length
+		     && ud->translated_buffer[charactersWritten +
+					      lineLength] != 32)
+		lineLength++;
+	    }
+	}
+      pieceStart = charactersWritten;
+      if (ud->back_text == html)
+	{
+	  for (k = charactersWritten; k < charactersWritten + lineLength; k++)
+	    if (ud->translated_buffer[k] == '<'
+		|| ud->translated_buffer[k] == '&'
+		|| ud->translated_buffer[k] == escapeChar)
+	      {
+		if (!insert2Widechars
+		    (&ud->translated_buffer[pieceStart], k - pieceStart))
+		  return 0;
+		if (ud->translated_buffer[k] == '<')
+		  {
+		    if (!insert2Characters ("&lt;", 4))
+		      return 0;
+		  }
+		else if (ud->translated_buffer[k] == '&')
+		  {
+		    if (!insert2Characters ("&amp;", 5))
+		      return 0;
+		  }
+		else
+		  {
+		    int kk;
+		    for (kk = k;
+			 kk < ud->translated_length
+			 && ud->translated_buffer[kk] == escapeChar; kk++);
+		    kk -= k + 1;
+		    if (!insert2Characters (xmlTags[kk], strlen (xmlTags[kk])))
+		      return 0;
+		    k += kk;
+		  }
+		pieceStart = k + 1;
+	      }
+	  if (!insert2Widechars (&ud->translated_buffer[pieceStart], k -
+				pieceStart))
+	    return 0;
+	}
+      else
+	{
+	  if (!insert2Widechars
+	      (&ud->translated_buffer[charactersWritten], lineLength))
+	    return 0;
+	}
+      charactersWritten += lineLength;
+      if (ud->translated_buffer[charactersWritten] == 32)
+	charactersWritten++;
+      if (charactersWritten < ud->translated_length)
+	{
+	  if (!insert2Characters (ud->lineEnd, strlen (ud->lineEnd)))
+	    return 0;
+	}
+    }
+  ud->outbuf2[ud->outbuf2_len] = 0;
+printf("ending!\n");
+return 1;
+}
+
+int
+back_translate_with_main_table(widechar* text_buffer, int textLength, widechar** translated_buffer, int* translatedLength)
+{
+  if (ud->main_braille_table == 0)
+    return 0;
+  *translated_buffer = &ud->outbuf2[0];
+  (*translated_buffer)[0] = 0;
+  *translatedLength = 0;
+  ud->translated_length = MAX_TRANS_LENGTH;
+  if (!lou_backTranslateString (ud->main_braille_table,
+				text_buffer, &textLength,
+				&ud->translated_buffer[0],
+				&ud->translated_length,
+				(char *) ud->typeform, NULL, 0))
+    return 0;
+ud->translated_buffer[ud->translated_length] = 0;
+*translated_buffer = &ud->translated_buffer[0];
+*translatedLength = ud->translated_length;
+  if (!insert_translated_buffer())
+    return 0;
+//  *translatedLength = ud->outbuf2_len;
+  ud->outbuf2_len = 0;
+  return 1;
+}
+
+int
+back_translate_with_mathexpr_table(widechar* text_buffer, int textLength, widechar** translated_buffer, int* translatedLength)
+{
+  if (ud->mathexpr_table_name == 0)
+    return 0;
+  *translated_buffer = &ud->outbuf2[0];
+  (*translated_buffer)[0] = 0;
+  *translatedLength = 0;
+  ud->translated_length = MAX_TRANS_LENGTH;
+  if (!lou_backTranslateString (ud->mathexpr_table_name,
+				text_buffer, &textLength,
+				&ud->translated_buffer[0],
+				&ud->translated_length,
+				(char *) ud->typeform, NULL, 0))
+    return 0;
+ud->translated_buffer[ud->translated_length] = 0;
+*translated_buffer = &ud->translated_buffer[0];
+*translatedLength = ud->translated_length;
+  if (!insert_translated_buffer())
+    return 0;
+  *translatedLength = ud->outbuf2_len;
+//  ud->outbuf2_len = 0;
+  return 1;
+}
+
 static int
 makeParagraph ()
 {
   int translationLength = 0;
+  widechar* translated_buffer;
   int translatedLength;
-  int charactersWritten = 0;
-  int pieceStart;
   int k;
   while (ud->text_length > 0 && ud->text_buffer[ud->text_length - 1] <=
 	 32 && ud->text_buffer[ud->text_length - 1] != escapeChar)
@@ -3064,100 +3303,24 @@ makeParagraph ()
       k++;
       translationLength++;
     }
-  translatedLength = MAX_TRANS_LENGTH;
-  if (!lou_backTranslateString (ud->main_braille_table,
-				ud->text_buffer, &translationLength,
-				&ud->translated_buffer[0],
-				&translatedLength,
-				(char *) ud->typeform, NULL, 0))
-    return 0;
+  ud->text_buffer[translationLength] = 0;
   if (ud->back_text == html)
     {
       if (!insertCharacters ("<p>", 3))
 	return 0;
-    }
-  for (k = 0; k < translatedLength; k++)
-    if (ud->translated_buffer[k] == 0)
-      ud->translated_buffer[k] = 32;
-  while (charactersWritten < translatedLength)
-    {
-      int lineLength;
-      if ((charactersWritten + ud->back_line_length) > translatedLength)
-	lineLength = translatedLength - charactersWritten;
-      else
-	{
-	  lineLength = ud->back_line_length;
-	  while (lineLength > 0
-		 && ud->translated_buffer[charactersWritten +
-					  lineLength] != 32)
-	    lineLength--;
-	  if (lineLength == 0)
-	    {
-	      lineLength = ud->back_line_length;
-	      while ((charactersWritten + lineLength) < translatedLength
-		     && ud->translated_buffer[charactersWritten +
-					      lineLength] != 32)
-		lineLength++;
-	    }
-	}
-      pieceStart = charactersWritten;
-      if (ud->back_text == html)
-	{
-	  for (k = charactersWritten; k < charactersWritten + lineLength; k++)
-	    if (ud->translated_buffer[k] == '<'
-		|| ud->translated_buffer[k] == '&'
-		|| ud->translated_buffer[k] == escapeChar)
-	      {
-		if (!insertWidechars
-		    (&ud->translated_buffer[pieceStart], k - pieceStart))
-		  return 0;
-		if (ud->translated_buffer[k] == '<')
-		  {
-		    if (!insertCharacters ("&lt;", 4))
-		      return 0;
-		  }
-		else if (ud->translated_buffer[k] == '&')
-		  {
-		    if (!insertCharacters ("&amp;", 5))
-		      return 0;
-		  }
-		else
-		  {
-		    int kk;
-		    for (kk = k;
-			 kk < translatedLength
-			 && ud->translated_buffer[kk] == escapeChar; kk++);
-		    kk -= k + 1;
-		    if (!insertCharacters (xmlTags[kk], strlen (xmlTags[kk])))
-		      return 0;
-		    k += kk;
-		  }
-		pieceStart = k + 1;
-	      }
-	  if (!insertWidechars (&ud->translated_buffer[pieceStart], k -
-				pieceStart))
-	    return 0;
-	}
-      else
-	{
-	  if (!insertWidechars
-	      (&ud->translated_buffer[charactersWritten], lineLength))
-	    return 0;
-	}
-      charactersWritten += lineLength;
-      if (ud->translated_buffer[charactersWritten] == 32)
-	charactersWritten++;
-      if (charactersWritten < translatedLength)
-	{
-	  if (!insertCharacters (ud->lineEnd, strlen (ud->lineEnd)))
-	    return 0;
-	}
-    }
-  if (ud->back_text == html)
-    {
+    translatedLength = MAX_TRANS_LENGTH;
+    if (!back_translate_math_string(ud->text_buffer, translationLength, &ud->outbuf3[0], &translatedLength))
+      return 0;
+    if (!insertWidechars(&ud->outbuf3[0], translatedLength))
+      return 0;
       if (!insertCharacters ("</p>", 4))
 	return 0;
-    }
+  } else {
+    if (!back_translate_with_main_table(ud->text_buffer, translationLength, &translated_buffer, &translatedLength))
+      return 0;
+    if (!insertWidechars(translated_buffer, translatedLength))
+      return 0;
+}
   if (!insertCharacters (ud->lineEnd, strlen (ud->lineEnd)))
     return 0;
   if (!insertCharacters (ud->lineEnd, strlen (ud->lineEnd)))
@@ -3229,7 +3392,6 @@ discardPageNumber ()
 int
 back_translate_braille_string ()
 {
-  int charsProcessed = 0;
   int ch;
   int ppch = 0;
   int pch = 0;
@@ -3252,9 +3414,10 @@ back_translate_braille_string ()
     }
   else
     ud->output_encoding = ascii8;
-  while (charsProcessed < ud->inlen)
+  if (!convert_to_wide_inbuf(&ud->inbuf[0], ud->inlen))
+    return 0;
+  while ((ch = get_next_widechar_from_inbuf()) != EOF)
     {
-      ch = ud->inbuf[charsProcessed++];
       if (ch == 13)
 	continue;
       if (pch == 10 && ch == 32)
@@ -3337,7 +3500,9 @@ back_translate_file ()
     }
   else
     ud->output_encoding = ascii8;
-  while ((ch = fgetc (ud->inFile)) != EOF)
+  if (!read_file_to_wide_inbuf(ud->inFile))
+    return 0;
+  while ((ch = get_next_widechar_from_inbuf()) != EOF)
     {
       if (ch == 13)
 	continue;

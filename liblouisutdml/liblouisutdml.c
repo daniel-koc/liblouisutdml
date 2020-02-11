@@ -39,17 +39,14 @@
 UserData *ud = NULL;
 
 #define MAX_VERSION_SIZE 60
-#define MAX_CONFIG_FILE_LIST_SIZE 1024
-#define MAX_FILE_NAME_SIZE 512
-#define MAX_SETTINGS_STRING_SIZE 2048
-#define MAX_INBUF_SIZE 10000
+#define MAX_SETTINGS_STRING_SIZE 2*MAXNAMELEN
 
-static char s_configFileList[MAX_CONFIG_FILE_LIST_SIZE];
-static char s_inFileName[MAX_FILE_NAME_SIZE];
-static char s_outFileName[MAX_FILE_NAME_SIZE];
-static char s_logFileName[MAX_FILE_NAME_SIZE];
+static char s_configFileList[MAXNAMELEN];
+static char s_inFileName[MAXNAMELEN];
+static char s_outFileName[MAXNAMELEN];
+static char s_logFileName[MAXNAMELEN];
 static char s_settingsString[MAX_SETTINGS_STRING_SIZE];
-static char s_inbuf[MAX_INBUF_SIZE];
+static char s_inbuf[BUFSIZE];
 
 _DLL_EXPORT widechar *EXPORT_CALL lbu_versionW ()
 {
@@ -215,11 +212,11 @@ _DLL_EXPORT void *EXPORT_CALL lbu_initializeW (
 	widechar *settingsString)
 {
 int configFileListInSize = 0;
-int configFileListOutSize = MAX_CONFIG_FILE_LIST_SIZE;
+int configFileListOutSize = MAXNAMELEN-1;
 int logFileNameInSize = 0;
-int logFileNameOutSize = MAX_FILE_NAME_SIZE;
+int logFileNameOutSize = MAXNAMELEN-1;
 int settingsStringInSize = 0;
-int settingsStringOutSize = MAX_SETTINGS_STRING_SIZE;
+int settingsStringOutSize = MAX_SETTINGS_STRING_SIZE-1;
 
 if (configFileList != 0)
 {
@@ -264,13 +261,13 @@ _DLL_EXPORT int EXPORT_CALL lbu_translateStringW(
 	unsigned int mode)
 {
 int configFileListInSize = 0;
-int configFileListOutSize = MAX_CONFIG_FILE_LIST_SIZE;
+int configFileListOutSize = MAXNAMELEN-1;
 int inbufInSize = 0;
-int inbufOutSize = MAX_INBUF_SIZE;
+int inbufOutSize = MAX_LENGTH;
 int logFileNameInSize = 0;
-int logFileNameOutSize = MAX_FILE_NAME_SIZE;
+int logFileNameOutSize = MAXNAMELEN-1;
 int settingsStringInSize = 0;
-int settingsStringOutSize = MAX_SETTINGS_STRING_SIZE;
+int settingsStringOutSize = MAX_SETTINGS_STRING_SIZE-1;
 
 if (configFileList != 0)
 {
@@ -368,15 +365,15 @@ _DLL_EXPORT int EXPORT_CALL lbu_translateFileW(
 	unsigned int mode)
 {
 int configFileListInSize = 0;
-int configFileListOutSize = MAX_CONFIG_FILE_LIST_SIZE;
+int configFileListOutSize = MAXNAMELEN-1;
 int inFileNameInSize = 0;
-int inFileNameOutSize = MAX_FILE_NAME_SIZE;
+int inFileNameOutSize = MAXNAMELEN-1;
 int outFileNameInSize = 0;
-int outFileNameOutSize = MAX_FILE_NAME_SIZE;
+int outFileNameOutSize = MAXNAMELEN-1;
 int logFileNameInSize = 0;
-int logFileNameOutSize = MAX_FILE_NAME_SIZE;
+int logFileNameOutSize = MAXNAMELEN-1;
 int settingsStringInSize = 0;
-int settingsStringOutSize = MAX_SETTINGS_STRING_SIZE;
+int settingsStringOutSize = MAX_SETTINGS_STRING_SIZE-1;
 
 if (configFileList != 0)
 {
@@ -455,15 +452,15 @@ _DLL_EXPORT int EXPORT_CALL lbu_translateTextFileW(
 	unsigned int mode)
 {
 int configFileListInSize = 0;
-int configFileListOutSize = MAX_CONFIG_FILE_LIST_SIZE;
+int configFileListOutSize = MAXNAMELEN-1;
 int inFileNameInSize = 0;
-int inFileNameOutSize = MAX_FILE_NAME_SIZE;
+int inFileNameOutSize = MAXNAMELEN-1;
 int outFileNameInSize = 0;
-int outFileNameOutSize = MAX_FILE_NAME_SIZE;
+int outFileNameOutSize = MAXNAMELEN-1;
 int logFileNameInSize = 0;
-int logFileNameOutSize = MAX_FILE_NAME_SIZE;
+int logFileNameOutSize = MAXNAMELEN-1;
 int settingsStringInSize = 0;
-int settingsStringOutSize = MAX_SETTINGS_STRING_SIZE;
+int settingsStringOutSize = MAX_SETTINGS_STRING_SIZE-1;
 
 if (configFileList != 0)
 {
@@ -566,13 +563,13 @@ _DLL_EXPORT int EXPORT_CALL lbu_backTranslateStringW(
 	unsigned int mode)
 {
 int configFileListInSize = 0;
-int configFileListOutSize = MAX_CONFIG_FILE_LIST_SIZE;
+int configFileListOutSize = MAXNAMELEN-1;
 int inbufInSize = 0;
-int inbufOutSize = MAX_INBUF_SIZE;
+int inbufOutSize = MAX_LENGTH;
 int logFileNameInSize = 0;
-int logFileNameOutSize = MAX_FILE_NAME_SIZE;
+int logFileNameOutSize = MAXNAMELEN-1;
 int settingsStringInSize = 0;
-int settingsStringOutSize = MAX_SETTINGS_STRING_SIZE;
+int settingsStringOutSize = MAX_SETTINGS_STRING_SIZE-1;
 
 if (configFileList != 0)
 {
@@ -646,15 +643,15 @@ widechar *settingsString,
 unsigned int mode)
 {
 int configFileListInSize = 0;
-int configFileListOutSize = MAX_CONFIG_FILE_LIST_SIZE;
+int configFileListOutSize = MAXNAMELEN-1;
 int inFileNameInSize = 0;
-int inFileNameOutSize = MAX_FILE_NAME_SIZE;
+int inFileNameOutSize = MAXNAMELEN-1;
 int outFileNameInSize = 0;
-int outFileNameOutSize = MAX_FILE_NAME_SIZE;
+int outFileNameOutSize = MAXNAMELEN-1;
 int logFileNameInSize = 0;
-int logFileNameOutSize = MAX_FILE_NAME_SIZE;
+int logFileNameOutSize = MAXNAMELEN-1;
 int settingsStringInSize = 0;
-int settingsStringOutSize = MAX_SETTINGS_STRING_SIZE;
+int settingsStringOutSize = MAX_SETTINGS_STRING_SIZE-1;
 
 if (configFileList != 0)
 {
