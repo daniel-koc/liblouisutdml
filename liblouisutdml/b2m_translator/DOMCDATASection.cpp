@@ -23,16 +23,16 @@ CDOMCDATASection::~CDOMCDATASection() {
 }
 
 CDOMNode* CDOMCDATASection::CopyNode() {
-  CDOMCDATASection* pNewCDATASection =
-      m_pOwnerDocument->CreateCDATASection(m_pStrData);
+  CDOMCDATASection* pNewCDATASection = GetOwnerDocument()->CreateCDATASection(
+      m_pStrData ? new CString(*m_pStrData) : NULL);
   return pNewCDATASection;
-}
+}  // CopyNode
 
 CString CDOMCDATASection::ToString() {
   CString str;
   str = L"[CDATA[";
-  if (m_pStrData != NULL)
+  if (m_pStrData)
     str += *m_pStrData;
   str += L"]]";
   return str;
-}
+}  // ToString

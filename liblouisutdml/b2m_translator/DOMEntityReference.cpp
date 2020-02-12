@@ -14,6 +14,7 @@ static char THIS_FILE[] = __FILE__;
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
+
 /*@
 LPCTSTR CDOMEntityReference::s_lpszLessNotationName = "lt";
 LPCTSTR CDOMEntityReference::s_lpszLessNotationValue = "<";
@@ -24,33 +25,39 @@ LPCTSTR CDOMEntityReference::s_lpszAmpersantNotationValue = "&";
 LPCTSTR CDOMEntityReference::s_lpszQuoteNotationName = "quot";
 LPCTSTR CDOMEntityReference::s_lpszQuoteNotationValue = "\"";
 @*/
+
 CDOMEntityReference::CDOMEntityReference(CDOMDocument* pOwnerDocument)
     : CDOMNode(pOwnerDocument, DOM_ENTITY_REFERENCE_NODE) {
   m_pStrNotationName = NULL;
 }
 
 CDOMEntityReference::~CDOMEntityReference() {
-  if (m_pStrNotationName != NULL)
+  if (m_pStrNotationName)
     delete m_pStrNotationName;
 }
 
 CDOMNode* CDOMEntityReference::CopyNode() {
   CDOMEntityReference* pNewEntityReference =
-      m_pOwnerDocument->CreateEntityReference(new CString(*m_pStrNotationName));
+      GetOwnerDocument()->CreateEntityReference(
+          m_pStrNotationName ? new CString(*m_pStrNotationName) : NULL);
   return pNewEntityReference;
-}
+}  // CopyNode
 
-void CDOMEntityReference::SetNodeName(CString* pStrName) {
-  if (m_pStrNotationName != NULL)
-    delete m_pStrNotationName;
-  m_pStrNotationName = pStrName;
-}  // SetNodeName
+CString CDOMEntityReference::ToString() {
+  CString str;
+  str = L"&";
+  if (m_pStrNotationName)
+    str += *m_pStrNotationName;
+  str += L";";
+  return str;
+}  // ToString
 
-void CDOMEntityReference::SetNotationName(CString* pStrName) {
-  if (m_pStrNotationName != NULL)
+void CDOMEntityReference::SetNotationName(CString* pStrNotationName) {
+  if (m_pStrNotationName)
     delete m_pStrNotationName;
-  m_pStrNotationName = pStrName;
+  m_pStrNotationName = pStrNotationName;
 }  // SetNotationName
+
 /*@
 LPCTSTR CDOMEntityReference::GetNotationValue()
 {
@@ -77,11 +84,3 @@ else
 return "";
 }  // GetNotationValue
 @*/
-CString CDOMEntityReference::ToString() {
-  CString str;
-  str = L"&";
-  if (m_pStrNotationName != NULL)
-    str += *m_pStrNotationName;
-  str += L";";
-  return str;
-}

@@ -15,7 +15,8 @@ class CDOMEntity : public CDOMNode {
   virtual ~CDOMEntity();
 
  protected:
-  virtual CDOMNode* CopyNode() = 0;
+  // CDOMNode override:
+  CDOMNode* CopyNode() override;
 };
 
 #endif  // !defined(DOMENTITY_H_)

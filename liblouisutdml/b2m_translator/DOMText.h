@@ -17,7 +17,8 @@ class CDOMText : public CDOMCharacterData {
   CDOMText* SplitText(int nOffset);
 
  protected:
-  virtual CDOMNode* CopyNode();
+  // CDOMNode override:
+  CDOMNode* CopyNode() override;
 };
 
 #endif  // !defined(DOMTEXT_H_)

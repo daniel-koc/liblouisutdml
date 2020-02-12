@@ -29,85 +29,123 @@ CDOMNode::CDOMNode(CDOMDocument* pOwnerDocument, EDOMNodeType nNodeType) {
 }  // CDOCNode
 
 CDOMNode::~CDOMNode() {
-  while (m_pFirstNode != NULL) {
+  while (m_pFirstNode) {
     m_pLastNode = m_pFirstNode;
     m_pFirstNode = m_pFirstNode->GetNextNodeSibling();
     delete m_pLastNode;
   }  // while
 }  // ~CDOMNode
 
+void CDOMNode::SetNodeName(CString* pStrName) {
+}
+
+CString* CDOMNode::GetNodeName() {
+  return NULL;
+}
+
+void CDOMNode::SetNodeValue(CString* pStrValue) {
+}
+
+CString* CDOMNode::GetNodeValue() {
+  return NULL;
+}
+
+CDOMNamedNodeList* CDOMNode::GetAttributeNodes() {
+  return NULL;
+}
+
+bool CDOMNode::HasAttributes() {
+  return false;
+}
+
+CString CDOMNode::ToString() {
+  CString str;
+  CDOMNode* pTmpNode = m_pFirstNode;
+  if (pTmpNode && pTmpNode->GetNodeType() == DOM_ELEMENT_NODE)
+    str += L"\r\n";
+  while (pTmpNode) {
+    str += pTmpNode->ToString();
+    pTmpNode = pTmpNode->GetNextNodeSibling();
+  }  // while
+  return str;
+}  // ToString
+
 CDOMNodeList* CDOMNode::GetChildNodes() {
   return new CDOMNodeList(m_pFirstNode);
 }
 
 CDOMNode* CDOMNode::InsertBefore(CDOMNode* pNewChild, CDOMNode* pRefChild) {
-  if (pNewChild != NULL && pRefChild != NULL) {
+  if (pNewChild && pRefChild) {
     CDOMNode* pTmpNode = m_pFirstNode;
-    while (pTmpNode != NULL && pTmpNode != pRefChild)
-      pTmpNode = pTmpNode->m_pNextNodeSibling;
+    while (pTmpNode && pTmpNode != pRefChild)
+      pTmpNode = pTmpNode->GetNextNodeSibling();
     if (pTmpNode == pRefChild) {
-      pNewChild->m_pPreviousNodeSibling = pRefChild->m_pPreviousNodeSibling;
-      if (pRefChild->m_pPreviousNodeSibling != NULL)
-        pRefChild->m_pPreviousNodeSibling->m_pNextNodeSibling = pNewChild;
+      pNewChild->SetPreviousNodeSibling(pRefChild->GetPreviousNodeSibling());
+      if (pRefChild->GetPreviousNodeSibling())
+        pRefChild->GetPreviousNodeSibling()->SetNextNodeSibling(pNewChild);
       else
         m_pFirstNode = pNewChild;
-      pNewChild->m_pNextNodeSibling = pRefChild;
-      pRefChild->m_pPreviousNodeSibling = pNewChild;
+      pNewChild->SetNextNodeSibling(pRefChild);
+      pRefChild->SetPreviousNodeSibling(pNewChild);
       pNewChild->SetParentNode(pRefChild->GetParentNode());
+      return pNewChild;
     }  // if
   }    // if
-  return pNewChild;
+  return NULL;
 }  // InsertBefore
 
 CDOMNode* CDOMNode::ReplaceChild(CDOMNode* pNewChild, CDOMNode* pOldChild) {
-  if (pNewChild != NULL && pOldChild != NULL) {
+  if (pNewChild && pOldChild) {
     CDOMNode* pTmpNode = m_pFirstNode;
-    while (pTmpNode != NULL && pTmpNode != pOldChild)
-      pTmpNode = pTmpNode->m_pNextNodeSibling;
+    while (pTmpNode && pTmpNode != pOldChild)
+      pTmpNode = pTmpNode->GetNextNodeSibling();
     if (pTmpNode == pOldChild) {
-      pNewChild->m_pPreviousNodeSibling = pOldChild->m_pPreviousNodeSibling;
-      if (pOldChild->m_pPreviousNodeSibling != NULL)
-        pOldChild->m_pPreviousNodeSibling->m_pNextNodeSibling = pNewChild;
+      pNewChild->SetPreviousNodeSibling(pOldChild->GetPreviousNodeSibling());
+      if (pOldChild->GetPreviousNodeSibling())
+        pOldChild->GetPreviousNodeSibling()->SetNextNodeSibling(pNewChild);
       else
         m_pFirstNode = pNewChild;
-      pNewChild->m_pNextNodeSibling = pOldChild->m_pNextNodeSibling;
-      if (pOldChild->m_pNextNodeSibling != NULL)
-        pOldChild->m_pNextNodeSibling->m_pPreviousNodeSibling = pNewChild;
+      pNewChild->SetNextNodeSibling(pOldChild->GetNextNodeSibling());
+      if (pOldChild->GetNextNodeSibling())
+        pOldChild->GetNextNodeSibling()->SetPreviousNodeSibling(pNewChild);
       else
         m_pLastNode = pNewChild;
       pNewChild->SetParentNode(pOldChild->GetParentNode());
+      return pNewChild;
     }  // if
   }    // if
-  return pNewChild;
+  return NULL;
 }  // ReplaceChild
 
 CDOMNode* CDOMNode::RemoveChild(CDOMNode* pOldChild) {
-  if (pOldChild != NULL) {
+  if (pOldChild) {
     CDOMNode* pTmpNode = m_pFirstNode;
-    while (pTmpNode != NULL && pTmpNode != pOldChild)
-      pTmpNode = pTmpNode->m_pNextNodeSibling;
+    while (pTmpNode && pTmpNode != pOldChild)
+      pTmpNode = pTmpNode->GetNextNodeSibling();
     if (pTmpNode == pOldChild) {
-      if (pOldChild->m_pPreviousNodeSibling != NULL)
-        pOldChild->m_pPreviousNodeSibling->m_pNextNodeSibling =
-            pOldChild->m_pNextNodeSibling;
-      else
-        m_pFirstNode = pOldChild->m_pNextNodeSibling;
-      if (pOldChild->m_pNextNodeSibling != NULL)
-        pOldChild->m_pNextNodeSibling->m_pPreviousNodeSibling =
-            pOldChild->m_pPreviousNodeSibling;
-      else
-        m_pLastNode = pOldChild->m_pPreviousNodeSibling;
+      if (pOldChild->GetPreviousNodeSibling()) {
+        pOldChild->GetPreviousNodeSibling()->SetNextNodeSibling(
+            pOldChild->GetNextNodeSibling());
+      } else
+        m_pFirstNode = pOldChild->GetNextNodeSibling();
+      if (pOldChild->GetNextNodeSibling()) {
+        pOldChild->GetNextNodeSibling()->SetPreviousNodeSibling(
+            pOldChild->GetPreviousNodeSibling());
+      } else
+        m_pLastNode = pOldChild->GetPreviousNodeSibling();
+pOldChild->SetParentNode(NULL);
+      return pOldChild;
     }  // if
   }    // if
-  return pOldChild;
+  return NULL;
 }  // RemoveChild
 
 CDOMNode* CDOMNode::AppendChild(CDOMNode* pNewChild) {
-  if (m_pFirstNode == NULL)
+  if (!m_pFirstNode)
     m_pFirstNode = m_pLastNode = pNewChild;
   else {
-    m_pLastNode->m_pNextNodeSibling = pNewChild;
-    pNewChild->m_pPreviousNodeSibling = m_pLastNode;
+    m_pLastNode->SetNextNodeSibling(pNewChild);
+    pNewChild->SetPreviousNodeSibling(m_pLastNode);
     m_pLastNode = pNewChild;
   }  // else if
   pNewChild->SetParentNode(this);
@@ -118,25 +156,13 @@ CDOMNode* CDOMNode::CloneNode(bool bDeep) {
   CDOMNode* pNewNode = CopyNode();
   if (bDeep) {
     CDOMNode* pTmpNode = m_pFirstNode;
-    while (pTmpNode != NULL) {
+    while (pTmpNode) {
       pNewNode->AppendChild(pTmpNode->CloneNode(true));
-      pTmpNode = pTmpNode->m_pNextNodeSibling;
+      pTmpNode = pTmpNode->GetNextNodeSibling();
     }  // while
   }    // if
   return pNewNode;
 }  // CloneNode
-
-CString CDOMNode::ToString() {
-  CString str;
-  CDOMNode* pTmpNode = m_pFirstNode;
-  if (pTmpNode != NULL && pTmpNode->GetNodeType() == DOM_ELEMENT_NODE)
-    str += L"\r\n";
-  while (pTmpNode != NULL) {
-    str += pTmpNode->ToString();
-    pTmpNode = pTmpNode->GetNextNodeSibling();
-  }  // while
-  return str;
-}
 
 void CDOMNode::SetDocLineColumnNumbers(int nDocLineNumber,
                                        int nDocColumnNumber) {

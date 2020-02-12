@@ -29,18 +29,19 @@
    Maintained by Daniel Kocielinski daniel.koc@gmail.com
    */
 
+#include <ctype.h>
+#include <stdarg.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdarg.h>
-#include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/types.h>
+
 #include <louis.h>
+
 #include "louisutdml.h"
 #include "louisutdml_backtranslation.h"
-#include "sem_names.h"
-#include <ctype.h>
 
 #define MAX_ACTIONS 20
 
@@ -77,10 +78,8 @@ static int widestring_buf_len = 0;
 
 LMSymbol* CreateNewLMSymbol() {
   LMSymbol* symbol;
-  if (!(symbol = malloc(sizeof(LMSymbol)))) {
+  if (!(symbol = malloc(sizeof(LMSymbol))))
     memoryError();
-    return NULL;
-  }
   memset(symbol, 0, sizeof(LMSymbol));
 
   symbol->input = NULL;
@@ -101,20 +100,14 @@ LMSymbol* CreateNewLMSymbol() {
 
   if (LMsymbols == NULL) {
     MaxLMsymbolsCount = LMSYMBOLS_RESIZING_STEP;
-    if (!(LMsymbols = malloc(MaxLMsymbolsCount * sizeof(LMSymbol*)))) {
+    if (!(LMsymbols = malloc(MaxLMsymbolsCount * sizeof(LMSymbol*))))
       memoryError();
-      free(symbol);
-      return NULL;
-    }
   } else if (LMsymbolsCount == MaxLMsymbolsCount) {
     LMSymbol** tmpLMsymbols;
     int i;
     MaxLMsymbolsCount += LMSYMBOLS_RESIZING_STEP;
-    if (!(tmpLMsymbols = malloc(MaxLMsymbolsCount * sizeof(LMSymbol*)))) {
+    if (!(tmpLMsymbols = malloc(MaxLMsymbolsCount * sizeof(LMSymbol*))))
       memoryError();
-      free(symbol);
-      return NULL;
-    }
     for (i = 0; i < LMsymbolsCount; i++)
       tmpLMsymbols[i] = LMsymbols[i];
     free(LMsymbols);
@@ -131,10 +124,8 @@ LMSymbol* CreateTempLMSymbol(wchar_t* l_input,
                              wchar_t* l_output,
                              TokenType l_ttype) {
   LMSymbol* symbol;
-  if (!(symbol = malloc(sizeof(LMSymbol)))) {
+  if (!(symbol = malloc(sizeof(LMSymbol))))
     memoryError();
-    return NULL;
-  }
   memset(symbol, 0, sizeof(LMSymbol));
 
   symbol->input = l_input;
@@ -155,20 +146,14 @@ LMSymbol* CreateTempLMSymbol(wchar_t* l_input,
 
   if (LMTempsymbols == NULL) {
     MaxLMTempsymbolsCount = LMSYMBOLS_RESIZING_STEP;
-    if (!(LMTempsymbols = malloc(MaxLMTempsymbolsCount * sizeof(LMSymbol*)))) {
+    if (!(LMTempsymbols = malloc(MaxLMTempsymbolsCount * sizeof(LMSymbol*))))
       memoryError();
-      free(symbol);
-      return NULL;
-    }
   } else if (LMTempsymbolsCount == MaxLMTempsymbolsCount) {
     LMSymbol** tmpLMsymbols;
     int i;
     MaxLMTempsymbolsCount += LMSYMBOLS_RESIZING_STEP;
-    if (!(tmpLMsymbols = malloc(MaxLMTempsymbolsCount * sizeof(LMSymbol*)))) {
+    if (!(tmpLMsymbols = malloc(MaxLMTempsymbolsCount * sizeof(LMSymbol*))))
       memoryError();
-      free(symbol);
-      return NULL;
-    }
     for (i = 0; i < LMTempsymbolsCount; i++)
       tmpLMsymbols[i] = LMTempsymbols[i];
     free(LMTempsymbols);
@@ -219,11 +204,11 @@ static widechar* alloc_widestring(const widechar* inString, int length) {
   int inStringLen;
   if (inString == NULL)
     return NULL;
-  if ((length + widestring_buf_len) >= WIDESTRING_BUFFER_SIZE)
-    return NULL;
+  if ((widestring_buf_len + length) >= WIDESTRING_BUFFER_SIZE)
+    memoryError();
   newString = &widestring_buffer[widestring_buf_len];
   inStringLen = (int)wcslen(inString);
-  if (inStringLen < length)
+  if (length < inStringLen)
     inStringLen = length;
   wcsncpy(newString, inString, inStringLen);
   newString[inStringLen] = L'\0';
@@ -246,6 +231,10 @@ static void configureError(FileInfo* nested, char* format, ...) {
   else
     lou_logPrint("%s", buffer);
   errorCount++;
+}
+
+static BOOLEAN ConvertIntToBoolean(int v) {
+  return (v == 0) ? BOOL_FALSE : ((v == 1) ? BOOL_TRUE : BOOL_UNDEFINED);
 }
 
 static unsigned int convertNumericValue(FileInfo* nested,
@@ -509,6 +498,8 @@ static const char* tokenTypes[] = {"CONST",
                                    "15",
                                    "REVERTUNARY",
                                    "16",
+                                   "FENCED",
+                                   "17",
                                    NULL};
 
 static const char* tokenSubtypes[] = {"UNDEFINED",
@@ -527,6 +518,10 @@ static const char* tokenSubtypes[] = {"UNDEFINED",
                                       "6",
                                       "OVERSCRIPT",
                                       "7",
+                                      "EQNARRAY",
+                                      "8",
+                                      "ARRAY",
+                                      "9",
                                       NULL};
 
 static int compileSymbolsDefs(FileInfo* nested) {
@@ -607,15 +602,15 @@ static int compileSymbolsDefs(FileInfo* nested) {
           break;
         case 12:  // invisible
           if ((k = checkValues(nested, yesNo, actionIndex)) != NOTFOUND)
-            symbol->invisible = (BOOL)k;
+            symbol->invisible = ConvertIntToBoolean(k);
           break;
         case 13:  // func
           if ((k = checkValues(nested, yesNo, actionIndex)) != NOTFOUND)
-            symbol->func = (BOOL)k;
+            symbol->func = ConvertIntToBoolean(k);
           break;
         case 14:  // acc
           if ((k = checkValues(nested, yesNo, actionIndex)) != NOTFOUND)
-            symbol->acc = (BOOL)k;
+            symbol->acc = ConvertIntToBoolean(k);
           break;
         case 15:  // codes
           if (controlCharValue(nested, actionIndex))
@@ -711,47 +706,48 @@ int read_symbol_definitions_file(const char* symbolDefsFileList) {
     }
   }
 
-  /*
+  /*  
   FILE* out = fopen("math_backtranslation_symbols_temp.defs", "wb");
   if (!out)
-  return 1;
+    return 1;
   for ( k = 0; k < LMsymbolsCount; k++) {
-  if (LMsymbols[k]->input != NULL)
-  fprintf(out, "input:\"%s\"", controlWidecharValue(LMsymbols[k]->input));
-  if (LMsymbols[k]->rinput != NULL)
-  fprintf(out, "\trinput:\"%s\"", controlWidecharValue(LMsymbols[k]->rinput));
-  if (LMsymbols[k]->tag != NULL)
-  fprintf(out, "\ttag:\"%s\"", controlWidecharValue(LMsymbols[k]->tag));
-  if (LMsymbols[k]->rtag != NULL)
-  fprintf(out, "\trtag:\"%s\"", controlWidecharValue(LMsymbols[k]->rtag));
-  if (LMsymbols[k]->output != NULL)
-  fprintf(out, "\toutput:\"%s\"", controlWidecharValue(LMsymbols[k]->output));
-  if (LMsymbols[k]->ieoutput != NULL)
-  fprintf(out, "\tieoutput:\"%s\"",
-  controlWidecharValue(LMsymbols[k]->ieoutput));
-  if (LMsymbols[k]->atname != NULL)
-  fprintf(out, "\tatname:\"%s\"", controlWidecharValue(LMsymbols[k]->atname));
-  if (LMsymbols[k]->atval != NULL)
-  fprintf(out, "\tatval:\"%s\"", controlWidecharValue(LMsymbols[k]->atval));
-  if (LMsymbols[k]->ieval != NULL)
-  fprintf(out, "\tieval:\"%s\"", controlWidecharValue(LMsymbols[k]->ieval));
-  fprintf(out, "\tttype:%s", tokenTypes[2 * (int)LMsymbols[k]->ttype]);
-  if (LMsymbols[k]->tsubtype != TSUBTYPE_UNDEFINED)
-  fprintf(out, "\ttsubtype:%s", tokenSubtypes[2 * (int)LMsymbols[k]->tsubtype]);
-  if (LMsymbols[k]->invisible != BOOL_UNDEFINED)
-  fprintf(out, "\tinvisible:%s", ((LMsymbols[k]->invisible == BOOL_TRUE) ?
-  "true" : "false"));
-  if (LMsymbols[k]->func != BOOL_UNDEFINED)
-  fprintf(out, "\tfunc:%s", ((LMsymbols[k]->func == BOOL_TRUE) ? "true" :
-  "false"));
-  if (LMsymbols[k]->acc != BOOL_UNDEFINED)
-  fprintf(out, "\tacc:%s", ((LMsymbols[k]->acc == BOOL_TRUE) ? "true" :
-  "false"));
-  if (LMsymbols[k]->codes != NULL)
-  fprintf(out, "\tcodes:%s", controlWidecharValue(LMsymbols[k]->codes));
-  fprintf(out, "\r\n");
+    if (LMsymbols[k]->input != NULL)
+      fprintf(out, "input:\"%s\"", controlWidecharValue(LMsymbols[k]->input));
+    if (LMsymbols[k]->rinput != NULL)
+      fprintf(out, "\trinput:\"%s\"", controlWidecharValue(LMsymbols[k]->rinput));
+    if (LMsymbols[k]->tag != NULL)
+      fprintf(out, "\ttag:\"%s\"", controlWidecharValue(LMsymbols[k]->tag));
+    if (LMsymbols[k]->rtag != NULL)
+      fprintf(out, "\trtag:\"%s\"", controlWidecharValue(LMsymbols[k]->rtag));
+    if (LMsymbols[k]->output != NULL)
+      fprintf(out, "\toutput:\"%s\"", controlWidecharValue(LMsymbols[k]->output));
+    if (LMsymbols[k]->ieoutput != NULL)
+      fprintf(out, "\tieoutput:\"%s\"",
+          controlWidecharValue(LMsymbols[k]->ieoutput));
+    if (LMsymbols[k]->atname != NULL)
+      fprintf(out, "\tatname:\"%s\"", controlWidecharValue(LMsymbols[k]->atname));
+    if (LMsymbols[k]->atval != NULL)
+      fprintf(out, "\tatval:\"%s\"", controlWidecharValue(LMsymbols[k]->atval));
+    if (LMsymbols[k]->ieval != NULL)
+      fprintf(out, "\tieval:\"%s\"", controlWidecharValue(LMsymbols[k]->ieval));
+    fprintf(out, "\tttype:%s", tokenTypes[2 * (int)LMsymbols[k]->ttype]);
+    if (LMsymbols[k]->tsubtype != TSUBTYPE_UNDEFINED)
+      fprintf(out, "\ttsubtype:%s", tokenSubtypes[2 * (int)LMsymbols[k]->tsubtype]);
+    if (LMsymbols[k]->invisible != BOOL_UNDEFINED)
+      fprintf(out, "\tinvisible:%s", ((LMsymbols[k]->invisible == BOOL_TRUE) ?
+          "true" : "false"));
+    if (LMsymbols[k]->func != BOOL_UNDEFINED)
+      fprintf(out, "\tfunc:%s", ((LMsymbols[k]->func == BOOL_TRUE) ? "true" :
+          "false"));
+    if (LMsymbols[k]->acc != BOOL_UNDEFINED)
+      fprintf(out, "\tacc:%s", ((LMsymbols[k]->acc == BOOL_TRUE) ? "true" :
+          "false"));
+    if (LMsymbols[k]->codes != NULL)
+      fprintf(out, "\tcodes:%s", controlWidecharValue(LMsymbols[k]->codes));
+    fprintf(out, "\r\n");
   }
   fclose(out);
   */
+
   return 1;
 }

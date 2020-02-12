@@ -13,7 +13,8 @@ class CDOMDocumentFragment : public CDOMNode {
   virtual ~CDOMDocumentFragment();
 
  protected:
-  virtual CDOMNode* CopyNode();
+  // CDOMNode override:
+  CDOMNode* CopyNode() override;
 };
 
 #endif  // !defined(DOM_DOCUMENT_FRAGMENT_H_)

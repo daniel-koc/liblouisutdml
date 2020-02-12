@@ -28,34 +28,43 @@ class CDOMNode {
  public:
   CDOMNode(CDOMDocument* pOwnerDocument, EDOMNodeType nNodeType);
   virtual ~CDOMNode();
-  CDOMDocument* GetOwnerDocument();
-  EDOMNodeType GetNodeType();
+
   virtual void SetNodeName(CString* pStrName);
   virtual CString* GetNodeName();
   virtual void SetNodeValue(CString* pStrValue);
   virtual CString* GetNodeValue();
-  void SetParentNode(CDOMNode* pParentNode);
-  CDOMNode* GetParentNode();
-  CDOMNode* GetFirstNode();
-  CDOMNode* GetLastNode();
+  virtual CDOMNamedNodeList* GetAttributeNodes();
+  virtual bool HasAttributes();
+  virtual CString ToString();
+
+  CDOMDocument* GetOwnerDocument() { return m_pOwnerDocument; }
+  EDOMNodeType GetNodeType() { return m_nNodeType; }
+  void SetParentNode(CDOMNode* pParentNode) { m_pParentNode = pParentNode; }
+  CDOMNode* GetParentNode() { return m_pParentNode; }
+  CDOMNode* GetFirstNode() { return m_pFirstNode; }
+  CDOMNode* GetLastNode() { return m_pLastNode; }
   CDOMNodeList* GetChildNodes();
-  void SetPreviousNodeSibling(CDOMNode* pPreviousNodeSibling);
-  CDOMNode* GetPreviousNodeSibling();
-  void SetNextNodeSibling(CDOMNode* pNextNodeSibling);
-  CDOMNode* GetNextNodeSibling();
-  CDOMNamedNodeList* GetAttributes();
+  void SetPreviousNodeSibling(CDOMNode* pPreviousNodeSibling)
+    { m_pPreviousNodeSibling = pPreviousNodeSibling; }
+  CDOMNode* GetPreviousNodeSibling() { return m_pPreviousNodeSibling; }
+  void SetNextNodeSibling(CDOMNode* pNextNodeSibling)
+    { m_pNextNodeSibling = pNextNodeSibling; }
+  CDOMNode* GetNextNodeSibling() { return m_pNextNodeSibling; }
   CDOMNode* InsertBefore(CDOMNode* pNewChild, CDOMNode* pRefChild);
   CDOMNode* ReplaceChild(CDOMNode* pNewChild, CDOMNode* pOldChild);
   CDOMNode* RemoveChild(CDOMNode* pOldChild);
   CDOMNode* AppendChild(CDOMNode* pNewChild);
   CDOMNode* CloneNode(bool bDeep);
-  void Normalize();
-  bool HasChildNodes();
-  virtual bool HasAttributes();
-  virtual CString ToString();
+  void Normalize() {}
+  bool HasChildNodes() { return (m_pFirstNode != NULL); }
   void SetDocLineColumnNumbers(int nDocLineNumber, int nDocColumnNumber);
-  int GetDocLineNumber();
-  int GetDocColumnNumber();
+  int GetDocLineNumber() { return m_nDocLineNumber; }
+  int GetDocColumnNumber() { return m_nDocColumnNumber; }
+
+  bool NodeNameEq(const wchar_t* name)
+    { return (GetNodeName() ? (*GetNodeName() == name) : false); }
+  bool NodeValueEq(const wchar_t* value)
+    { return (GetNodeValue() ? (*GetNodeValue() == value) : false); }
 
   void SetUnderOverType() { m_bUnderOverType = true; }
   bool IsUnderOverType() { return m_bUnderOverType; }
@@ -63,7 +72,7 @@ class CDOMNode {
  protected:
   virtual CDOMNode* CopyNode() = 0;
 
- protected:
+ private:
   CDOMDocument* m_pOwnerDocument;
   EDOMNodeType m_nNodeType;
   CDOMNode* m_pParentNode;
@@ -75,82 +84,5 @@ class CDOMNode {
   int m_nDocColumnNumber;
   bool m_bUnderOverType;
 };
-
-inline CDOMDocument* CDOMNode::GetOwnerDocument() {
-  return m_pOwnerDocument;
-}
-
-inline EDOMNodeType CDOMNode::GetNodeType() {
-  return m_nNodeType;
-}
-
-inline void CDOMNode::SetNodeName(CString* pStrName) {
-}
-
-inline CString* CDOMNode::GetNodeName() {
-  return NULL;
-}
-
-inline void CDOMNode::SetNodeValue(CString* pStrValue) {
-}
-
-inline CString* CDOMNode::GetNodeValue() {
-  return NULL;
-}
-
-inline void CDOMNode::SetParentNode(CDOMNode* pParentNode) {
-  m_pParentNode = pParentNode;
-}
-
-inline CDOMNode* CDOMNode::GetParentNode() {
-  return m_pParentNode;
-}
-
-inline CDOMNode* CDOMNode::GetFirstNode() {
-  return m_pFirstNode;
-}
-
-inline CDOMNode* CDOMNode::GetLastNode() {
-  return m_pLastNode;
-}
-
-inline void CDOMNode::SetPreviousNodeSibling(CDOMNode* pPreviousNodeSibling) {
-  m_pPreviousNodeSibling = pPreviousNodeSibling;
-}
-
-inline CDOMNode* CDOMNode::GetPreviousNodeSibling() {
-  return m_pPreviousNodeSibling;
-}
-
-inline void CDOMNode::SetNextNodeSibling(CDOMNode* pNextNodeSibling) {
-  m_pNextNodeSibling = pNextNodeSibling;
-}
-
-inline CDOMNode* CDOMNode::GetNextNodeSibling() {
-  return m_pNextNodeSibling;
-}
-
-inline CDOMNamedNodeList* CDOMNode::GetAttributes() {
-  return NULL;
-}
-
-inline void CDOMNode::Normalize() {
-}
-
-inline bool CDOMNode::HasChildNodes() {
-  return ((m_pFirstNode != NULL) ? true : false);
-}
-
-inline bool CDOMNode::HasAttributes() {
-  return false;
-}
-
-inline int CDOMNode::GetDocLineNumber() {
-  return m_nDocLineNumber;
-}
-
-inline int CDOMNode::GetDocColumnNumber() {
-  return m_nDocColumnNumber;
-}
 
 #endif  // !defined(DOMNODE_H_)

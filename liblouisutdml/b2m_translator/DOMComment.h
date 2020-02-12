@@ -13,10 +13,13 @@ class CDOMComment : public CDOMText {
  public:
   CDOMComment(CDOMDocument* pOwnerDocument);
   virtual ~CDOMComment();
-  virtual CString ToString();
+
+  // CDOMNode override:
+  CString ToString() override;
 
  protected:
-  virtual CDOMNode* CopyNode();
+  // CDOMNode override:
+  CDOMNode* CopyNode() override;
 };
 
 #endif  // !defined(DOMCOMMENT_H_)

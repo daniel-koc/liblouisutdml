@@ -23,16 +23,16 @@ CDOMComment::~CDOMComment() {
 }
 
 CDOMNode* CDOMComment::CopyNode() {
-  CDOMComment* pNewComment =
-      m_pOwnerDocument->CreateComment(new CString(*m_pStrData));
+  CDOMComment* pNewComment = GetOwnerDocument()->CreateComment(
+      m_pStrData ? new CString(*m_pStrData) : NULL);
   return pNewComment;
-}
+}  // CopyNode
 
 CString CDOMComment::ToString() {
   CString str;
   str = L"<!--";
-  if (m_pStrData != NULL)
+  if (m_pStrData)
     str += *m_pStrData;
   str += L"-->";
   return str;
-}
+}  // ToString

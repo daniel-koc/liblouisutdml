@@ -26,6 +26,9 @@ static wchar_t* g_mathFontFamily = L"mathvariant";  // change to "" to inherit
 static bool g_displayStyle =
     true;  // puts limits above and below large operators
 static bool g_showAsciiFormulaOnHover = true;
+static bool g_mrowElementsAvoiding = true;
+
+const wchar_t* BOX_MISSING_ARGUMENT = L"\u25A1";
 
 bool isIE() {
   return false;
@@ -46,11 +49,14 @@ const wchar_t* MSUB_ELNAME = L"msub";
 const wchar_t* MSUBSUP_ELNAME = L"msubsup";
 const wchar_t* MSUP_ELNAME = L"msup";
 const wchar_t* MTABLE_ELNAME = L"mtable";
+const wchar_t* MTD_ELNAME = L"mtd";
 const wchar_t* MTR_ELNAME = L"mtr";
 const wchar_t* MUNDER_ELNAME = L"munder";
 const wchar_t* MUNDEROVER_ELNAME = L"munderover";
 const wchar_t* SPAN_ELNAME = L"span";
 
+const wchar_t* CLASS_ATTRNAME = L"class";
+const wchar_t* CLOSE_ATTRNAME = L"close";
 const wchar_t* COLUMNALIGN_ATTRNAME = L"columnalign";
 const wchar_t* COLUMNSPACING_ATTRNAME = L"columnspacing";
 const wchar_t* DISPLAYSTYLE_ATTRNAME = L"displaystyle";
@@ -62,15 +68,26 @@ const wchar_t* MATHCOLOR_ATTRNAME = L"mathcolor";
 const wchar_t* MATHSIZE_ATTRNAME = L"mathsize";
 const wchar_t* MAXSIZE_ATTRNAME = L"maxsize";
 const wchar_t* MINSIZE_ATTRNAME = L"minsize";
-const wchar_t* TITLE_ATTRNAME = L"title";
+const wchar_t* OPEN_ATTRNAME = L"open";
 const wchar_t* RSPACE_ATTRNAME = L"rspace";
+const wchar_t* TITLE_ATTRNAME = L"title";
 const wchar_t* WIDTH_ATTRNAME = L"width";
 const wchar_t* XMLNS_ATTRNAME = L"xmlns";
 
+const wchar_t* CENTER_ALIGN_ATTRVALUE = L"center ";
 const wchar_t* FALSE_ATTRVALUE = L"false";
+const wchar_t* LEFT_ALIGN_ATTRVALUE = L"left ";
 const wchar_t* MATHML_URL_ATTRVALUE = L"http://www.w3.org/1998/Math/MathML";
+const wchar_t* RIGHT_ALIGN_ATTRVALUE = L"right ";
 const wchar_t* RIGHT_CENTER_LEFT_ATTRVALUE = L"right center left";
 const wchar_t* TRUE_ATTRVALUE = L"true";
+const wchar_t* UNIT_ATTRVALUE = L"unit";
+
+typedef enum {
+LEFT_ALIGN,
+CENTER_ALIGN,
+RIGHT_ALIGN
+} AlignType;
 
 struct ParseResult {
   CDOMNode* node;
@@ -95,6 +112,7 @@ typedef void* LPVOID;
 static CDOMDocument* g_document = NULL;
 static CDOMDocumentFragment* g_operatorsFrag = NULL;
 static bool g_gatheringOperators = false;
+static bool g_gatheringLetters = false;
 
 TokenType LMpreviousSymbol, LMcurrentSymbol;
 
@@ -117,6 +135,16 @@ static wchar_t* alloc_widestring(const wchar_t* inString, int length) {
   newString[inStringLen] = wcNULL;
   widestring_buf_len += length + 1;
   return newString;
+}
+
+bool isDigit(wchar_t wc) {
+  return (L'0' <= wc && wc <= L'9');
+}
+
+bool isLetter(wchar_t wc) {
+  static const wchar_t* s_letters =
+      L"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZąćęłńóśźżĄĆĘŁŃÓŚŹŻ";
+  return (wcschr(s_letters, wc) != NULL);
 }
 
 int CompareLMSymbolInput(LPVOID plmSymbol1, LPVOID plmSymbol2) {
@@ -224,6 +252,11 @@ void QuickSort(LPVOID* x, int off, int len) {
     QuickSort(x, n - s, s);
 }  // QuickSort
 
+bool isAmpersant(CString* s) {
+  if (!s) return false;
+  return (*s == L"&" || *s == L"&amp;");
+}
+
 CDOMElement* createXhtmlElement(const wchar_t* tagName) {
   return g_document->CreateElement(tagName);
 }
@@ -236,6 +269,10 @@ CDOMElement* createMmlNode(const wchar_t* tagName, CDOMNode* frag) {
   if (frag)
     node->AppendChild(frag);
   return node;
+}
+
+CDOMNode* createMissingArgumentMmlNode() {
+  return createMmlNode(MO_ELNAME, g_document->CreateTextNode(BOX_MISSING_ARGUMENT));
 }
 
 wchar_t* LMremoveCharsAndBlanks(wchar_t* str, int n) {
@@ -316,33 +353,35 @@ LMSymbol* LMgetSymbol(const wchar_t* str) {
 
   k = 1;
   wchar_t wc = str[0];
-  if (L'0' <= wc && wc <= L'9') {
+  if (isDigit(wc)) {
     do {
       wc = str[k];
       k++;
-    } while (L'0' <= wc && wc <= L'9' && k <= strLen);
+    } while (isDigit(wc) && k <= strLen);
     while (wc == g_wcDecimalSign) {
       wc = str[k];
-      if (L'0' <= wc && wc <= L'9') {
+      if (isDigit(wc)) {
         k++;
         do {
           wc = str[k];
           k++;
-        } while (L'0' <= wc && wc <= L'9' && k <= strLen);
+        } while (isDigit(wc) && k <= strLen);
       }  // if
     }    // while (wc == g_wcDecimalSign)
     k--;
     tagst = (wchar_t*)MN_ELNAME;
-  }  // if (L'0' <= wc && wc <= L'9')
-  else if ((L'A' <= wc && wc <= L'Z') || (L'a' <= wc && wc <= L'z')) {
-    do {
-      wc = str[k];
-      k++;
-    } while (((L'A' <= wc && wc <= L'Z') || (L'a' <= wc && wc <= L'z')) &&
-             k <= strLen);
-    k--;
+  }  // if (isDigit(wc))
+  else if (isLetter(wc)) {
+    if (g_gatheringLetters) {
+      do {
+        wc = str[k];
+        k++;
+      } while (isLetter(wc) && k <= strLen);
+      k--;
+    }
     tagst = (wchar_t*)MI_ELNAME;
-  } else {
+  }  // if (isLetter(wc))
+  else {
     if (wc == L'&') {
       wc = str[k];
       if (L'a' <= wc && wc <= L'z') {
@@ -541,73 +580,120 @@ ParseResult LMparseSexpr(
         }
       }
       result = LMparseExpr(str, true, false);
-      if (symbol == NULL || symbol->invisible == BOOL_TRUE)
-        node = createMmlNode(MROW_ELNAME, result.node);
-      else {
+      node = NULL;
+      if (symbol == NULL || symbol->invisible == BOOL_TRUE) {
+        while (result.node->GetNodeType() == DOM_DOCUMENT_FRAGMENT &&
+               result.node->GetFirstNode() &&
+               result.node->GetFirstNode() == result.node->GetLastNode()) {
+          CDOMNode* n = result.node->RemoveChild(result.node->GetFirstNode());
+          delete result.node;
+          result.node = n;
+        }
+        if (!g_mrowElementsAvoiding ||
+            result.node->GetNodeType() != DOM_ELEMENT_NODE) {
+          if (!result.node->NodeNameEq(MROW_ELNAME))
+            node = createMmlNode(MROW_ELNAME, result.node);
+        }
+      } else {
         node = createMmlNode(MO_ELNAME,
                              g_document->CreateTextNode(symbol->output));
         node = createMmlNode(MROW_ELNAME, node);
         node->AppendChild(result.node);
       }
-      result.node = node;
+      if (node)
+        result.node = node;
       return result;
-    /*
-      case TTYPE_MATRIX:	 //read (expr+)
-        if (symbol.input == "\\begin{array}") {
-          var mask = "";
-          symbol = LMgetSymbol(str);
-          str = LMremoveCharsAndBlanks(str,0);
-          if (symbol == NULL)
-            mask = "l";
-          else {
-            str = LMremoveCharsAndBlanks(str,symbol.input.length);
-            if (symbol.input != "{")
-              mask = "l";
-            else do {
+    case TTYPE_MATRIX:
+      if (symbol->tsubtype == TSUBTYPE_ARRAY) {
+        const int MAX_ALIGN_COUNT = 100;
+        AlignType align[MAX_ALIGN_COUNT];
+        int alignCount = 0;
+        int leftAlignCount = 0, centerAlignCount = 0, rightAlignCount = 0;
+        int i;
+        symbol = LMgetSymbol(str);
+        str = LMremoveCharsAndBlanks(str,0);
+        if (symbol == NULL) {
+          align[alignCount++] = LEFT_ALIGN;
+          leftAlignCount++;
+        } else {
+          str = LMremoveCharsAndBlanks(str, wcslen(symbol->input));
+          if (symbol->ttype != TTYPE_LEFTBRACKET) {
+            align[alignCount++] = LEFT_ALIGN;
+            leftAlignCount++;
+          } else
+            do {
               symbol = LMgetSymbol(str);
               if (symbol != NULL) {
-                str = LMremoveCharsAndBlanks(str,symbol.input.length);
-                if (symbol.input != "}")
-                  mask = mask+symbol.input;
+                str = LMremoveCharsAndBlanks(str, wcslen(symbol->input));
+                if (symbol->ttype != TTYPE_RIGHTBRACKET)
+                  for (i = 0; i < wcslen(symbol->input); i++)
+                    switch (symbol->input[i]) {
+                      case L'l':
+                        align[alignCount++] = LEFT_ALIGN;
+                        leftAlignCount++;
+                        break;
+                      case L'c':
+                        align[alignCount++] = CENTER_ALIGN;
+                        centerAlignCount++;
+                        break;
+                      case L'r':
+                        align[alignCount++] = RIGHT_ALIGN;
+                        rightAlignCount++;
+                        break;
+                      default: NULL;
+                    }  // switch for
               }
-            } while (symbol != NULL && symbol.input != "" && symbol.input !=
-    "}");
-          }
-          result = LMparseExpr("{"+str,true,true);
-    //    if (result[0] == NULL) return [createMmlNode("mo",
-    //			   document.createTextNode(symbol.input)),str];
-          node = createMmlNode(MTABLE_ELNAME, result[0]);
-          mask = mask.replace(/l/g,"left ");
-          mask = mask.replace(/r/g,"right ");
-          mask = mask.replace(/c/g,"center ");
-          node.setAttribute(COLUMNALIGN_ATTRNAME, mask);
-          node.setAttribute(DISPLAYSTYLE_ATTRNAME, FALSE_ATTRVALUE);
-          if (isIE)
-            return [node,result[1], NULL];
-    // trying to get a *little* bit of space around the array
-    // (IE already includes it)
-          var lspace = createMmlNode(MSPACE_ELNAME);
-          lspace.setAttribute(WIDTH_ATTRNAME,"0.167em");
-          var rspace = createMmlNode(MSPACE_ELNAME);
-          rspace.setAttribute(WIDTH_ATTRNAME, L"0.167em");
-          var node1 = createMmlNode(MROW_ELNAME, lspace);
-          node1.appendChild(node);
-          node1.appendChild(rspace);
-          return [node1,result[1], NULL];
-        } else {	// eqnarray
-          result = LMparseExpr("{"+str,true,true);
-          node = createMmlNode(MTABLE_ELNAME, result[0]);
-          if (isIE)
-            node.setAttribute(COLUMNSPACING_ATTRNAME, L"0.25em"); // best in
-    practice?
-          else
-            node.setAttribute(COLUMNSPACING_ATTRNAME, L"0.167em"); // correct
-    (but ignored?)
-          node.setAttribute(COLUMNALIGN_ATTRNAME, RIGHT_CENTER_LEFT_ATTRVALUE);
-          node.setAttribute(DISPLAYSTYLE_ATTRNAME, TRUE_ATTRVALUE);
-          node = createMmlNode(MROW_ELNAME, node);
-          return [node,result[1], NULL];
+            } while (symbol != NULL && symbol->input != NULL && symbol->ttype != TTYPE_RIGHTBRACKET);
         }
+
+        wchar_t* columnAlign = alloc_widestring(L" ", leftAlignCount*wcslen(LEFT_ALIGN_ATTRVALUE) + centerAlignCount*wcslen(CENTER_ALIGN_ATTRVALUE) + rightAlignCount*wcslen(RIGHT_ALIGN_ATTRVALUE) + 1);
+        for (i = 0; i < alignCount; i++)
+          switch (align[i]) {
+            case LEFT_ALIGN:
+              wcscat(columnAlign, LEFT_ALIGN_ATTRVALUE);
+              break;
+            case CENTER_ALIGN:
+              wcscat(columnAlign, CENTER_ALIGN_ATTRVALUE);
+              break;
+            case RIGHT_ALIGN:
+              wcscat(columnAlign, RIGHT_ALIGN_ATTRVALUE);
+          }  // switch for
+
+        st = alloc_widestring(L"{", wcslen(str) + 1);
+        wcscat(st, str);
+        result = LMparseExpr(st, true, true);
+        // if (result[0] == NULL)
+        //   return [createMmlNode("mo", document.createTextNode(symbol.input)),str];
+        node = createMmlNode(MTABLE_ELNAME, result.node);
+        node->SetAttribute(COLUMNALIGN_ATTRNAME, columnAlign);
+        node->SetAttribute(DISPLAYSTYLE_ATTRNAME, FALSE_ATTRVALUE);
+        if (isIE())
+          return ParseResult(node, result.str, NULL);
+        // trying to get a *little* bit of space around the array
+        // (IE already includes it)
+        CDOMElement* lspace = createMmlNode(MSPACE_ELNAME, NULL);
+        lspace->SetAttribute(WIDTH_ATTRNAME, L"0.167em");
+        CDOMElement* rspace = createMmlNode(MSPACE_ELNAME, NULL);
+        rspace->SetAttribute(WIDTH_ATTRNAME, L"0.167em");
+        CDOMElement* node1 = createMmlNode(MROW_ELNAME, lspace);
+        node1->AppendChild(node);
+        node1->AppendChild(rspace);
+        return ParseResult(node1, result.str, NULL);
+      } else {  // (symbol->tsubtype == TSUBTYPE_EQNARRAY)
+        st = alloc_widestring(L"{", wcslen(str) + 1);
+        wcscat(st, str);
+        result = LMparseExpr(st, true, true);
+        node = createMmlNode(MTABLE_ELNAME, result.node);
+        if (isIE())
+          node->SetAttribute(COLUMNSPACING_ATTRNAME, L"0.25em"); // best in practice?
+        else
+          node->SetAttribute(COLUMNSPACING_ATTRNAME, L"0.167em"); // correct (but ignored?)
+        node->SetAttribute(COLUMNALIGN_ATTRNAME, RIGHT_CENTER_LEFT_ATTRVALUE);
+        node->SetAttribute(DISPLAYSTYLE_ATTRNAME, TRUE_ATTRVALUE);
+        node = createMmlNode(MROW_ELNAME, node);
+        return ParseResult(node, result.str, NULL);
+      }
+/*
             case TTYPE_TEXT:
           if (str.charAt(0)=="{") i=str.indexOf("}");
           else i = 0;
@@ -630,7 +716,10 @@ ParseResult LMparseSexpr(
           return [createMmlNode("mrow",newFrag),str, NULL];
     */
     case TTYPE_UNARY:
+      if (wcscmp(symbol->input, L"\\unitsymbol") == 0)  // unitsymbol
+        g_gatheringLetters = true;
       result = LMparseSexpr(str);
+      g_gatheringLetters = false;
       if (result.node == NULL) {
         return ParseResult(
             createMmlNode(symbol->tag,
@@ -677,6 +766,35 @@ ParseResult LMparseSexpr(
           result.tag = symbol->tag;
           return result;
         }
+      } if (wcscmp(symbol->input, L"\\unitsymbol") == 0) {  // unitsymbol
+        CDOMNode* node = result.node;
+        while (node) {
+          if (node->GetNodeType() == DOM_ELEMENT_NODE)
+            ((CDOMElement*) node)->SetAttribute(CLASS_ATTRNAME, UNIT_ATTRVALUE);
+          if (node->HasChildNodes() &&
+              (node->GetFirstNode()->GetNodeType() == DOM_ELEMENT_NODE ||
+               node->GetFirstNode()->GetNodeType() == DOM_DOCUMENT_FRAGMENT)) {
+            node = node->GetFirstNode();
+          } else {
+            while (node) {
+              if (node->GetNextNodeSibling()) {
+                node = node->GetNextNodeSibling();
+                break;
+              } else if (node == result.node) {
+                node = NULL;
+                break;
+              }
+              node = node->GetParentNode();
+            }  // while (node)
+          }  // else if
+        }  // while (node)
+        if (g_mrowElementsAvoiding && !result.node->NodeNameEq(MROW_ELNAME)) {
+          CDOMElement* unit_group = createMmlNode(MROW_ELNAME, result.node);
+          unit_group->SetAttribute(CLASS_ATTRNAME, UNIT_ATTRVALUE);
+          result.node = unit_group;
+        }
+        result.tag = symbol->tag;
+        return result;
       } else if (symbol->acc == BOOL_TRUE) {  // accent
         return LMbuildUnaryAccent(result.str, symbol, result);
       } else {  // font change or displaystyle command
@@ -753,6 +871,69 @@ ParseResult LMparseSexpr(
       return ParseResult(
           createMmlNode(MO_ELNAME, g_document->CreateTextNode(symbol->output)),
           str, symbol->tag);
+    case TTYPE_FENCED: {
+const int MAX_OPEN_CLOSE_FENCED_SIZE = 20;
+wchar_t openFenced[MAX_OPEN_CLOSE_FENCED_SIZE+1] = {L'\0'};
+int openFencedLen = 0;
+wchar_t closeFenced[MAX_OPEN_CLOSE_FENCED_SIZE+1] = {L'\0'};
+int closeFencedLen = 0;
+wchar_t* tag = symbol->tag;
+
+symbol = LMgetSymbol(str);
+if (!symbol || symbol->ttype != TTYPE_LEFTBRACKET) {
+// show box in place of missing argument
+return ParseResult(
+createMmlNode(tag, createMissingArgumentMmlNode()),
+str, NULL);
+}
+str = LMremoveCharsAndBlanks(str, wcslen(symbol->input));
+do {
+symbol = LMgetSymbol(str);
+if (!symbol) { // show box in place of missing argument
+return ParseResult(
+createMmlNode(tag, createMissingArgumentMmlNode()),
+str, NULL);
+}
+str = LMremoveCharsAndBlanks(str, wcslen(symbol->input));
+if (symbol->ttype != TTYPE_RIGHTBRACKET)
+if ((openFencedLen + (int)wcslen(symbol->output)) <= MAX_OPEN_CLOSE_FENCED_SIZE)
+wcscat(openFenced, symbol->output);
+} while (symbol != NULL && symbol->input != NULL && symbol->ttype != TTYPE_RIGHTBRACKET);
+
+symbol = LMgetSymbol(str);
+if (!symbol || symbol->ttype != TTYPE_LEFTBRACKET) {
+// show box in place of missing argument
+return ParseResult(
+createMmlNode(tag, createMissingArgumentMmlNode()),
+str, NULL);
+}
+str = LMremoveCharsAndBlanks(str, wcslen(symbol->input));
+do {
+symbol = LMgetSymbol(str);
+if (!symbol) { // show box in place of missing argument
+return ParseResult(
+createMmlNode(tag, createMissingArgumentMmlNode()),
+str, NULL);
+}
+str = LMremoveCharsAndBlanks(str, wcslen(symbol->input));
+if (symbol->ttype != TTYPE_RIGHTBRACKET)
+if ((closeFencedLen + (int)wcslen(symbol->output)) <= MAX_OPEN_CLOSE_FENCED_SIZE)
+wcscat(closeFenced, symbol->output);
+} while (symbol != NULL && symbol->input != NULL && symbol->ttype != TTYPE_RIGHTBRACKET);
+
+result = LMparseSexpr(str);
+if (result.node == NULL) { // show box in place of missing argument
+return ParseResult(
+createMmlNode(tag, createMissingArgumentMmlNode()),
+str, NULL);
+}
+node = createMmlNode(tag, result.node);
+node->SetAttribute(OPEN_ATTRNAME, openFenced);
+node->SetAttribute(CLOSE_ATTRNAME, closeFenced);
+result.node = node;
+result.tag = symbol->tag;
+return result;
+}
     default:
       return ParseResult(
           createMmlNode(symbol->tag,  // its a constant
@@ -772,8 +953,8 @@ ParseResult LMparseIexpr(wchar_t* str) {
   symbol1 = LMgetSymbol(str);
   ParseResult result = LMparseSexpr(str);
   node = result.node;
-  tag = result.tag;
   str = result.str;
+  tag = result.tag;
   symbol = LMgetSymbol(str);
 
   if (symbol != NULL && symbol->ttype == TTYPE_REVERTUNARY) {
@@ -786,13 +967,13 @@ ParseResult LMparseIexpr(wchar_t* str) {
       tag = result2.tag;
       str = result2.str;
     }
-  } else if (symbol != NULL && symbol->ttype == TTYPE_INFIX) {
+  } else
+  while (symbol != NULL && symbol->ttype == TTYPE_INFIX) {
     str = LMremoveCharsAndBlanks(str, wcslen(symbol->input));
     result = LMparseSexpr(str);
     if (result.node == NULL)  // show box in place of missing argument
-      result.node =
-          createMmlNode(MO_ELNAME, g_document->CreateTextNode(L"\u25A1"));
-    str = result.str;
+      result.node = createMissingArgumentMmlNode();
+              str = result.str;
     tag = result.tag;
     if (symbol->tsubtype == TSUBTYPE_SUBSCRIPT ||
         symbol->tsubtype == TSUBTYPE_SUPERSCRIPT) {
@@ -820,7 +1001,8 @@ ParseResult LMparseIexpr(wchar_t* str) {
         node = createMmlNode((underover ? MOVER_ELNAME : MSUP_ELNAME), node);
         node->AppendChild(result.node);
       }
-      node = createMmlNode(MROW_ELNAME, node);  // so sum does not stretch
+      if (!g_mrowElementsAvoiding)
+        node = createMmlNode(MROW_ELNAME, node);  // so sum does not stretch
     } else if (symbol->tsubtype == TSUBTYPE_UNDERSCRIPT ||
                symbol->tsubtype == TSUBTYPE_OVERSCRIPT) {
       symbol2 = LMgetSymbol(str);
@@ -842,7 +1024,8 @@ ParseResult LMparseIexpr(wchar_t* str) {
         node = createMmlNode(MOVER_ELNAME, node);
         node->AppendChild(result.node);
       }
-      node = createMmlNode(MROW_ELNAME, node);  // so sum does not stretch
+      if (!g_mrowElementsAvoiding)
+        node = createMmlNode(MROW_ELNAME, node);  // so sum does not stretch
     } else {
       node = createMmlNode(symbol->tag, node);
       if (wcscmp(symbol->input, L"\\atop") == 0 ||
@@ -852,7 +1035,9 @@ ParseResult LMparseIexpr(wchar_t* str) {
       if (wcscmp(symbol->input, L"\\choose") == 0)
         node = createMmlNode(MFENCED_ELNAME, node);
     }
-  }
+    symbol1 = NULL;
+    symbol = LMgetSymbol(str);
+  }  // while
   return ParseResult(node, str, tag);
 }
 
@@ -875,7 +1060,8 @@ ParseResult LMparseExpr(wchar_t* str, bool rightbracket, bool matrix) {
     if (node != NULL) {
       if ((tag &&
            (wcscmp(tag, MN_ELNAME) == 0 || wcscmp(tag, MI_ELNAME) == 0)) &&
-          symbol != NULL && symbol->func == BOOL_TRUE) {
+          symbol != NULL && symbol->func == BOOL_TRUE &&
+          !g_mrowElementsAvoiding) {
         // Add space before \sin in 2\sin x or x\sin x
         CDOMElement* space = createMmlNode(MSPACE_ELNAME, NULL);
         space->SetAttribute(WIDTH_ATTRNAME, L"0.167em");
@@ -893,7 +1079,7 @@ ParseResult LMparseExpr(wchar_t* str, bool rightbracket, bool matrix) {
         newFrag->AppendChild(node);
       }
     }
-  } while (symbol != NULL && (symbol->ttype != TTYPE_RIGHTBRACKET) &&
+  } while (symbol != NULL && symbol->ttype != TTYPE_RIGHTBRACKET &&
            (symbol->ttype == TTYPE_SPACE || symbol->output != NULL));
   // powyzszy warunek mozna poprawic usuwajac symbol->ttype == TTYPE_SPACE gdy w
   // pliku math_backtranslation_symbols.defs dodac niepuste wartosci dla pol
@@ -911,55 +1097,60 @@ ParseResult LMparseExpr(wchar_t* str, bool rightbracket, bool matrix) {
     if (symbol != NULL)
       str = LMremoveCharsAndBlanks(str,
                                    wcslen(symbol->input));  // ready to return
-                                                            /*
-                                                                var len = newFrag.childNodes.length;
-                                                                if (matrix &&
-                                                                  len>0 && newFrag.childNodes[len-1].nodeName == "mrow" && len>1 &&
-                                                                  newFrag.childNodes[len-2].nodeName == "mo" &&
-                                                                  newFrag.childNodes[len-2].firstChild.nodeValue == "&") { //matrix
-                                                                    var pos = []; // positions of ampersands
-                                                                    var m = newFrag.childNodes.length;
-                                                                    for (i=0; matrix && i<m; i=i+2) {
-                                                                      pos[i] = [];
-                                                                      node = newFrag.childNodes[i];
-                                                                      for (var j=0; j<node.childNodes.length; j++)
-                                                                        if (node.childNodes[j].firstChild.nodeValue=="&")
-                                                                          pos[i][pos[i].length]=j;
-                                                                    }
-                                                                    var row, frag, n, k, table = document.createDocumentFragment();
-                                                                    for (i=0; i<m; i=i+2) {
-                                                                      row = document.createDocumentFragment();
-                                                                      frag = document.createDocumentFragment();
-                                                                      node = newFrag.firstChild; // <mrow> -&-&...&-&- </mrow>
-                                                                      n = node.childNodes.length;
-                                                                      k = 0;
-                                                                      for (j=0; j<n; j++) {
-                                                                        if (typeof pos[i][k] != "undefined" && j==pos[i][k]){
-                                                                          node.removeChild(node.firstChild); //remove &
-                                                                          row.appendChild(createMmlNode("mtd",frag));
-                                                                          k++;
-                                                                        } else frag.appendChild(node.firstChild);
-                                                                      }
-                                                                      row.appendChild(createMmlNode("mtd",frag));
-                                                                      if (newFrag.childNodes.length>2) {
-                                                                        newFrag.removeChild(newFrag.firstChild); //remove <mrow> </mrow>
-                                                                        newFrag.removeChild(newFrag.firstChild); //remove <mo>&</mo>
-                                                                      }
-                                                                      table.appendChild(createMmlNode(MTR_ELNAME,row));
-                                                                    }
-                                                                    return [table,str];
-                                                                }
-                                                                if (typeof symbol.invisible != "boolean" || !symbol.invisible) {
-                                                                  node = createMmlNode("mo",document.createTextNode(symbol.output));
-                                                                  newFrag.appendChild(node);
-                                                                }
-                                                            */
+
+    if (matrix) {
+      CDOMNodeList* newFragNodeList = newFrag->GetChildNodes();
+      int m = newFragNodeList->GetLength();
+if (m > 1)
+      if (m > 1 && newFragNodeList->Item(m-1)->NodeNameEq(MROW_ELNAME) && newFragNodeList->Item(m-2)->NodeNameEq(MO_ELNAME) && isAmpersant(newFragNodeList->Item(m-2)->GetFirstNode()->GetNodeValue())) {
+        CDOMDocumentFragment* table = g_document->CreateDocumentFragment();
+        CDOMDocumentFragment *row, *frag;
+        CDOMNodeList* nodeList;
+        int i, j, n, ampersantNodesCount;
+        CDOMNodePtr* ampersantNodes;
+        for (i = 0; i < m; i++) {
+          if (!newFragNodeList->Item(i)->NodeNameEq(MROW_ELNAME))
+            continue;
+          row = g_document->CreateDocumentFragment();
+          frag = g_document->CreateDocumentFragment();
+          node = newFragNodeList->Item(i); // <mrow> -&-&...&-&- </mrow>
+          nodeList = node->GetChildNodes();
+          n = nodeList->GetLength();
+          ampersantNodes = new CDOMNodePtr[n];
+          ampersantNodesCount = 0;
+          for (j = 0; j < n; j++) {
+            if (nodeList->Item(j)->GetFirstNode() && isAmpersant(nodeList->Item(j)->GetFirstNode()->GetNodeValue())) {
+              ampersantNodes[ampersantNodesCount++] = nodeList->Item(j);
+              row->AppendChild(createMmlNode(MTD_ELNAME, frag));
+            } else {
+              frag->AppendChild(nodeList->Item(j));
+            }
+          }
+          row->AppendChild(createMmlNode(MTD_ELNAME, frag));
+          for (j = 0; j < ampersantNodesCount; j++)
+            delete ampersantNodes[j];
+          delete[] ampersantNodes;
+//          delete nodeList;
+          table->AppendChild(createMmlNode(MTR_ELNAME, row));
+        }
+        for (i = 0; i < m; i++)
+//          delete newFragNodeList->Item(i);
+//        delete newFragNodeList;
+        return ParseResult(table, str, NULL);
+      }
+//      delete newFragNodeList;
+    }
+
+    if (symbol->invisible != BOOL_TRUE) {
+      node = createMmlNode(MO_ELNAME, g_document->CreateTextNode(symbol->output));
+      newFrag->AppendChild(node);
+    }
   }
   return ParseResult(newFrag, str, tag);
 }
 
 CDOMElement* parseMath(wchar_t* str) {
-  wprintf(L"*parseMath: \"%s\"\n", str);
+  //@wprintf(L"*parseMath: \"%s\"\n", str);
   // str.replace(/^\s+/g,"")
   str = LMremoveCharsAndBlanks(str, 0);
   ParseResult result = LMparseExpr(str, false, false);
@@ -973,8 +1164,8 @@ CDOMElement* parseMath(wchar_t* str) {
     node->SetAttribute(DISPLAYSTYLE_ATTRNAME, TRUE_ATTRVALUE);
   node = createMmlNode(MATH_ELNAME, node);
   node->SetAttribute(XMLNS_ATTRNAME, MATHML_URL_ATTRVALUE);
-  if (g_showAsciiFormulaOnHover)
-    node->SetAttribute(TITLE_ATTRNAME, str);  // does not show in Gecko
+//@  if (g_showAsciiFormulaOnHover)
+//@    node->SetAttribute(TITLE_ATTRNAME, str);  // does not show in Gecko
   return node;
 }
 
@@ -1037,11 +1228,11 @@ int back_translate_math_widestring(wchar_t* text_buffer,
     if (mathExpression) {
       wchar_t* mathBrl =
           correctBeforeBackTranslation(pwcsTranslatingStr, nTranslatingStrLen);
-      wprintf(L"$\"%s\"\n", mathBrl);
+      //@wprintf(L"$\"%s\"\n", mathBrl);
       back_translate_with_mathexpr_table(
           (widechar*)mathBrl, (int)wcslen(mathBrl), &pFragTranslatedBuffer,
           &nFragTranslatedLength);
-      wprintf(L"^\"%s\"\n", (wchar_t*)pFragTranslatedBuffer);
+      //@wprintf(L"^\"%s\"\n", (wchar_t*)pFragTranslatedBuffer);
 
       CDOMElement* node = parseMath((wchar_t*)pFragTranslatedBuffer);
       frag->AppendChild(node);
@@ -1050,7 +1241,7 @@ int back_translate_math_widestring(wchar_t* text_buffer,
       back_translate_with_main_table((widechar*)pwcsTranslatingStr,
                                      nTranslatingStrLen, &pFragTranslatedBuffer,
                                      &nFragTranslatedLength);
-      wprintf(L"$\"%s\"\n", (wchar_t*)pFragTranslatedBuffer);
+      //@wprintf(L"$\"%s\"\n", (wchar_t*)pFragTranslatedBuffer);
       frag->AppendChild(createXhtmlElement(SPAN_ELNAME)
                             ->AppendChild(g_document->CreateTextNode(
                                 (wchar_t*)pFragTranslatedBuffer)));

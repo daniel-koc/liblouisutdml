@@ -5,12 +5,11 @@
 #include "liblouisutdml.h"
 #include <louis.h>
 
-typedef enum
-{
+typedef enum {
 BOOL_UNDEFINED = -1,
 BOOL_FALSE = 0,
 BOOL_TRUE = 1
-} BOOL;
+} BOOLEAN;
 
 typedef enum
 {
@@ -30,7 +29,8 @@ typedef enum
   TTYPE_STRETCHY = 13,
   TTYPE_MATRIX = 14,
   TTYPE_OPERATOR = 15,
-  TTYPE_REVERTUNARY = 16
+  TTYPE_REVERTUNARY = 16,
+  TTYPE_FENCED = 17
 } TokenType;
 
 typedef enum{
@@ -42,6 +42,8 @@ TSUBTYPE_SUBSCRIPT = 4,
 TSUBTYPE_SUPERSCRIPT = 5,
 TSUBTYPE_UNDERSCRIPT = 6,
 TSUBTYPE_OVERSCRIPT = 7,
+TSUBTYPE_EQNARRAY = 8,
+TSUBTYPE_ARRAY = 9,
 } TokenSubtype;
 
 typedef struct
@@ -57,9 +59,9 @@ wchar_t* atval;
 wchar_t* ieval;
 TokenType ttype;
 TokenSubtype tsubtype;
-BOOL invisible;
-BOOL func;
-BOOL acc;  // accent
+BOOLEAN invisible;
+BOOLEAN func;
+BOOLEAN acc;  // accent
 wchar_t* codes;
 } LMSymbol;
 

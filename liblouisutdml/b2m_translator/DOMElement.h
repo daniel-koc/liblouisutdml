@@ -27,30 +27,28 @@ class CList {
  public:
   CList();
   virtual ~CList();
-  void SetDeletingAllItemsFlag();
+  void SetDeletingAllItemsFlag() { m_bDeletingAllItemsFlag = true; }
   void AddItem(const LISTITEM pItem);
   LISTITEM* GetItems();
-  int GetCount();
-  bool IsEmpty();
+  int GetCount() { return m_nItemsCount; }
+  bool IsEmpty() { return (m_nItemsCount == 0); }
   LISTITEM Next();
-  bool HasNext();
-  void Reset();
-  LISTITEM GetFirst();
+  bool HasNext() { return (m_pCur != NULL); }
+  void Reset() { m_pCur = m_pFirst; }
+  LISTITEM GetFirst() { return m_pFirst ? m_pFirst->m_pItem : NULL; }
   LISTITEM RemoveFirst();
-  LISTITEM GetLast();
+  LISTITEM GetLast() { return (m_pLast ? m_pLast->m_pItem : NULL); }
   LISTITEM RemoveLast();
   LISTITEM GetAt(int nIndex);
-  LISTITEM operator[](int nIndex);
+  LISTITEM operator[](int nIndex) { return GetAt(nIndex); }
   void RemoveAll();
   void DeleteAll();
 
- public:
+ private:
   CListItem* m_pFirst;
   CListItem* m_pLast;
   CListItem* m_pCur;
   int m_nItemsCount;
-
- private:
   bool m_bDeletingAllItemsFlag;
 };
 
@@ -58,45 +56,37 @@ class CDOMElement : public CDOMNode {
  public:
   CDOMElement(CDOMDocument* pOwnerDocument);
   virtual ~CDOMElement();
-  virtual void SetNodeName(CString* pStrName);
-  virtual CString* GetNodeName();
+
+  // CDOMNode override:
+  void SetNodeName(CString* pStrName) override { SetTagName(pStrName); }
+  CString* GetNodeName() override { return GetTagName(); }
+  CDOMNamedNodeList* GetAttributeNodes() override;
+  bool HasAttributes() override { return (m_pFirstAttr != NULL); }
+  CString ToString() override;
+
   void SetTagName(CString* pStrTagName);
-  CString* GetTagName();
-  void AddAttribute(CString* pStrName, CString* pStrValue);
+  CString* GetTagName() { return m_pStrTagName; }
+  bool AddAttribute(CString* pStrName, CString* pStrValue);
   bool SetAttribute(wchar_t* pStrName, wchar_t* pStrValue);
   bool SetAttribute(const wchar_t* pStrName, const wchar_t* pStrValue);
   bool SetAttribute(const wchar_t* pStrName, wchar_t* pStrValue);
   bool SetAttribute(CString* pStrName, CString* pStrValue);
   CString* GetAttribute(CString* pStrName);
-  void RemoveAttribute(CString* pStrName);
+  bool RemoveAttribute(CString* pStrName);
   CDOMAttr* SetAttributeNode(CDOMAttr* pNewAttr);
   CDOMAttr* GetAttributeNode(CString* pStrName);
   CDOMAttr* RemoveAttributeNode(CDOMAttr* pOldAttr);
   bool HasAttribute(CString* pStrName);
-  CDOMNamedNodeList* GetAttributeNodes();
-  virtual bool HasAttributes();
   CDOMNodeList* GetElementsByTagName(CString* pStrName);
-  virtual CString ToString();
 
  protected:
-  virtual CDOMNode* CopyNode();
+  // CDOMNode override:
+  CDOMNode* CopyNode() override;
 
- protected:
+ private:
   CString* m_pStrTagName;
   CDOMAttr* m_pFirstAttr;
   CDOMAttr* m_pLastAttr;
 };
-
-inline CString* CDOMElement::GetNodeName() {
-  return m_pStrTagName;
-}
-
-inline CString* CDOMElement::GetTagName() {
-  return m_pStrTagName;
-}
-
-inline bool CDOMElement::HasAttributes() {
-  return ((m_pFirstAttr != NULL) ? true : false);
-}
 
 #endif  // !defined(DOMELEMENT_H_)

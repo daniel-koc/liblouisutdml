@@ -21,3 +21,7 @@ CDOMEntity::CDOMEntity(CDOMDocument* pOwnerDocument)
 
 CDOMEntity::~CDOMEntity() {
 }
+
+CDOMNode* CDOMEntity::CopyNode() {
+  return new CDOMEntity(GetOwnerDocument());
+}

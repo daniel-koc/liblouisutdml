@@ -14,57 +14,53 @@ static char THIS_FILE[] = __FILE__;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
+const int ITEMS_RESIZING_STEP = 20;
+
 CDOMNodeList::CDOMNodeList() {
-  m_pFirstNodeListItem = NULL;
-  m_pLastNodeListItem = NULL;
+  m_nMaxItemsCount = ITEMS_RESIZING_STEP;
+  m_ppItems = new CDOMNodePtr[m_nMaxItemsCount];
+  memset(m_ppItems, m_nMaxItemsCount*sizeof(CDOMNodePtr), 0);
   m_nItemsCount = 0;
-}
+}  // CDOMNodeList
 
 CDOMNodeList::CDOMNodeList(CDOMNode* pFirstNode) {
-  while (pFirstNode != NULL) {
-    CDOMNodeListItem* pNewNodeListItem = new CDOMNodeListItem(pFirstNode);
-    if (m_pFirstNodeListItem == NULL)
-      m_pFirstNodeListItem = m_pLastNodeListItem = pNewNodeListItem;
-    else {
-      m_pLastNodeListItem->SetNextNodeListItem(pNewNodeListItem);
-      m_pLastNodeListItem = pNewNodeListItem;
-    }  // else if
-    m_nItemsCount++;
+  m_nMaxItemsCount = ITEMS_RESIZING_STEP;
+  m_ppItems = new CDOMNodePtr[m_nMaxItemsCount];
+  memset(m_ppItems, m_nMaxItemsCount*sizeof(CDOMNodePtr), 0);
+  m_nItemsCount = 0;
+
+  while (pFirstNode) {
+    if (m_nItemsCount ==m_nMaxItemsCount) {
+      m_nMaxItemsCount += ITEMS_RESIZING_STEP;
+      CDOMNodePtr* ppItems = new CDOMNodePtr[m_nMaxItemsCount];
+      memset(ppItems, m_nMaxItemsCount*sizeof(CDOMNodePtr), 0);
+      memcpy(ppItems, m_ppItems, m_nItemsCount*sizeof(CDOMNodePtr));
+      delete[] m_ppItems;
+      m_ppItems = ppItems;
+    }
+    m_ppItems[m_nItemsCount++] = pFirstNode;
     pFirstNode = pFirstNode->GetNextNodeSibling();
   }  // while
 }  // CDOMNodeList
 
 CDOMNodeList::~CDOMNodeList() {
-  while (m_pFirstNodeListItem != NULL) {
-    m_pLastNodeListItem = m_pFirstNodeListItem;
-    m_pFirstNodeListItem = m_pFirstNodeListItem->GetNextNodeListItem();
-    delete m_pLastNodeListItem;
-  }  // while
-}  // ~CDOMNodeList
+  delete[] m_ppItems;
+}
 
 void CDOMNodeList::AddItem(CDOMNode* pNode) {
-  CDOMNodeListItem* pNewNodeListItem = new CDOMNodeListItem(pNode);
-  if (m_pFirstNodeListItem == NULL)
-    m_pFirstNodeListItem = m_pLastNodeListItem = pNewNodeListItem;
-  else {
-    m_pLastNodeListItem->SetNextNodeListItem(pNewNodeListItem);
-    m_pLastNodeListItem = pNewNodeListItem;
-  }  // else if
-  m_nItemsCount++;
+  if (m_nItemsCount ==m_nMaxItemsCount) {
+    m_nMaxItemsCount += ITEMS_RESIZING_STEP;
+    CDOMNodePtr* ppItems = new CDOMNodePtr[m_nMaxItemsCount];
+    memset(ppItems, m_nMaxItemsCount*sizeof(CDOMNodePtr), 0);
+    memcpy(ppItems, m_ppItems, m_nItemsCount*sizeof(CDOMNodePtr));
+    delete[] m_ppItems;
+    m_ppItems = ppItems;
+  }
+  m_ppItems[m_nItemsCount++] = pNode;
 }  // AddItem
 
 CDOMNode* CDOMNodeList::Item(int nIndex) {
   if (nIndex < 0 || nIndex >= m_nItemsCount)
     return NULL;
-  CDOMNodeListItem* pTmpNodeListItem = m_pFirstNodeListItem;
-  int i = 0;
-  while (i < nIndex) {
-    pTmpNodeListItem = pTmpNodeListItem->GetNextNodeListItem();
-    i++;
-  }  // while
-  return pTmpNodeListItem->GetNode();
+  return m_ppItems[nIndex];
 }  // Item
-
-int CDOMNodeList::GetLength() {
-  return m_nItemsCount;
-}

@@ -13,26 +13,23 @@ class CDOMCharacterData : public CDOMNode {
  public:
   CDOMCharacterData(CDOMDocument* pOwnerDocument, EDOMNodeType nNodeType);
   virtual ~CDOMCharacterData();
+
+  // CDOMNode override:
+  void SetNodeValue(CString* pStrValue) override { SetData(pStrValue); }
+  CString* GetNodeValue() override { return GetData(); }
+  CString ToString() override;
+
   void SetData(CString* pStrData);
-  CString* GetData();
-  int GetLength();
+  CString* GetData() { return m_pStrData; }
+  int GetLength() { return (m_pStrData ? m_pStrData->length() : 0); }
   CString* SubstringData(int nOffset, int nCount);
   void AppendData(CString* pStrArg);
   void InsertData(int nOffset, CString* pStrArg);
   void DeleteData(int nOffset, int nCount);
   void ReplaceData(int nOffset, int nCount, CString* pStrArg);
-  virtual CString ToString();
 
  protected:
   CString* m_pStrData;
 };
-
-inline CString* CDOMCharacterData::GetData() {
-  return m_pStrData;
-}
-
-inline int CDOMCharacterData::GetLength() {
-  return m_pStrData->length();
-}
 
 #endif  // !defined(DOMCHARACTERDATA_H_)

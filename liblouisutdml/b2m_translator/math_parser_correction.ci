@@ -1,37 +1,43 @@
 const wchar_t SPACE_BRAILLECHAR = L' ';
-const wchar_t NOBREAK_SPACE_BRAILLECHAR = 160;
-const wchar_t MINUS_BRAILLECHAR = L'-';
 const wchar_t QUOTE_BRAILLECHAR = L'\"';
-const wchar_t PERIOD_BRAILLECHAR = L'.';
-const wchar_t COMMA_BRAILLECHAR = L',';
-const wchar_t EQUALS_BRAILLECHAR = L'=';
-const wchar_t STAR_BRAILLECHAR = L'*';
-const wchar_t LESSTHAN_BRAILLECHAR = L'<';
 const wchar_t HASH_BRAILLECHAR = L'#';
-const wchar_t SEMICOLON_BRAILLECHAR = L';';
+const wchar_t DOLLAR_BRAILLECHAR = L'$';
+const wchar_t PERCENT_BRAILLECHAR = L'%';
+const wchar_t LEFT_PARENT_BRAILLECHAR = L'(';
+const wchar_t RIGHT_PARENT_BRAILLECHAR = L')';
+const wchar_t STAR_BRAILLECHAR = L'*';
+const wchar_t COMMA_BRAILLECHAR = L',';
+const wchar_t MINUS_BRAILLECHAR = L'-';
+const wchar_t PERIOD_BRAILLECHAR = L'.';
+const wchar_t SLASH_BRAILLECHAR = L'/';
 const wchar_t COLON_BRAILLECHAR = L':';
-const wchar_t VERTICALBAR_BRAILLECHAR = L'|';
+const wchar_t SEMICOLON_BRAILLECHAR = L';';
+const wchar_t LESS_THAN_BRAILLECHAR = L'<';
+const wchar_t EQUALS_BRAILLECHAR = L'=';
+const wchar_t GREATER_THAN_BRAILLECHAR = L'>';
+const wchar_t LEFT_SQUARE_BRACKET_BRAILLECHAR = L'[';
+const wchar_t RIGHT_SQUARE_BRACKET_BRAILLECHAR = L']';
 const wchar_t UNDERLINE_BRAILLECHAR = L'_';
+const wchar_t RIGHT_PARENTSESIS_BRAILLECHAR = L'`';
+const wchar_t VERTICALBAR_BRAILLECHAR = L'|';
 const wchar_t TILDE_BRAILLECHAR = L'~';
-const wchar_t KEY_BRAILLECHAR = 129;
-const wchar_t LEFT_PARENTSESIS_BRAILLECHAR = 179;
-const wchar_t RIGHT_PARENTSESIS_BRAILLECHAR = 96;
-const wchar_t LEFT_SQUARE_BRACKET_BRAILLECHAR = 91;
-const wchar_t RIGHT_SQUARE_BRACKET_BRAILLECHAR = 93;
+const wchar_t UNIT_SYMBOL_BRAILLECHAR = 129;
 const wchar_t LEFT_BRACE_BRAILLECHAR = 156;
 const wchar_t RIGHT_BRACE_BRAILLECHAR = L'o';
+const wchar_t NO_BREAKABLE_SPACE_BRAILLECHAR = 160;
+const wchar_t LEFT_PARENTSESIS_BRAILLECHAR = 179;
+const wchar_t SYMBOL_KEY_BRAILLECHAR = 191;
 
-const wchar_t SPACE_PROJECTOR_BRAILLEMARKER = L'\'';
-const wchar_t CLOSING_PROJECTOR_BRAILLEMARKER = 234;
-const wchar_t SUBSCRIPT_BRAILLEMARKER = 185;
-const wchar_t POWER_BRAILLEMARKER = 243;
-const wchar_t SUPERSCRIPT_BRAILLEMARKER = 92;
-const wchar_t SQRT_BRAILLEMARKER = 230;
-const wchar_t COMPLEX_PROJECTOR_BRAILLEMARKER = L'\"';
-const wchar_t DETAILED_PROJECTOR_BRAILLEMARKER = L'$';
-const wchar_t SEPARATOR_FRACTION_BRAILLEMARKER = 128;
+const wchar_t NO_BREAKABLE_PROJECTOR_JOINER_BRAILLECHAR = L'\'';
+const wchar_t CLOSING_PROJECTOR_BRAILLECHAR = 234;
+const wchar_t SUBSCRIPT_BRAILLECHAR = 185;
+const wchar_t POWER_BRAILLECHAR = 243;
+const wchar_t SUPERSCRIPT_BRAILLECHAR = 92;
+const wchar_t SQRT_BRAILLECHAR = 230;
+const wchar_t COMPLEX_PROJECTOR_BRAILLECHAR = L'\"';
+const wchar_t DETAILED_PROJECTOR_BRAILLECHAR = L'$';
+const wchar_t SEPARATOR_FRACTION_BRAILLECHAR = 128;
 
-const wchar_t NOBREAK_SPACE_CHAR = 0xa0;
 const wchar_t STARTING_FRACTION_MARKER = 0xf005;
 const wchar_t ENDING_FRACTION_MARKER = 0xf006;
 const wchar_t LEFT_PARENTSESIS_MARKER = 0xf007;
@@ -59,6 +65,17 @@ const wchar_t DETAILEDPROJ_SUPERSCRIPT_MARKER = 0xf020;
 const wchar_t DETAILEDPROJ_SQRT_MARKER = 0xf021;
 const wchar_t LEFT_ANGLE_BRACKET_MARKER = 0xf023;
 const wchar_t RIGHT_ANGLE_BRACKET_MARKER = 0xf024;
+const wchar_t SIMPLEPROJ_UNDERSCRIPT_MARKER = 0xf027;
+const wchar_t SIMPLEPROJ_OVERSCRIPT_MARKER = 0xf028;
+const wchar_t COMPLEXPROJ_UNDERSCRIPT_MARKER = 0xf02a;
+const wchar_t COMPLEXPROJ_OVERSCRIPT_MARKER = 0xf02b;
+const wchar_t DETAILEDPROJ_UNDERSCRIPT_MARKER = 0xf02d;
+const wchar_t DETAILEDPROJ_OVERSCRIPT_MARKER = 0xf02e;
+
+const wchar_t TABLE_ROW_SEPARATOR_MARKER = 0xf030;
+const wchar_t STARTING_TABLE_MARKER = 0xf031;
+const wchar_t ENDING_TABLE_MARKER = 0xf032;
+const wchar_t UNIT_SYMBOL_MARKER = 0xf033;
 
 const wchar_t STARTING_ROOT_MARKER = 0xf051;
 const wchar_t ENDING_ROOT_MARKER = 0xf052;
@@ -67,305 +84,463 @@ const wchar_t STARTING_LOG_FUNCTION_MARKER = 0xf054;
 const wchar_t ENDING_LOG_FUNCTION_MARKER = 0xf055;
 const wchar_t LOG_FUNCTION_MARKER = 0xf056;
 
+const wchar_t STARTING_FENCED_MARKER = 0xf057;
+const wchar_t FIRST_ARGUMENT_SEPARATOR_FENCED_MARKER = 0xf058;
+const wchar_t SECOND_ARGUMENT_SEPARATOR_FENCED_MARKER = 0xf059;
+const wchar_t ENDING_FENCED_MARKER = 0xf05a;
+
 const wchar_t* upDigits = L"abcdefghij";
 const wchar_t* lowDigits = L",;:/?+=(*)";
+const int DECIMAL_COMMA_INDEX = 100;
 
 static wchar_t* g_pwcsTranslatingStr = NULL;
 static int g_nTranslatingStrLen = 0;
+static int g_translatingIndex = 0;
 static wchar_t* g_pwcsMathBrl = NULL;
 static int g_nMathBrlLen = 0;
-static int g_correctInd = 0;
 static int g_additionalStep = 0;
 
 #define DEFINE_CHECKER(funcName)                                               \
-  \
 bool funcName(int index) {                                                \
-    \
 if(index < 0 || index >= g_nTranslatingStrLen) return false;                   \
-    \
 wchar_t curChar = g_pwcsTranslatingStr[index];                                 \
-    \
 wchar_t prevChar = (index > 0) ? g_pwcsTranslatingStr[index - 1] : wcNULL;     \
-    \
 wchar_t prevPrevChar = (index > 1) ? g_pwcsTranslatingStr[index - 2] : wcNULL; \
-    \
 wchar_t nextChar = ((index + 1) < g_nTranslatingStrLen)                        \
                        ? g_pwcsTranslatingStr[index + 1]                       \
                        : wcNULL;                                               \
-    \
 wchar_t nextNextChar = ((index + 2) < g_nTranslatingStrLen)                    \
                            ? g_pwcsTranslatingStr[index + 2]                   \
                            : wcNULL;                                           \
-    \
+wchar_t nextNextNextChar = ((index + 3) < g_nTranslatingStrLen)                    \
+                           ? g_pwcsTranslatingStr[index + 3]                   \
+                           : wcNULL;                                           \
 g_additionalStep = 0;
 
-DEFINE_CHECKER(isLowDecimalPoint)
-return (curChar == PERIOD_BRAILLECHAR);
+DEFINE_CHECKER(isMinusSign)
+  return (curChar == MINUS_BRAILLECHAR);
 }
 
-bool isPartOfDecimalLowNumber(int index);
+DEFINE_CHECKER(isLowDecimalPoint)
+  return (curChar == PERIOD_BRAILLECHAR);
+}
 
 bool isUpDigit(int index, int* digitInd) {
   if (index < 0 || index >= g_nTranslatingStrLen)
     return false;
-  int ind = 0;
-  for (; ind < wcslen(upDigits); ind++)
-    if (g_pwcsTranslatingStr[index] == upDigits[ind])
-      break;
-  *digitInd = ind;
-  return (ind < wcslen(upDigits));
+  for (int i = 0; upDigits[i] != wcNULL; i++)
+    if (g_pwcsTranslatingStr[index] == upDigits[i]) {
+      *digitInd = i;
+      return true;
+    }
+  return false;
 }  // isUpDigit
 
 bool isLowDigit(int index, int* digitInd) {
   if (index < 0 || index >= g_nTranslatingStrLen)
     return false;
-  int ind = 0;
-  for (; ind < wcslen(lowDigits); ind++)
-    if (g_pwcsTranslatingStr[index] == lowDigits[ind])
-      break;
-  *digitInd = ind;
-  return (ind < wcslen(lowDigits));
+  for (int i = 0; lowDigits[i] != wcNULL; i++)
+    if (g_pwcsTranslatingStr[index] == lowDigits[i]) {
+      *digitInd = i;
+      return true;
+    }
+  return false;
 }  // isLowDigit
 
 bool isDecimalLowDigit(int index, int* digitInd) {
-  if (index < 0 || index >= g_nTranslatingStrLen)
-    return false;
   if (isLowDigit(index, digitInd))
     return true;
   else if (isLowDecimalPoint(index)) {
-    *digitInd = 100;
+    *digitInd = DECIMAL_COMMA_INDEX;
     return true;
   }
   return false;
 }  // isDecimalLowDigit
 
+bool isMinusLowDigit(int index) {
+  int digitInd;
+  return (isLowDigit(index, &digitInd) ||
+      (isMinusSign(index) &&
+       isLowDigit(index+1, &digitInd)));
+}  // isMinusLowDigit
+
+bool isPartOfDecimalLowNumber(int index);
+
 DEFINE_CHECKER(isEndLineChar)
-if (curChar == L'\r' && curChar == L'\n') {
-  g_additionalStep = 1;
-  return true;
+  if (curChar == L'\r' && nextChar == L'\n') {
+    g_additionalStep = 1;
+    return true;
+  }
+  return (curChar == L'\r' || curChar == L'\n');
 }
-return (curChar == L'\r' || curChar == L'\n');
-}  // isEndLineChar
 
 DEFINE_CHECKER(isAnySpace)
-return (curChar == SPACE_BRAILLECHAR || curChar == NOBREAK_SPACE_BRAILLECHAR);
+  return (curChar == SPACE_BRAILLECHAR || curChar == NO_BREAKABLE_SPACE_BRAILLECHAR);
 }
 
 DEFINE_CHECKER(isUnderlineSeparator)
-return (curChar == UNDERLINE_BRAILLECHAR);
-}
-
-DEFINE_CHECKER(isMinusSign)
-return (curChar == MINUS_BRAILLECHAR);
+  return (curChar == UNDERLINE_BRAILLECHAR);
 }
 
 DEFINE_CHECKER(isDecimalPoint)
-return (curChar == COMMA_BRAILLECHAR);
+  return (curChar == COMMA_BRAILLECHAR);
 }
 
 DEFINE_CHECKER(isLowZeroDigit)
-return (curChar == lowDigits[9]);
+  return (curChar == lowDigits[9]);
 }
 
 DEFINE_CHECKER(isLowZeroOrOneDigit)
-return (curChar == lowDigits[0] || curChar == lowDigits[9]);
+  return (curChar == lowDigits[0] || curChar == lowDigits[9]);
 }
 
 DEFINE_CHECKER(isNumberSign)
-return (curChar == HASH_BRAILLECHAR);
+  return (curChar == HASH_BRAILLECHAR);
 }
 
-DEFINE_CHECKER(isSpaceProjectorMarker)
-return (curChar == SPACE_PROJECTOR_BRAILLEMARKER);
+DEFINE_CHECKER(isNoBreakableProjectorJoiner)
+  return (curChar == NO_BREAKABLE_PROJECTOR_JOINER_BRAILLECHAR);
 }
 
 DEFINE_CHECKER(isLeftParentsesis)
-return (curChar == LEFT_PARENTSESIS_BRAILLECHAR &&
-        nextChar != PERIOD_BRAILLECHAR &&
-        nextChar != EQUALS_BRAILLECHAR &&
-        !(nextChar == STAR_BRAILLECHAR && nextNextChar == EQUALS_BRAILLECHAR) &&
-        prevChar != QUOTE_BRAILLECHAR);
+  return (curChar == LEFT_PARENTSESIS_BRAILLECHAR &&
+          nextChar != PERIOD_BRAILLECHAR && // \X2283 \X2285
+          nextChar != EQUALS_BRAILLECHAR && // \X2287 \X2289
+          !(nextChar == STAR_BRAILLECHAR && nextNextChar == EQUALS_BRAILLECHAR) && // \X228B
+          prevChar != LESS_THAN_BRAILLECHAR && // \x27A5
+          prevChar != DOLLAR_BRAILLECHAR && // \x27A6
+          !(prevChar == L'z' && prevPrevChar == L' ')); // zł
 }
 
 DEFINE_CHECKER(isRightParentsesis)
-return (curChar == RIGHT_PARENTSESIS_BRAILLECHAR &&
-        nextChar != COMMA_BRAILLECHAR &&
-        nextChar != EQUALS_BRAILLECHAR &&
-        !(nextChar == STAR_BRAILLECHAR && nextNextChar == EQUALS_BRAILLECHAR) &&
-        prevChar != UNDERLINE_BRAILLECHAR);
+  return (curChar == RIGHT_PARENTSESIS_BRAILLECHAR &&
+          nextChar != COMMA_BRAILLECHAR && // \X2282 \X2284
+          nextChar != EQUALS_BRAILLECHAR && // \X2286 \X2288
+          !(nextChar == STAR_BRAILLECHAR && nextNextChar == EQUALS_BRAILLECHAR)); // \X228A
 }
 
 DEFINE_CHECKER(isLeftSquareBracket)
-return (curChar == LEFT_SQUARE_BRACKET_BRAILLECHAR &&
-        nextChar != PERIOD_BRAILLECHAR);
+  return (curChar == LEFT_SQUARE_BRACKET_BRAILLECHAR &&
+          nextChar != PERIOD_BRAILLECHAR); // \x2329
 }
 
 DEFINE_CHECKER(isRightSquareBracket)
-return (curChar == RIGHT_SQUARE_BRACKET_BRAILLECHAR &&
-        prevChar != UNDERLINE_BRAILLECHAR);
+  return (curChar == RIGHT_SQUARE_BRACKET_BRAILLECHAR &&
+          prevChar != UNDERLINE_BRAILLECHAR);  // \x232A
 }
 
 DEFINE_CHECKER(isLeftBrace)
-if (curChar == LEFT_BRACE_BRAILLECHAR)
-  return !(nextChar == PERIOD_BRAILLECHAR || nextChar == EQUALS_BRAILLECHAR ||
-           (nextChar == LEFT_BRACE_BRAILLECHAR &&
-            nextNextChar == PERIOD_BRAILLECHAR) ||
-           nextChar == RIGHT_BRACE_BRAILLECHAR ||
-           nextChar == STAR_BRAILLECHAR ||
-           prevChar == KEY_BRAILLECHAR ||
-           prevChar == STAR_BRAILLECHAR ||
-           prevChar == RIGHT_BRACE_BRAILLECHAR ||
-           (prevChar == EQUALS_BRAILLECHAR && nextChar == PERIOD_BRAILLECHAR));
-return false;
-}  // isLeftBrace
+  return (curChar == LEFT_BRACE_BRAILLECHAR &&
+          nextChar != PERIOD_BRAILLECHAR && // < \X226E
+          nextChar != EQUALS_BRAILLECHAR && // \x2264 \X2270 \X2272 \X2274
+          !(nextChar == VERTICALBAR_BRAILLECHAR && nextNextChar == EQUALS_BRAILLECHAR) && // \X2266
+          !(nextChar == STAR_BRAILLECHAR && nextNextChar == EQUALS_BRAILLECHAR) && // \X2268
+          !(nextChar == LEFT_BRACE_BRAILLECHAR && nextNextChar == PERIOD_BRAILLECHAR) && // \X226A
+          !(nextChar == RIGHT_BRACE_BRAILLECHAR && nextNextChar == COMMA_BRAILLECHAR) && // \X2276 \X2278
+          !(prevChar == RIGHT_BRACE_BRAILLECHAR && nextChar == PERIOD_BRAILLECHAR) && // \X2277 \X2279
+          !(prevChar == EQUALS_BRAILLECHAR && nextChar == PERIOD_BRAILLECHAR) && // \X22DC
+          prevChar != UNIT_SYMBOL_BRAILLECHAR); // \X2220
+}
+
+DEFINE_CHECKER(isLeftBraceTable)
+  return (isLeftBrace(index) && isAnySpace(index+1));
+}
 
 DEFINE_CHECKER(isRightBrace)
-if (curChar == UNDERLINE_BRAILLECHAR && nextChar == RIGHT_BRACE_BRAILLECHAR) {
-  g_additionalStep = 1;
-  return true;
+  if (curChar == UNDERLINE_BRAILLECHAR && nextChar == RIGHT_BRACE_BRAILLECHAR &&
+          nextNextChar != COMMA_BRAILLECHAR &&  // > \X226F
+          nextNextChar != EQUALS_BRAILLECHAR && // \x2265 \X2271 \X2273 \X2275
+          !(nextNextChar == VERTICALBAR_BRAILLECHAR && nextNextNextChar == EQUALS_BRAILLECHAR) && // \X2267
+          !(nextNextChar == STAR_BRAILLECHAR && nextNextNextChar == EQUALS_BRAILLECHAR) && // \X2269
+          !(nextNextChar == RIGHT_BRACE_BRAILLECHAR && nextNextNextChar == COMMA_BRAILLECHAR) && // \X226B
+          !(nextNextChar == LEFT_BRACE_BRAILLECHAR && nextNextNextChar == PERIOD_BRAILLECHAR)) { // \X2277 \X2279
+    g_additionalStep = 1;
+    return true;
+  }
+  return (curChar == RIGHT_BRACE_BRAILLECHAR &&
+          prevChar != DOLLAR_BRAILLECHAR && // O
+          prevChar != VERTICALBAR_BRAILLECHAR && // \x03A5
+          prevChar != LESS_THAN_BRAILLECHAR && // \x03BF
+          prevChar != SYMBOL_KEY_BRAILLECHAR && // \X2205
+          nextChar != COMMA_BRAILLECHAR &&  // > \X226F
+          nextChar != EQUALS_BRAILLECHAR && // \x2265 \X2271 \X2273 \X2275
+          !(nextChar == VERTICALBAR_BRAILLECHAR && nextNextChar == EQUALS_BRAILLECHAR) && // \X2267
+          !(nextChar == STAR_BRAILLECHAR && nextNextChar == EQUALS_BRAILLECHAR) && // \X2269
+          !(nextChar == RIGHT_BRACE_BRAILLECHAR && nextNextChar == COMMA_BRAILLECHAR) && // \X226B
+          !(prevChar == LEFT_BRACE_BRAILLECHAR && nextChar == COMMA_BRAILLECHAR) && // \X2276 \X2278
+          !(nextChar == LEFT_BRACE_BRAILLECHAR && nextNextChar == PERIOD_BRAILLECHAR) && // \X2277 \X2279
+          !(prevChar == EQUALS_BRAILLECHAR && nextChar == COMMA_BRAILLECHAR)); // \X22DD
 }
-if (curChar == RIGHT_BRACE_BRAILLECHAR)
-  return !(nextChar == COMMA_BRAILLECHAR || nextChar == EQUALS_BRAILLECHAR ||
-           (nextChar == RIGHT_BRACE_BRAILLECHAR &&
-            nextNextChar == COMMA_BRAILLECHAR));
-return false;
-}  // isRightBrace
 
 DEFINE_CHECKER(isLeftAngleBracket)
-g_additionalStep = 1;
-return (curChar == LEFT_SQUARE_BRACKET_BRAILLECHAR &&
-        nextChar == PERIOD_BRAILLECHAR);
+  if (curChar == LEFT_SQUARE_BRACKET_BRAILLECHAR && // \x2329
+      nextChar == PERIOD_BRAILLECHAR) {
+    g_additionalStep = 1;
+    return true;
+  }
+  return false;
 }
 
 DEFINE_CHECKER(isRightAngleBracket)
-g_additionalStep = 1;
-return (curChar == UNDERLINE_BRAILLECHAR &&
-        nextChar == RIGHT_SQUARE_BRACKET_BRAILLECHAR);
+  if (curChar == UNDERLINE_BRAILLECHAR && // \x232A
+      nextChar == RIGHT_SQUARE_BRACKET_BRAILLECHAR) {
+    g_additionalStep = 1;
+    return true;
+  }
+  return false;
 }
 
 DEFINE_CHECKER(isClosingSimpleProjector)
-return (curChar == CLOSING_PROJECTOR_BRAILLEMARKER &&
-        prevChar != COMPLEX_PROJECTOR_BRAILLEMARKER &&
-        prevChar != DETAILED_PROJECTOR_BRAILLEMARKER &&
-        prevChar != VERTICALBAR_BRAILLECHAR &&
-        prevChar != LESSTHAN_BRAILLECHAR);
+  return (curChar == CLOSING_PROJECTOR_BRAILLECHAR &&
+          prevChar != COMPLEX_PROJECTOR_BRAILLECHAR &&
+          prevChar != DETAILED_PROJECTOR_BRAILLECHAR &&
+          prevChar != VERTICALBAR_BRAILLECHAR && // \x0397
+          prevChar != LESS_THAN_BRAILLECHAR); // \x03B7
 }
 
 DEFINE_CHECKER(isClosingComplexProjector)
-g_additionalStep = 1;
-return (curChar == COMPLEX_PROJECTOR_BRAILLEMARKER &&
-        nextChar == CLOSING_PROJECTOR_BRAILLEMARKER);
+  if (curChar == COMPLEX_PROJECTOR_BRAILLECHAR &&
+      nextChar == CLOSING_PROJECTOR_BRAILLECHAR) {
+    g_additionalStep = 1;
+    return true;
+  }
+  return false;
 }
 
 DEFINE_CHECKER(isClosingDetailedProjector)
-g_additionalStep = 1;
-return (curChar == DETAILED_PROJECTOR_BRAILLEMARKER &&
-        nextChar == CLOSING_PROJECTOR_BRAILLEMARKER);
+  if (curChar == DETAILED_PROJECTOR_BRAILLECHAR &&
+      nextChar == CLOSING_PROJECTOR_BRAILLECHAR) {
+    g_additionalStep = 1;
+    return true;
+  }
+  return false;
 }
 
 DEFINE_CHECKER(isSubscriptSimpleProjector)
-return (curChar == SUBSCRIPT_BRAILLEMARKER &&
-        prevChar != COMPLEX_PROJECTOR_BRAILLEMARKER &&
-        prevChar != DETAILED_PROJECTOR_BRAILLEMARKER &&
-        nextChar != PERIOD_BRAILLECHAR);
+  return (curChar == SUBSCRIPT_BRAILLECHAR &&
+          prevChar != COMPLEX_PROJECTOR_BRAILLECHAR &&
+          prevChar != DETAILED_PROJECTOR_BRAILLECHAR &&
+          nextChar != PERIOD_BRAILLECHAR); // \x2216
 }
 
 DEFINE_CHECKER(isSubscriptComplexProjector)
-g_additionalStep = 1;
-return (curChar == COMPLEX_PROJECTOR_BRAILLEMARKER &&
-        nextChar == SUBSCRIPT_BRAILLEMARKER);
+  if (curChar == COMPLEX_PROJECTOR_BRAILLECHAR &&
+      nextChar == SUBSCRIPT_BRAILLECHAR) {
+    g_additionalStep = 1;
+    return true;
+  }
+  return false;
 }
 
 DEFINE_CHECKER(isSubscriptDetailedProjector)
-g_additionalStep = 1;
-return (curChar == DETAILED_PROJECTOR_BRAILLEMARKER &&
-        nextChar == SUBSCRIPT_BRAILLEMARKER);
+  if (curChar == DETAILED_PROJECTOR_BRAILLECHAR &&
+      nextChar == SUBSCRIPT_BRAILLECHAR) {
+    g_additionalStep = 1;
+    return true;
+  }
+  return false;
 }
 
 DEFINE_CHECKER(isPowerSimpleProjector)
-if (curChar == POWER_BRAILLEMARKER && isAnySpace(index - 1) &&
-    nextChar == COMMA_BRAILLECHAR)
-  return false;
-return (curChar == POWER_BRAILLEMARKER &&
-        prevChar != COMPLEX_PROJECTOR_BRAILLEMARKER &&
-        prevChar != DETAILED_PROJECTOR_BRAILLEMARKER &&
-        nextChar != PERIOD_BRAILLECHAR);
+  if (curChar == POWER_BRAILLECHAR && isAnySpace(index - 1) &&
+      nextChar == COMMA_BRAILLECHAR) // \x2227
+    return false;
+  return (curChar == POWER_BRAILLECHAR &&
+          prevChar != COMPLEX_PROJECTOR_BRAILLECHAR &&
+          prevChar != DETAILED_PROJECTOR_BRAILLECHAR &&
+          nextChar != PERIOD_BRAILLECHAR && // \X2229
+          prevChar != SYMBOL_KEY_BRAILLECHAR); // \x22C2
 }
 
 DEFINE_CHECKER(isPowerComplexProjector)
-g_additionalStep = 1;
-return (curChar == COMPLEX_PROJECTOR_BRAILLEMARKER &&
-        nextChar == POWER_BRAILLEMARKER);
+  if (curChar == COMPLEX_PROJECTOR_BRAILLECHAR &&
+      nextChar == POWER_BRAILLECHAR) {
+    g_additionalStep = 1;
+    return true;
+  }
+  return false;
 }
 
 DEFINE_CHECKER(isPowerDetailedProjector)
-g_additionalStep = 1;
-return (curChar == DETAILED_PROJECTOR_BRAILLEMARKER &&
-        nextChar == POWER_BRAILLEMARKER);
+  if (curChar == DETAILED_PROJECTOR_BRAILLECHAR &&
+      nextChar == POWER_BRAILLECHAR) {
+    g_additionalStep = 1;
+    return true;
+  }
+  return false;
 }
 
 DEFINE_CHECKER(isSuperscriptSimpleProjector)
-return (curChar == SUPERSCRIPT_BRAILLEMARKER &&
-        prevChar != COMPLEX_PROJECTOR_BRAILLEMARKER &&
-        prevChar != DETAILED_PROJECTOR_BRAILLEMARKER);
+  return (curChar == SUPERSCRIPT_BRAILLECHAR &&
+          prevChar != COMPLEX_PROJECTOR_BRAILLECHAR &&
+          prevChar != DETAILED_PROJECTOR_BRAILLECHAR);
 }
 
 DEFINE_CHECKER(isSuperscriptComplexProjector)
-g_additionalStep = 1;
-return (curChar == COMPLEX_PROJECTOR_BRAILLEMARKER &&
-        nextChar == SUPERSCRIPT_BRAILLEMARKER);
+  if (curChar == COMPLEX_PROJECTOR_BRAILLECHAR &&
+      nextChar == SUPERSCRIPT_BRAILLECHAR) {
+    g_additionalStep = 1;
+    return true;
+  }
+  return false;
 }
 
 DEFINE_CHECKER(isSuperscriptDetailedProjector)
-g_additionalStep = 1;
-return (curChar == DETAILED_PROJECTOR_BRAILLEMARKER &&
-        nextChar == SUPERSCRIPT_BRAILLEMARKER);
+  if (curChar == DETAILED_PROJECTOR_BRAILLECHAR &&
+      nextChar == SUPERSCRIPT_BRAILLECHAR) {
+    g_additionalStep = 1;
+    return true;
+  }
+  return false;
 }
 
 DEFINE_CHECKER(isSqrtSimpleProjector)
-if (curChar == SQRT_BRAILLEMARKER && isAnySpace(index - 1) &&
-    nextChar == COMMA_BRAILLECHAR)
-  return false;
-return (curChar == SQRT_BRAILLEMARKER &&
-        prevChar != COMPLEX_PROJECTOR_BRAILLEMARKER &&
-        prevChar != DETAILED_PROJECTOR_BRAILLEMARKER &&
-        nextChar != PERIOD_BRAILLECHAR);
+  if (curChar == SQRT_BRAILLECHAR && isAnySpace(index - 1) &&
+      nextChar == COMMA_BRAILLECHAR) // \x2228
+    return false;
+  return (curChar == SQRT_BRAILLECHAR &&
+          prevChar != COMPLEX_PROJECTOR_BRAILLECHAR &&
+          prevChar != DETAILED_PROJECTOR_BRAILLECHAR &&
+          nextChar != PERIOD_BRAILLECHAR && // \X222A
+          prevChar != SYMBOL_KEY_BRAILLECHAR); // \x22C3
 }
 
 DEFINE_CHECKER(isSqrtComplexProjector)
-g_additionalStep = 1;
-return (curChar == COMPLEX_PROJECTOR_BRAILLEMARKER &&
-        nextChar == SQRT_BRAILLEMARKER);
+  if (curChar == COMPLEX_PROJECTOR_BRAILLECHAR &&
+      nextChar == SQRT_BRAILLECHAR) {
+    g_additionalStep = 1;
+    return true;
+  }
+  return false;
 }
 
 DEFINE_CHECKER(isSqrtDetailedProjector)
-g_additionalStep = 1;
-return (curChar == DETAILED_PROJECTOR_BRAILLEMARKER &&
-        nextChar == SQRT_BRAILLEMARKER);
+  if (curChar == DETAILED_PROJECTOR_BRAILLECHAR &&
+      nextChar == SQRT_BRAILLECHAR) {
+    g_additionalStep = 1;
+    return true;
+  }
+  return false;
+}
+
+bool isEndingFraction(int index);
+
+DEFINE_CHECKER(isUnderscriptSimpleProjector)
+  return (isEndingFraction(index) &&
+          prevChar != COMPLEX_PROJECTOR_BRAILLECHAR &&
+          prevChar != DETAILED_PROJECTOR_BRAILLECHAR);
+}
+
+DEFINE_CHECKER(isUnderscriptComplexProjector)
+  if (curChar == COMPLEX_PROJECTOR_BRAILLECHAR &&
+      nextChar == LESS_THAN_BRAILLECHAR) {
+    g_additionalStep = 1;
+    return true;
+  }
+  return false;
+}
+
+DEFINE_CHECKER(isUnderscriptDetailedProjector)
+  if (curChar == DETAILED_PROJECTOR_BRAILLECHAR &&
+      nextChar == LESS_THAN_BRAILLECHAR) {
+    g_additionalStep = 1;
+    return true;
+  }
+  return false;
+}
+
+DEFINE_CHECKER(isOverscriptSimpleProjector)
+  return (curChar == GREATER_THAN_BRAILLECHAR &&
+          prevChar != COMPLEX_PROJECTOR_BRAILLECHAR &&
+          prevChar != DETAILED_PROJECTOR_BRAILLECHAR &&
+          nextChar != RIGHT_PARENT_BRAILLECHAR && // \x00B0
+          nextChar != STAR_BRAILLECHAR && // \x02B9 \x02BA \x2032 \x2033 \x2034 \x2057
+          nextChar != LEFT_PARENT_BRAILLECHAR && // \x2020 \x2021
+          nextChar != PERIOD_BRAILLECHAR && // \dot \ddot
+          nextChar != SLASH_BRAILLECHAR && // \ast
+          nextChar != SEPARATOR_FRACTION_BRAILLECHAR); // mtd separator
+}
+
+DEFINE_CHECKER(isOverscriptComplexProjector)
+  if (curChar == COMPLEX_PROJECTOR_BRAILLECHAR &&
+      nextChar == GREATER_THAN_BRAILLECHAR) {
+    g_additionalStep = 1;
+    return true;
+  }
+  return false;
+}
+
+DEFINE_CHECKER(isOverscriptDetailedProjector)
+  if (curChar == DETAILED_PROJECTOR_BRAILLECHAR &&
+      nextChar == GREATER_THAN_BRAILLECHAR) {
+    g_additionalStep = 1;
+    return true;
+  }
+  return false;
 }
 
 DEFINE_CHECKER(isLogFunction)
-g_additionalStep = 1;
-return (curChar == TILDE_BRAILLECHAR && nextChar == L'l');
+  if (curChar == TILDE_BRAILLECHAR && nextChar == L'l') {
+    g_additionalStep = 1;
+    return true;
+  }
+  return false;
 }
 
 DEFINE_CHECKER(isSeparatorFraction)
-return (curChar == SEPARATOR_FRACTION_BRAILLEMARKER &&
-        prevChar != LESSTHAN_BRAILLECHAR);
+  return (curChar == SEPARATOR_FRACTION_BRAILLECHAR &&
+          prevChar != LESS_THAN_BRAILLECHAR && // \x2028 \x2424 mtr separator
+          prevChar != GREATER_THAN_BRAILLECHAR && // mtd separator
+          prevChar != TILDE_BRAILLECHAR && // ctg
+          !(prevChar == L'h' && prevPrevChar == TILDE_BRAILLECHAR) && // ctgh
+          !(prevChar == COMMA_BRAILLECHAR && prevPrevChar == TILDE_BRAILLECHAR) && // arcctg
+          !(prevChar == LEFT_PARENT_BRAILLECHAR && prevPrevChar == TILDE_BRAILLECHAR)); // arcctgh
 }
 
 DEFINE_CHECKER(isStartingFraction)
-return (curChar == SEMICOLON_BRAILLECHAR && !isAnySpace(index + 1) &&
-        !isPartOfDecimalLowNumber(index));
+  return (curChar == SEMICOLON_BRAILLECHAR && !isAnySpace(index + 1) &&
+          !isPartOfDecimalLowNumber(index));
 }
 
 DEFINE_CHECKER(isEndingFraction)
-return (curChar == LESSTHAN_BRAILLECHAR &&
-        !(nextChar >= L'a' && nextChar <= L'z') &&
-        nextChar != 241 &&
-        nextChar != 191 &&
-        nextChar != COLON_BRAILLECHAR);
-}  // isEndingFraction
+  return (curChar == LESS_THAN_BRAILLECHAR &&
+          !(nextChar >= L'a' && nextChar <= L'z') &&
+          nextChar != CLOSING_PROJECTOR_BRAILLECHAR && // \x03B7
+          nextChar != 241 && // \x03B8
+          nextChar != COLON_BRAILLECHAR && // \x03C2
+          nextChar != SYMBOL_KEY_BRAILLECHAR && // \x03C7
+          nextChar != SEPARATOR_FRACTION_BRAILLECHAR && // \x2028 \x2424 mtr separator
+          nextChar != LEFT_PARENTSESIS_BRAILLECHAR); // \x27A5
+}
+
+DEFINE_CHECKER(isTableRowSeparator)
+  if (curChar == LESS_THAN_BRAILLECHAR &&
+      nextChar == SEPARATOR_FRACTION_BRAILLECHAR) { // \x2028 \x2424
+    g_additionalStep = 1;
+    return true;
+  }
+  return false;
+}
+
+DEFINE_CHECKER(isTableCellSeparator)
+  if (curChar == GREATER_THAN_BRAILLECHAR &&
+      nextChar == SEPARATOR_FRACTION_BRAILLECHAR) {
+    g_additionalStep = 1;
+    return true;
+  }
+  return false;
+}
+
+DEFINE_CHECKER(isUnitSymbol)
+  return (curChar == UNIT_SYMBOL_BRAILLECHAR &&
+          nextChar != LEFT_PARENT_BRAILLECHAR && // \X221F
+          nextChar != LEFT_BRACE_BRAILLECHAR && // \X2220
+          nextChar != SLASH_BRAILLECHAR && // \x22BF \X25B3 \x25B8
+          nextChar != EQUALS_BRAILLECHAR && // \X25A1 \x25AA \X25AB
+          nextChar != PERCENT_BRAILLECHAR && // \X25AC
+          nextChar != RIGHT_PARENT_BRAILLECHAR && // \X25CB \x25CF
+          nextChar != STAR_BRAILLECHAR); // \x29B5 \x29B6
+}
 
 bool isPartOfDecimalLowNumber(int index) {
   if (index < 0 || index >= g_nTranslatingStrLen)
@@ -374,7 +549,8 @@ bool isPartOfDecimalLowNumber(int index) {
   int digitInd;
   while (isLowDigit(tempIndex, &digitInd))
     tempIndex--;
-
+  if (tempIndex < 0)
+    return false;
   if (isMinusSign(tempIndex))
     tempIndex--;
   else if (isLowDecimalPoint(tempIndex)) {
@@ -387,10 +563,14 @@ bool isPartOfDecimalLowNumber(int index) {
     if (isMinusSign(tempIndex))
       tempIndex--;
   }  // if (isLowDecimalPoint(tempIndex))
-
+  if (tempIndex < 0)
+    return false;
   if (isSubscriptSimpleProjector(tempIndex) ||
       isPowerSimpleProjector(tempIndex) ||
-      isSuperscriptSimpleProjector(tempIndex) || isSeparatorFraction(tempIndex))
+      isSuperscriptSimpleProjector(tempIndex) ||
+      isUnderscriptSimpleProjector(tempIndex) ||
+      isOverscriptSimpleProjector(tempIndex) ||
+      isSeparatorFraction(tempIndex))
     return true;
   else if (isUpDigit(tempIndex, &digitInd)) {
     do {
@@ -399,7 +579,6 @@ bool isPartOfDecimalLowNumber(int index) {
     if (isNumberSign(tempIndex))
       return true;
   }  // if (isUpDigit(tempIndex, &digitInd))
-
   return false;
 }  // isPartOfDecimalLowNumber
 
@@ -409,7 +588,7 @@ void addMathBrl(wchar_t chr) {
 
 void addTranslatingMathBrl(wchar_t chr) {
   addMathBrl(chr);
-  g_correctInd += g_additionalStep;
+  g_translatingIndex += g_additionalStep;
   g_additionalStep = 0;
 }
 
@@ -423,58 +602,63 @@ void insertMathBrl(int index, wchar_t chr) {
 }  // insertMathBrl
 
 wchar_t convertDigitInd(int digitInd) {
-  if (digitInd == 100)
+  if (digitInd == DECIMAL_COMMA_INDEX)
     return COMMA_BRAILLECHAR;
   return L'a' + digitInd;
 }  // convertDigitInd
 
 bool convertLowDecimalNumber() {
   int digitInd, digitInd2;
-  if (isLowDigit(g_correctInd + 1, &digitInd) ||
-      (isMinusSign(g_correctInd + 1) &&
-       isLowDigit(g_correctInd + 2, &digitInd2))) {
-    if (isMinusSign(g_correctInd + 1)) {
+  if (isLowDigit(g_translatingIndex + 1, &digitInd) ||
+      (isMinusSign(g_translatingIndex + 1) &&
+       isLowDigit(g_translatingIndex + 2, &digitInd2))) {
+    if (isMinusSign(g_translatingIndex + 1)) {
       addMathBrl(MINUS_BRAILLECHAR);
-      g_correctInd++;
+      g_translatingIndex++;
       digitInd = digitInd2;
     }
     addMathBrl(HASH_BRAILLECHAR);
     while (true) {
       addMathBrl(convertDigitInd(digitInd));
-      g_correctInd++;
-      if (!isDecimalLowDigit(g_correctInd + 1, &digitInd))
+      g_translatingIndex++;
+      if (!isDecimalLowDigit(g_translatingIndex + 1, &digitInd))
         break;
-      if (digitInd == 100 && !isLowDigit(g_correctInd + 2, &digitInd2))
+      if (digitInd == DECIMAL_COMMA_INDEX && !isLowDigit(g_translatingIndex + 2, &digitInd2))
         break;
     }  // while
     addMathBrl(SPACE_BRAILLECHAR);
-    if (isUnderlineSeparator(g_correctInd + 1) &&
-        isLowDigit(g_correctInd + 2, &digitInd))
-      g_correctInd++;
+    if (isUnderlineSeparator(g_translatingIndex + 1) &&
+        isLowDigit(g_translatingIndex + 2, &digitInd))
+      g_translatingIndex++;
     return true;
   }  // if (isLowDigit
   return false;
 }  // convertLowDecimalNumber
 
 enum ELevelType {
-  BASE_LEVEL,
-  SIMPLE_PROJECTOR,
-  COMPLEX_PROJECTOR,
-  DETAILED_PROJECTOR,
-  NOMINATOR_FRACTION,
-  DENOMINATOR_FRACTION
+  LTYPE_BASE,
+  LTYPE_SIMPLE_PROJECTOR,
+  LTYPE_NOMINATOR_PROJECTOR,
+  LTYPE_DENOMINATOR_PROJECTOR,
+  LTYPE_COMPLEX_PROJECTOR,
+  LTYPE_DETAILED_PROJECTOR,
+  LTYPE_DENOMINATOR_FRACTION,
 };
 
 enum EProjectorType {
-  NONE_PROJECTOR,
-  SUBSCRIPT_PROJECTOR,
-  POWER_PROJECTOR,
-  SUPERSCRIPT_PROJECTOR,
-  SQRT_PROJECTOR,
-  FRACTION_PROJECTOR
+  PTYPE_NONE_PROJECTOR,
+  PTYPE_FRACTION_PROJECTOR,
+  PTYPE_SUBSCRIPT_PROJECTOR,
+  PTYPE_POWER_PROJECTOR,
+  PTYPE_SUPERSCRIPT_PROJECTOR,
+  PTYPE_SQRT_PROJECTOR,
+  PTYPE_UNDERSCRIPT_PROJECTOR,
+  PTYPE_OVERSCRIPT_PROJECTOR,
+  PTYPE_UNIT_SYMBOL_PROJECTOR
 };
 
 const int MAX_FRACTIONS = 50;
+const int MAX_FENCEDS = 50;
 const int MAX_LEVELS = 100;
 
 struct LevelInfo {
@@ -482,95 +666,135 @@ struct LevelInfo {
   EProjectorType eProjectorType;
   int startingFracIndex[MAX_FRACTIONS];
   int startingFracCount;
-  int separatorFracIndex[MAX_FRACTIONS];
-  int separatorFracCount;
-  int nParentsesisCounter;
-  int nSquareBracketCounter;
-  int nBraceCounter;
-  int nAngleBracketCounter;
+  wchar_t openFencedMarker[MAX_FENCEDS];
+  int openFencedIndex[MAX_FENCEDS];
+  int openFencedCount;
 };
 
 static LevelInfo g_levelInfos[MAX_LEVELS];
 static int g_curLevel = 0;
 
-void resetLevelInfo(ELevelType eLevelType, EProjectorType eProjectorType) {
-  g_levelInfos[g_curLevel].eLevelType = eLevelType;
-  g_levelInfos[g_curLevel].eProjectorType = eProjectorType;
-  g_levelInfos[g_curLevel].startingFracCount = 0;
-  g_levelInfos[g_curLevel].separatorFracCount = 0;
-  g_levelInfos[g_curLevel].nParentsesisCounter = 0;
-  g_levelInfos[g_curLevel].nSquareBracketCounter = 0;
-  g_levelInfos[g_curLevel].nBraceCounter = 0;
-  g_levelInfos[g_curLevel].nAngleBracketCounter = 0;
+void resetLevelInfo(int level, ELevelType eLevelType, EProjectorType eProjectorType) {
+  g_levelInfos[level].eLevelType = eLevelType;
+  g_levelInfos[level].eProjectorType = eProjectorType;
+  g_levelInfos[level].startingFracCount = 0;
+  g_levelInfos[level].openFencedCount = 0;
 }  // resetLevelInfo
 
+void resetCurLevelInfo(ELevelType eLevelType, EProjectorType eProjectorType) {
+  resetLevelInfo(g_curLevel, eLevelType, eProjectorType);
+}
+
 void addNextLevel(ELevelType eLevelType, EProjectorType eProjectorType) {
-  if (g_curLevel < (MAX_LEVELS - 1))
-    g_curLevel++;
-  resetLevelInfo(eLevelType, eProjectorType);
+  if (g_curLevel >= (MAX_LEVELS - 1))
+    memoryError();
+  g_curLevel++;
+  resetCurLevelInfo(eLevelType, eProjectorType);
 }
 
 void backToPreviousLevel() {
-  if (g_curLevel > 0)
-    g_curLevel--;
+  if (g_curLevel == 0)
+    return;
+  g_curLevel--;
 }
 
 bool isBaseOnCurLevel() {
-  return (g_levelInfos[g_curLevel].eLevelType == BASE_LEVEL);
+  return (g_levelInfos[g_curLevel].eLevelType == LTYPE_BASE);
 }
 
 bool isSimpleProjectorOnCurLevel() {
-  return (g_levelInfos[g_curLevel].eLevelType == SIMPLE_PROJECTOR);
-}
-
-bool isComplexProjectorOnCurLevel() {
-  return (g_levelInfos[g_curLevel].eLevelType == COMPLEX_PROJECTOR);
-}
-
-bool isDetailedProjectorOnCurLevel() {
-  return (g_levelInfos[g_curLevel].eLevelType == DETAILED_PROJECTOR);
+  return (g_levelInfos[g_curLevel].eLevelType == LTYPE_SIMPLE_PROJECTOR);
 }
 
 bool isNominatorProjectorOnCurLevel() {
-  return (g_levelInfos[g_curLevel].eLevelType == NOMINATOR_FRACTION &&
-          g_levelInfos[g_curLevel].eProjectorType == FRACTION_PROJECTOR);
+  return (g_levelInfos[g_curLevel].eLevelType == LTYPE_NOMINATOR_PROJECTOR);
 }
 
 bool isDenominatorProjectorOnCurLevel() {
-  return (g_levelInfos[g_curLevel].eLevelType == DENOMINATOR_FRACTION &&
-          g_levelInfos[g_curLevel].eProjectorType == FRACTION_PROJECTOR);
+  return (g_levelInfos[g_curLevel].eLevelType == LTYPE_DENOMINATOR_PROJECTOR);
+}
+
+bool isDenominatorProjectorOnPrevLevel() {
+  if (g_curLevel > 0) {
+    return (g_levelInfos[g_curLevel-1].eLevelType ==
+        LTYPE_DENOMINATOR_PROJECTOR);
+  }
+  return false;
+}
+
+bool isComplexProjectorOnCurLevel() {
+  return (g_levelInfos[g_curLevel].eLevelType == LTYPE_COMPLEX_PROJECTOR);
+}
+
+bool isComplexProjectorOnPrevLevel() {
+  if (g_curLevel > 0) {
+    return (g_levelInfos[g_curLevel-1].eLevelType ==
+        LTYPE_COMPLEX_PROJECTOR);
+  }
+  return false;
+}
+
+bool isNoBreakableProjectorOnCurLevel() {
+  return (isSimpleProjectorOnCurLevel() ||
+          isNominatorProjectorOnCurLevel() ||
+          isDenominatorProjectorOnCurLevel() ||
+          isComplexProjectorOnCurLevel());
+}
+
+bool isDetailedProjectorOnCurLevel() {
+  return (g_levelInfos[g_curLevel].eLevelType == LTYPE_DETAILED_PROJECTOR);
+}
+
+bool isDenominatorFractionOnCurLevel() {
+  return (g_levelInfos[g_curLevel].eLevelType == LTYPE_DENOMINATOR_FRACTION);
+}
+
+bool isDenominatorFractionOnPrevLevel() {
+  if (g_curLevel > 0) {
+    return (g_levelInfos[g_curLevel-1].eLevelType ==
+        LTYPE_DENOMINATOR_FRACTION);
+  }
+  return false;
+}
+
+bool isDenominatorFractionOnPrevPrevLevel() {
+  if (g_curLevel > 1) {
+    return (g_levelInfos[g_curLevel-2].eLevelType ==
+        LTYPE_DENOMINATOR_FRACTION);
+  }
+  return false;
 }
 
 bool isSubscriptProjectorOnCurLevel() {
-  return (g_levelInfos[g_curLevel].eProjectorType == SUBSCRIPT_PROJECTOR);
-}
-
-bool wasSubscriptProjectorOnNextLevel() {
-  return (g_levelInfos[g_curLevel + 1].eProjectorType == SUBSCRIPT_PROJECTOR);
+  return (g_levelInfos[g_curLevel].eProjectorType == PTYPE_SUBSCRIPT_PROJECTOR);
 }
 
 bool isPowerProjectorOnCurLevel() {
-  return (g_levelInfos[g_curLevel].eProjectorType == POWER_PROJECTOR);
-}
-
-bool wasPowerProjectorOnNextLevel() {
-  return (g_levelInfos[g_curLevel + 1].eProjectorType == POWER_PROJECTOR);
+  return (g_levelInfos[g_curLevel].eProjectorType == PTYPE_POWER_PROJECTOR);
 }
 
 bool isSuperscriptProjectorOnCurLevel() {
-  return (g_levelInfos[g_curLevel].eProjectorType == SUPERSCRIPT_PROJECTOR);
+  return (g_levelInfos[g_curLevel].eProjectorType == PTYPE_SUPERSCRIPT_PROJECTOR);
 }
 
 bool wasSuperscriptProjectorOnNextLevel() {
-  return (g_levelInfos[g_curLevel + 1].eProjectorType == SUPERSCRIPT_PROJECTOR);
+  return (g_levelInfos[g_curLevel + 1].eProjectorType == PTYPE_SUPERSCRIPT_PROJECTOR);
 }
 
 bool isSqrtProjectorOnCurLevel() {
-  return (g_levelInfos[g_curLevel].eProjectorType == SQRT_PROJECTOR);
+  return (g_levelInfos[g_curLevel].eProjectorType == PTYPE_SQRT_PROJECTOR);
 }
 
-bool wasSqrtProjectorOnNextLevel() {
-  return (g_levelInfos[g_curLevel + 1].eProjectorType == SQRT_PROJECTOR);
+bool isUnderscriptProjectorOnCurLevel() {
+  return (g_levelInfos[g_curLevel].eProjectorType == PTYPE_UNDERSCRIPT_PROJECTOR);
+}
+
+bool isOverscriptProjectorOnCurLevel() {
+  return (g_levelInfos[g_curLevel].eProjectorType == PTYPE_OVERSCRIPT_PROJECTOR);
+}
+
+bool isUnitSymbolProjectorOnCurLevel() {
+  return (g_levelInfos[g_curLevel].eProjectorType == PTYPE_UNIT_SYMBOL_PROJECTOR);
 }
 
 bool isAnyStartingFractionOnCurLevel() {
@@ -583,73 +807,59 @@ void markStartingFractionOnCurLevel() {
       g_nMathBrlLen;
 }
 
-void markSeparatorFractionOnCurLevel() {
-  g_levelInfos[g_curLevel]
-      .separatorFracIndex[g_levelInfos[g_curLevel].separatorFracCount++] =
-      g_nMathBrlLen;
-}
-
-bool replaceStartingAndSeparatorFractionOnCurLevel() {
-  if (g_levelInfos[g_curLevel].startingFracCount > 0 &&
-      g_levelInfos[g_curLevel].separatorFracCount > 0) {
+bool replaceStartingFractionOnCurLevel() {
+  if (g_levelInfos[g_curLevel].startingFracCount > 0) {
     g_pwcsMathBrl[g_levelInfos[g_curLevel].startingFracIndex
                       [--g_levelInfos[g_curLevel].startingFracCount]] =
         STARTING_FRACTION_MARKER;
-    g_pwcsMathBrl[g_levelInfos[g_curLevel].separatorFracIndex
-                      [--g_levelInfos[g_curLevel].separatorFracCount]] =
-        SEPARATOR_FRACTION_MARKER;
     return true;
   }
   return false;
-}  // replaceStartingAndSeparatorFractionOnCurLevel
+}  // replaceStartingFractionOnCurLevel
 
-void incParentsesisCounterOnCurLevel() {
-  g_levelInfos[g_curLevel].nParentsesisCounter++;
+bool isOpenFencedOnLevel(int level, wchar_t openFencedMarker) {
+  for (int i = g_levelInfos[level].openFencedCount-1; i >= 0; i++)
+    if (g_levelInfos[level].openFencedMarker[i] == openFencedMarker)
+      return true;
+  return false;
 }
 
-void decParentsesisCounterOnCurLevel() {
-  g_levelInfos[g_curLevel].nParentsesisCounter--;
+bool isUnopenedCloseFencedOnCurLevel(int index) {
+  return ((isRightParentsesis(index) &&
+           !isOpenFencedOnLevel(g_curLevel, LEFT_PARENTSESIS_MARKER)) ||
+          (isRightSquareBracket(index) &&
+           !isOpenFencedOnLevel(g_curLevel, LEFT_SQUARE_BRACKET_MARKER)) ||
+          (isRightBrace(index) &&
+           !isOpenFencedOnLevel(g_curLevel, LEFT_BRACE_MARKER)) ||
+          (isRightAngleBracket(index) &&
+           !isOpenFencedOnLevel(g_curLevel, LEFT_ANGLE_BRACKET_MARKER)));
 }
 
-bool isZeroParentsesisCounterOnCurLevel() {
-  return (g_levelInfos[g_curLevel].nParentsesisCounter == 0);
+void markOpenFencedOnCurLevel(wchar_t openFencedMarker) {
+  g_levelInfos[g_curLevel]
+      .openFencedMarker[g_levelInfos[g_curLevel].openFencedCount] =
+      openFencedMarker;
+  g_levelInfos[g_curLevel]
+      .openFencedIndex[g_levelInfos[g_curLevel].openFencedCount++] =
+      g_nMathBrlLen;
 }
 
-void incSquareBracketCounterOnCurLevel() {
-  g_levelInfos[g_curLevel].nSquareBracketCounter++;
-}
+bool addFencedMarkersOnCurLevel(wchar_t openFencedMarker,
+                             wchar_t closeFencedMarker) {
+  for (int i = g_levelInfos[g_curLevel].openFencedCount-1; i >= 0; i++)
+    if (g_levelInfos[g_curLevel].openFencedMarker[i] == openFencedMarker) {
+      int index = g_levelInfos[g_curLevel].openFencedIndex[i];
+      insertMathBrl(index+1, FIRST_ARGUMENT_SEPARATOR_FENCED_MARKER);
+      insertMathBrl(index+2, closeFencedMarker);
+      insertMathBrl(index+3, SECOND_ARGUMENT_SEPARATOR_FENCED_MARKER);
+      insertMathBrl(index, STARTING_FENCED_MARKER);
+      g_levelInfos[g_curLevel].openFencedCount = i;
+      addTranslatingMathBrl(ENDING_FENCED_MARKER);
+      return true;
+    }
+  return false;
+}  // replaceFencedOnCurLevel
 
-void decSquareBracketCounterOnCurLevel() {
-  g_levelInfos[g_curLevel].nSquareBracketCounter--;
-}
-
-bool isZeroSquareBracketCounterOnCurLevel() {
-  return (g_levelInfos[g_curLevel].nSquareBracketCounter == 0);
-}
-
-void incBraceCounterOnCurLevel() {
-  g_levelInfos[g_curLevel].nBraceCounter++;
-}
-
-void decBraceCounterOnCurLevel() {
-  g_levelInfos[g_curLevel].nBraceCounter--;
-}
-
-bool isZeroBraceCounterOnCurLevel() {
-  return (g_levelInfos[g_curLevel].nBraceCounter == 0);
-}
-
-void incAngleBracketCounterOnCurLevel() {
-  g_levelInfos[g_curLevel].nAngleBracketCounter++;
-}
-
-void decAngleBracketCounterOnCurLevel() {
-  g_levelInfos[g_curLevel].nAngleBracketCounter--;
-}
-
-bool isZeroAngleBracketCounterOnCurLevel() {
-  return (g_levelInfos[g_curLevel].nAngleBracketCounter == 0);
-}
 
 wchar_t* correctBeforeBackTranslation(wchar_t* pwcsTranslatingStr,
                                       int nTranslatingStrLen) {
@@ -658,8 +868,9 @@ wchar_t* correctBeforeBackTranslation(wchar_t* pwcsTranslatingStr,
   g_pwcsMathBrl = &widestring_buffer[widestring_buf_len];
   g_nMathBrlLen = 0;
 
+  for (int level = 0; level < MAX_LEVELS; level++)
+    resetLevelInfo(level, LTYPE_BASE, PTYPE_NONE_PROJECTOR);
   g_curLevel = 0;
-  resetLevelInfo(BASE_LEVEL, NONE_PROJECTOR);
 
   int startSimplifiedFracIndex[200];
   int startSimplifiedFracChars[200];
@@ -667,304 +878,316 @@ wchar_t* correctBeforeBackTranslation(wchar_t* pwcsTranslatingStr,
   int startSimplifiedFracIt = 0;
 
   int nLastSimpleProjectorMathBrlIndex = -1;
-  int nLastSimpleProjectorClosedCorrectInd = -1;
+  int nLastSimpleProjectorClosedTranIndex = -1;
   int nLastComplexProjectorMathBrlIndex = -1;
-  int nLastComplexProjectorClosedCorrectInd = -1;
+  int nLastComplexProjectorClosedTranIndex = -1;
   int nLastDetailedProjectorMathBrlIndex = -1;
-  int nLastDetailedProjectorClosedCorrectInd = -1;
+  int nLastDetailedProjectorClosedTranIndex = -1;
   int digitInd;
 
-  for (g_correctInd = 1; g_correctInd < nTranslatingStrLen; g_correctInd++) {
-    if (isSeparatorFraction(g_correctInd) && !isAnySpace(g_correctInd - 1)) {
-      printf("separator: %d\n", g_correctInd);
-      int tempIndex = g_correctInd - 1;
+  int nLeftBraceTableIndex = -1;
+  bool bStartedTable = false;
+
+  for (g_translatingIndex = 1; g_translatingIndex < nTranslatingStrLen; g_translatingIndex++) {
+    if (isSeparatorFraction(g_translatingIndex) && !isAnySpace(g_translatingIndex - 1)) {
+      printf("separator fraction: %d\n", g_translatingIndex);
+      int fencedCounter = 0;
+      int tempIndex = g_translatingIndex - 1;
       while (tempIndex >= 0) {
-        if (isAnySpace(tempIndex) || isSubscriptComplexProjector(tempIndex) ||
+        if (isAnySpace(tempIndex) ||
+            isClosingComplexProjector(g_translatingIndex) ||
+            isSubscriptComplexProjector(tempIndex) ||
             isPowerComplexProjector(tempIndex) ||
             isSuperscriptComplexProjector(tempIndex) ||
             isSqrtComplexProjector(tempIndex) ||
+            isUnderscriptComplexProjector(tempIndex) ||
+            isOverscriptComplexProjector(tempIndex) ||
+            isClosingDetailedProjector(g_translatingIndex) ||
             isSubscriptDetailedProjector(tempIndex) ||
             isPowerDetailedProjector(tempIndex) ||
             isSuperscriptDetailedProjector(tempIndex) ||
             isSqrtDetailedProjector(tempIndex) ||
-            isSeparatorFraction(tempIndex)) {
+            isUnderscriptDetailedProjector(tempIndex) ||
+            isOverscriptDetailedProjector(tempIndex) ||
+            isSeparatorFraction(tempIndex) ||
+            isTableRowSeparator(tempIndex) ||
+            isTableCellSeparator(tempIndex) ||
+            (fencedCounter == 0&&
+             isLeftParentsesis(tempIndex) ||
+             isLeftSquareBracket(tempIndex) ||
+             isLeftBrace(tempIndex) ||
+             isLeftAngleBracket(tempIndex))) {
           tempIndex += g_additionalStep;
           startSimplifiedFracIndex[startSimplifiedFracCount] = tempIndex + 1;
           startSimplifiedFracChars[startSimplifiedFracCount++] = 0;
-          printf("starting: %d, %d\n", g_correctInd, tempIndex + 1);
+          printf("starting: %d\n", (tempIndex + 1));
           break;
         } else if (isStartingFraction(tempIndex)) {
           startSimplifiedFracIndex[startSimplifiedFracCount] = tempIndex;
           startSimplifiedFracChars[startSimplifiedFracCount++] =
               g_additionalStep + 1;
-          printf("starting2: %d, %d\n", g_correctInd, tempIndex);
+          printf("starting fraction: %d\n", tempIndex);
           break;
+        } else if (isLeftParentsesis(tempIndex) ||
+                   isLeftSquareBracket(tempIndex) ||
+                   isLeftBrace(tempIndex) ||
+                   isLeftAngleBracket(tempIndex)) {
+          fencedCounter++;
+printf("incrementing fenced - index: %d, counter: %d\n", tempIndex, fencedCounter);
+        } else if (isRightParentsesis(tempIndex) ||
+                   isRightSquareBracket(tempIndex) ||
+                   isRightBrace(tempIndex) ||
+                   isRightAngleBracket(tempIndex)) {
+          fencedCounter--;
+printf("decrementing fenced - index: %d, counter: %d\n", tempIndex, fencedCounter);
         }
         tempIndex--;
       }  // while
 
-      if (tempIndex == -1) {
-        startSimplifiedFracIndex[startSimplifiedFracCount] = tempIndex + 1;
+      if (tempIndex < 0) {
+        startSimplifiedFracIndex[startSimplifiedFracCount] = 0;
         startSimplifiedFracChars[startSimplifiedFracCount++] = 0;
-      }  // if (tempIndex == -1)
-    }  // if (isSeparatorFraction(g_correctInd) && !isAnySpace(g_correctInd-1))
-  }    // for (g_correctInd = 0; g_correctInd < nTranslatingStrLen;
-       // g_correctInd++) {
+      }  // if (tempIndex < 0)
+    }  // if (isSeparatorFraction(g_translatingIndex) && !isAnySpace(g_translatingIndex-1))
+  }    // for (g_translatingIndex = 0; g_translatingIndex < nTranslatingStrLen;
+       // g_translatingIndex++)
 
-  for (g_correctInd = 0; g_correctInd < nTranslatingStrLen; g_correctInd++) {
+  for (g_translatingIndex = 0; g_translatingIndex < nTranslatingStrLen; g_translatingIndex++) {
     if (isSimpleProjectorOnCurLevel() &&
-        (isAnySpace(g_correctInd) || isClosingComplexProjector(g_correctInd) ||
-         isClosingDetailedProjector(g_correctInd) ||
-         isSubscriptSimpleProjector(g_correctInd) ||
-         isPowerSimpleProjector(g_correctInd) ||
-         isSuperscriptSimpleProjector(g_correctInd) ||
-         isSqrtSimpleProjector(g_correctInd) ||
-         isSubscriptComplexProjector(g_correctInd) ||
-         isPowerComplexProjector(g_correctInd) ||
-         isSuperscriptComplexProjector(g_correctInd) ||
-         isSqrtComplexProjector(g_correctInd) ||
-         isSubscriptDetailedProjector(g_correctInd) ||
-         isPowerDetailedProjector(g_correctInd) ||
-         isSuperscriptDetailedProjector(g_correctInd) ||
-         isSqrtDetailedProjector(g_correctInd) || isLogFunction(g_correctInd) ||
-         isSeparatorFraction(g_correctInd))) {
-      nLastSimpleProjectorClosedCorrectInd = g_correctInd;
-      addMathBrl(SIMPLEPROJ_CLOSING_MARKER);
+        (isAnySpace(g_translatingIndex) ||
+         isSubscriptSimpleProjector(g_translatingIndex) ||
+         isPowerSimpleProjector(g_translatingIndex) ||
+         isSuperscriptSimpleProjector(g_translatingIndex) ||
+         isSqrtSimpleProjector(g_translatingIndex) ||
+         (isUnderscriptSimpleProjector(g_translatingIndex) &&
+          !(isDenominatorProjectorOnPrevLevel() ||
+            isDenominatorFractionOnPrevLevel() ||
+            (isComplexProjectorOnPrevLevel() &&
+             isDenominatorFractionOnPrevPrevLevel()))) ||
+         isOverscriptSimpleProjector(g_translatingIndex) ||
+         isClosingComplexProjector(g_translatingIndex) ||
+         isSubscriptComplexProjector(g_translatingIndex) ||
+         isPowerComplexProjector(g_translatingIndex) ||
+         isSuperscriptComplexProjector(g_translatingIndex) ||
+         isSqrtComplexProjector(g_translatingIndex) ||
+         isUnderscriptComplexProjector(g_translatingIndex) ||
+         isOverscriptComplexProjector(g_translatingIndex) ||
+         isClosingDetailedProjector(g_translatingIndex) ||
+         isSubscriptDetailedProjector(g_translatingIndex) ||
+         isPowerDetailedProjector(g_translatingIndex) ||
+         isSuperscriptDetailedProjector(g_translatingIndex) ||
+         isSqrtDetailedProjector(g_translatingIndex) || isLogFunction(g_translatingIndex) ||
+         isUnderscriptDetailedProjector(g_translatingIndex) ||
+         isOverscriptDetailedProjector(g_translatingIndex) ||
+         isUnopenedCloseFencedOnCurLevel(g_translatingIndex) ||
+         isSeparatorFraction(g_translatingIndex) ||
+         (isEndingFraction(g_translatingIndex) &&
+          (isDenominatorProjectorOnPrevLevel() ||
+           isDenominatorFractionOnPrevLevel() ||
+           (isComplexProjectorOnPrevLevel() &&
+            isDenominatorFractionOnPrevPrevLevel()))))) {
+      nLastSimpleProjectorClosedTranIndex = g_translatingIndex;
       backToPreviousLevel();
+      addMathBrl(SIMPLEPROJ_CLOSING_MARKER);
     }  // if (isSimpleProjectorOnCurLevel() &&
 
     if (isDenominatorProjectorOnCurLevel() &&
-        (isAnySpace(g_correctInd) || isClosingComplexProjector(g_correctInd) ||
-         isClosingDetailedProjector(g_correctInd) ||
-         isSubscriptComplexProjector(g_correctInd) ||
-         isPowerComplexProjector(g_correctInd) ||
-         isSuperscriptComplexProjector(g_correctInd) ||
-         isSqrtComplexProjector(g_correctInd) ||
-         isSubscriptDetailedProjector(g_correctInd) ||
-         isPowerDetailedProjector(g_correctInd) ||
-         isSuperscriptDetailedProjector(g_correctInd) ||
-         isSqrtDetailedProjector(g_correctInd) ||
-         isLogFunction(g_correctInd))) {
-      addMathBrl(ENDING_FRACTION_MARKER);
+        (isAnySpace(g_translatingIndex) ||
+         isClosingComplexProjector(g_translatingIndex) ||
+         isSubscriptComplexProjector(g_translatingIndex) ||
+         isPowerComplexProjector(g_translatingIndex) ||
+         isSuperscriptComplexProjector(g_translatingIndex) ||
+         isSqrtComplexProjector(g_translatingIndex) ||
+         isUnderscriptComplexProjector(g_translatingIndex) ||
+         isOverscriptComplexProjector(g_translatingIndex) ||
+         isClosingDetailedProjector(g_translatingIndex) ||
+         isSubscriptDetailedProjector(g_translatingIndex) ||
+         isPowerDetailedProjector(g_translatingIndex) ||
+         isSuperscriptDetailedProjector(g_translatingIndex) ||
+         isSqrtDetailedProjector(g_translatingIndex) ||
+         isUnderscriptDetailedProjector(g_translatingIndex) ||
+         isOverscriptDetailedProjector(g_translatingIndex) ||
+         isUnopenedCloseFencedOnCurLevel(g_translatingIndex))) {
+//@         isLogFunction(g_translatingIndex))) {
       backToPreviousLevel();
+      addMathBrl(ENDING_FRACTION_MARKER);
     }  // if (isDenominatorProjectorOnCurLevel() &&
 
     if (isComplexProjectorOnCurLevel() &&
-        (isAnySpace(g_correctInd) || isClosingDetailedProjector(g_correctInd) ||
-         isSubscriptComplexProjector(g_correctInd) ||
-         isPowerComplexProjector(g_correctInd) ||
-         isSuperscriptComplexProjector(g_correctInd) ||
-         isSqrtComplexProjector(g_correctInd) ||
-         isSubscriptDetailedProjector(g_correctInd) ||
-         isPowerDetailedProjector(g_correctInd) ||
-         isSuperscriptDetailedProjector(g_correctInd) ||
-         isSqrtDetailedProjector(g_correctInd) || isLogFunction(g_correctInd)
-         // e) przez oznaczenia końca ułamka, jeśli znak kreski ułamkowej jest
-         // przed znakiem projektora.
-         )) {
-      nLastComplexProjectorClosedCorrectInd = g_correctInd;
-      addMathBrl(COMPLEXPROJ_CLOSING_MARKER);
+        (isAnySpace(g_translatingIndex) ||
+         isSubscriptComplexProjector(g_translatingIndex) ||
+         isPowerComplexProjector(g_translatingIndex) ||
+         isSuperscriptComplexProjector(g_translatingIndex) ||
+         isSqrtComplexProjector(g_translatingIndex) ||
+         isUnderscriptComplexProjector(g_translatingIndex) ||
+         isOverscriptComplexProjector(g_translatingIndex) ||
+         isClosingDetailedProjector(g_translatingIndex) ||
+         isSubscriptDetailedProjector(g_translatingIndex) ||
+         isPowerDetailedProjector(g_translatingIndex) ||
+         isSuperscriptDetailedProjector(g_translatingIndex) ||
+         isSqrtDetailedProjector(g_translatingIndex) ||
+         isUnderscriptDetailedProjector(g_translatingIndex) ||
+         isOverscriptDetailedProjector(g_translatingIndex) ||
+         isUnopenedCloseFencedOnCurLevel(g_translatingIndex) ||
+         (isEndingFraction(g_translatingIndex) &&
+          isDenominatorFractionOnPrevLevel()) ||
+         isLogFunction(g_translatingIndex))) {
+      nLastComplexProjectorClosedTranIndex = g_translatingIndex;
       backToPreviousLevel();
+      addMathBrl(COMPLEXPROJ_CLOSING_MARKER);
     }  // if (isComplexProjectorOnCurLevel() &&
 
-    if (isDetailedProjectorOnCurLevel() && isSuperscriptProjectorOnCurLevel() &&
-        isSqrtDetailedProjector(g_correctInd)) {
-      nLastDetailedProjectorClosedCorrectInd = g_correctInd;
-      addMathBrl(DETAILEDPROJ_CLOSING_MARKER);
+    if (isDetailedProjectorOnCurLevel() &&
+        isSuperscriptProjectorOnCurLevel() &&
+        isSqrtDetailedProjector(g_translatingIndex)) {
+      nLastDetailedProjectorClosedTranIndex = g_translatingIndex;
       backToPreviousLevel();
+      addMathBrl(DETAILEDPROJ_CLOSING_MARKER);
     }  // if (isDetailedProjectorOnCurLevel() &&
-       // isSuperscriptProjectorOnCurLevel() &&
 
     if (startSimplifiedFracIt < startSimplifiedFracCount &&
-        g_correctInd == startSimplifiedFracIndex[startSimplifiedFracIt]) {
-      addNextLevel(NOMINATOR_FRACTION, FRACTION_PROJECTOR);
+        g_translatingIndex == startSimplifiedFracIndex[startSimplifiedFracIt]) {
+      addNextLevel(LTYPE_NOMINATOR_PROJECTOR, PTYPE_FRACTION_PROJECTOR);
       if (startSimplifiedFracChars[startSimplifiedFracIt] == 0)
         addMathBrl(STARTING_SIMPLIFIED_FRACTION_MARKER);
       else
         addMathBrl(STARTING_FRACTION_MARKER);
-      g_correctInd += startSimplifiedFracChars[startSimplifiedFracIt];
+      g_translatingIndex += startSimplifiedFracChars[startSimplifiedFracIt];
       startSimplifiedFracIt++;
     }  // if
 
-    if (isLeftParentsesis(g_correctInd)) {
-      incParentsesisCounterOnCurLevel();
+    if (isLeftParentsesis(g_translatingIndex)) {
+      markOpenFencedOnCurLevel(LEFT_PARENTSESIS_MARKER);
       addTranslatingMathBrl(LEFT_PARENTSESIS_MARKER);
-    } else if (isRightParentsesis(g_correctInd)) {
-      if (isSimpleProjectorOnCurLevel() &&
-          isZeroParentsesisCounterOnCurLevel()) {
-        nLastSimpleProjectorClosedCorrectInd = g_correctInd;
-        addMathBrl(SIMPLEPROJ_CLOSING_MARKER);
-        backToPreviousLevel();
-      }  // if
-      if (isComplexProjectorOnCurLevel() &&
-          isZeroParentsesisCounterOnCurLevel()) {
-        nLastComplexProjectorClosedCorrectInd = g_correctInd;
-        addMathBrl(COMPLEXPROJ_CLOSING_MARKER);
-        backToPreviousLevel();
-      }  // if
-      decParentsesisCounterOnCurLevel();
-      addTranslatingMathBrl(RIGHT_PARENTSESIS_MARKER);
-    }  // if (isRightParentsesis(g_correctInd))
-    else if (isLeftSquareBracket(g_correctInd)) {
-      incSquareBracketCounterOnCurLevel();
+    } else if (isRightParentsesis(g_translatingIndex)) {
+      if (!addFencedMarkersOnCurLevel(LEFT_PARENTSESIS_MARKER,
+                                      RIGHT_PARENTSESIS_MARKER))
+        addTranslatingMathBrl(RIGHT_PARENTSESIS_MARKER);
+    }  // if (isRightParentsesis(g_translatingIndex))
+    else if (isLeftSquareBracket(g_translatingIndex)) {
+      markOpenFencedOnCurLevel(LEFT_SQUARE_BRACKET_MARKER);
       addTranslatingMathBrl(LEFT_SQUARE_BRACKET_MARKER);
-    } else if (isRightSquareBracket(g_correctInd)) {
-      if (isSimpleProjectorOnCurLevel() &&
-          isZeroSquareBracketCounterOnCurLevel()) {
-        nLastSimpleProjectorClosedCorrectInd = g_correctInd;
-        addMathBrl(SIMPLEPROJ_CLOSING_MARKER);
-        backToPreviousLevel();
-      }  // if
-      if (isComplexProjectorOnCurLevel() &&
-          isZeroSquareBracketCounterOnCurLevel()) {
-        nLastComplexProjectorClosedCorrectInd = g_correctInd;
-        addMathBrl(COMPLEXPROJ_CLOSING_MARKER);
-        backToPreviousLevel();
-      }  // if
-      decSquareBracketCounterOnCurLevel();
-      addTranslatingMathBrl(RIGHT_SQUARE_BRACKET_MARKER);
-    }  // if (isRightSquareBracket(g_correctInd))
-    else if (isLeftBrace(g_correctInd)) {
-      incBraceCounterOnCurLevel();
+    } else if (isRightSquareBracket(g_translatingIndex)) {
+      if (!addFencedMarkersOnCurLevel(LEFT_SQUARE_BRACKET_MARKER,
+                                      RIGHT_SQUARE_BRACKET_MARKER))
+        addTranslatingMathBrl(RIGHT_SQUARE_BRACKET_MARKER);
+    }  // if (isRightSquareBracket(g_translatingIndex))
+    else if (isLeftBrace(g_translatingIndex)) {
+      if (isLeftBraceTable(g_translatingIndex))
+        nLeftBraceTableIndex = g_nMathBrlLen;
+      markOpenFencedOnCurLevel(LEFT_BRACE_MARKER);
       addTranslatingMathBrl(LEFT_BRACE_MARKER);
-    } else if (isRightBrace(g_correctInd)) {
-      if (isSimpleProjectorOnCurLevel() && isZeroBraceCounterOnCurLevel()) {
-        nLastSimpleProjectorClosedCorrectInd = g_correctInd;
-        addMathBrl(SIMPLEPROJ_CLOSING_MARKER);
-        backToPreviousLevel();
-      }  // if
-      if (isComplexProjectorOnCurLevel() && isZeroBraceCounterOnCurLevel()) {
-        nLastComplexProjectorClosedCorrectInd = g_correctInd;
-        addMathBrl(COMPLEXPROJ_CLOSING_MARKER);
-        backToPreviousLevel();
-      }  // if
-      decBraceCounterOnCurLevel();
-      if (isZeroBraceCounterOnCurLevel())
-        addTranslatingMathBrl(RIGHT_BRACE_MARKER);
-    }  // if (isRightBrace(g_correctInd))
-    else if (isLeftAngleBracket(g_correctInd)) {
-      incAngleBracketCounterOnCurLevel();
+    } else if (isRightBrace(g_translatingIndex)) {
+      addTranslatingMathBrl(RIGHT_BRACE_MARKER);
+//@      addFencedMarkersOnCurLevel(LEFT_BRACE_MARKER,
+//@                                 RIGHT_BRACE_MARKER));
+    }  // if (isRightBrace(g_translatingIndex))
+    else if (isLeftAngleBracket(g_translatingIndex)) {
+      markOpenFencedOnCurLevel(LEFT_ANGLE_BRACKET_MARKER);
       addTranslatingMathBrl(LEFT_ANGLE_BRACKET_MARKER);
-    } else if (isRightAngleBracket(g_correctInd)) {
-      if (isSimpleProjectorOnCurLevel() &&
-          isZeroAngleBracketCounterOnCurLevel()) {
-        nLastSimpleProjectorClosedCorrectInd = g_correctInd;
-        addMathBrl(SIMPLEPROJ_CLOSING_MARKER);
-        backToPreviousLevel();
-      }  // if
-      if (isComplexProjectorOnCurLevel() &&
-          isZeroAngleBracketCounterOnCurLevel()) {
-        nLastComplexProjectorClosedCorrectInd = g_correctInd;
-        addMathBrl(COMPLEXPROJ_CLOSING_MARKER);
-        backToPreviousLevel();
-      }  // if
-      decAngleBracketCounterOnCurLevel();
-      addTranslatingMathBrl(RIGHT_ANGLE_BRACKET_MARKER);
-    }  // if (isRightAngleBracket(g_correctInd))
+    } else if (isRightAngleBracket(g_translatingIndex)) {
+      if (!addFencedMarkersOnCurLevel(LEFT_ANGLE_BRACKET_MARKER,
+                                      RIGHT_ANGLE_BRACKET_MARKER))
+        addTranslatingMathBrl(RIGHT_ANGLE_BRACKET_MARKER);
+    }  // if (isRightAngleBracket(g_translatingIndex))
     else
-
-        if ((isSimpleProjectorOnCurLevel() || isComplexProjectorOnCurLevel() ||
-             isNominatorProjectorOnCurLevel() ||
-             isDenominatorProjectorOnCurLevel()) &&
-            isSpaceProjectorMarker(g_correctInd)) {
-      addTranslatingMathBrl(NOBREAK_SPACE_CHAR);
+        if (isNoBreakableProjectorJoiner(g_translatingIndex) &&
+            isNoBreakableProjectorOnCurLevel()) {
+      addTranslatingMathBrl(SPACE_BRAILLECHAR);
     } else if (isSimpleProjectorOnCurLevel() &&
-               isClosingSimpleProjector(g_correctInd)) {
+               isClosingSimpleProjector(g_translatingIndex)) {
+      nLastSimpleProjectorClosedTranIndex = g_translatingIndex + 1;
       addTranslatingMathBrl(SIMPLEPROJ_CLOSING_MARKER);
-      nLastSimpleProjectorClosedCorrectInd = g_correctInd + 1;
       backToPreviousLevel();
     }  // if (isSimpleProjectorOnCurLevel() &&
-       // isClosingSimpleProjector(g_correctInd))
     else if (isComplexProjectorOnCurLevel() &&
-             isClosingComplexProjector(g_correctInd)) {
+             isClosingComplexProjector(g_translatingIndex)) {
+      nLastComplexProjectorClosedTranIndex = g_translatingIndex + 1;
       addTranslatingMathBrl(COMPLEXPROJ_CLOSING_MARKER);
-      nLastComplexProjectorClosedCorrectInd = g_correctInd + 1;
       backToPreviousLevel();
     }  // if (isComplexProjectorOnCurLevel() &&
-       // isClosingComplexProjector(g_correctInd))
     else if (isDetailedProjectorOnCurLevel() &&
-             isClosingDetailedProjector(g_correctInd)) {
+             isClosingDetailedProjector(g_translatingIndex)) {
+      nLastDetailedProjectorClosedTranIndex = g_translatingIndex + 1;
       addTranslatingMathBrl(DETAILEDPROJ_CLOSING_MARKER);
-      nLastDetailedProjectorClosedCorrectInd = g_correctInd + 1;
       backToPreviousLevel();
     }  // if (isDetailedProjectorOnCurLevel() &&
-       // isClosingDetailedProjector(g_correctInd))
-    else if (isSubscriptSimpleProjector(g_correctInd)) {
-      addNextLevel(SIMPLE_PROJECTOR, SUBSCRIPT_PROJECTOR);
+    else if (isSubscriptSimpleProjector(g_translatingIndex)) {
+      addNextLevel(LTYPE_SIMPLE_PROJECTOR, PTYPE_SUBSCRIPT_PROJECTOR);
       nLastSimpleProjectorMathBrlIndex = g_nMathBrlLen;
       addTranslatingMathBrl(SIMPLEPROJ_SUBSCRIPT_MARKER);
       if (convertLowDecimalNumber()) {
-        if (isClosingSimpleProjector(g_correctInd + 1))
-          g_correctInd += g_additionalStep + 1;
-        nLastSimpleProjectorClosedCorrectInd = g_correctInd + 1;
+        if (isClosingSimpleProjector(g_translatingIndex + 1))
+          g_translatingIndex += g_additionalStep + 1;
+        nLastSimpleProjectorClosedTranIndex = g_translatingIndex + 1;
         addMathBrl(SIMPLEPROJ_CLOSING_MARKER);
         backToPreviousLevel();
       }  // if (convertLowDecimalNumber())
-    }    // if (isSubscriptSimpleProjector(g_correctInd))
-    else if (isSubscriptComplexProjector(g_correctInd)) {
-      addNextLevel(COMPLEX_PROJECTOR, SUBSCRIPT_PROJECTOR);
+    }    // if (isSubscriptSimpleProjector(g_translatingIndex))
+    else if (isSubscriptComplexProjector(g_translatingIndex)) {
+      addNextLevel(LTYPE_COMPLEX_PROJECTOR, PTYPE_SUBSCRIPT_PROJECTOR);
       nLastComplexProjectorMathBrlIndex = g_nMathBrlLen;
       addTranslatingMathBrl(COMPLEXPROJ_SUBSCRIPT_MARKER);
-    }  // if (isSubscriptComplexProjector(g_correctInd))
-    else if (isSubscriptDetailedProjector(g_correctInd)) {
-      addNextLevel(DETAILED_PROJECTOR, SUBSCRIPT_PROJECTOR);
+    }  // if (isSubscriptComplexProjector(g_translatingIndex))
+    else if (isSubscriptDetailedProjector(g_translatingIndex)) {
+      addNextLevel(LTYPE_DETAILED_PROJECTOR, PTYPE_SUBSCRIPT_PROJECTOR);
       nLastDetailedProjectorMathBrlIndex = g_nMathBrlLen;
       addTranslatingMathBrl(DETAILEDPROJ_SUBSCRIPT_MARKER);
-    }  // if (isSubscriptDetailedProjector(g_correctInd))
-    else if (isPowerSimpleProjector(g_correctInd)) {
-      addNextLevel(SIMPLE_PROJECTOR, POWER_PROJECTOR);
+    }  // if (isSubscriptDetailedProjector(g_translatingIndex))
+    else if (isPowerSimpleProjector(g_translatingIndex)) {
+      addNextLevel(LTYPE_SIMPLE_PROJECTOR, PTYPE_POWER_PROJECTOR);
       nLastSimpleProjectorMathBrlIndex = g_nMathBrlLen;
       addTranslatingMathBrl(SIMPLEPROJ_POWER_MARKER);
       if (convertLowDecimalNumber()) {
-        if (isClosingSimpleProjector(g_correctInd + 1))
-          g_correctInd += g_additionalStep + 1;
-        nLastSimpleProjectorClosedCorrectInd = g_correctInd + 1;
+        if (isClosingSimpleProjector(g_translatingIndex + 1))
+          g_translatingIndex += g_additionalStep + 1;
+        nLastSimpleProjectorClosedTranIndex = g_translatingIndex + 1;
         addMathBrl(SIMPLEPROJ_CLOSING_MARKER);
         backToPreviousLevel();
       }  // if (convertLowDecimalNumber())
-    }    // if (isPowerSimpleProjector(g_correctInd))
-    else if (isPowerComplexProjector(g_correctInd)) {
-      addNextLevel(COMPLEX_PROJECTOR, POWER_PROJECTOR);
+    }    // if (isPowerSimpleProjector(g_translatingIndex))
+    else if (isPowerComplexProjector(g_translatingIndex)) {
+      addNextLevel(LTYPE_COMPLEX_PROJECTOR, PTYPE_POWER_PROJECTOR);
       nLastComplexProjectorMathBrlIndex = g_nMathBrlLen;
       addTranslatingMathBrl(COMPLEXPROJ_POWER_MARKER);
-    }  // if (isPowerComplexProjector(g_correctInd))
-    else if (isPowerDetailedProjector(g_correctInd)) {
-      addNextLevel(DETAILED_PROJECTOR, POWER_PROJECTOR);
+    }  // if (isPowerComplexProjector(g_translatingIndex))
+    else if (isPowerDetailedProjector(g_translatingIndex)) {
+      addNextLevel(LTYPE_DETAILED_PROJECTOR, PTYPE_POWER_PROJECTOR);
       nLastDetailedProjectorMathBrlIndex = g_nMathBrlLen;
       addTranslatingMathBrl(DETAILEDPROJ_POWER_MARKER);
-    }  // if (isPowerDetailedProjector(g_correctInd))
-    else if (isSuperscriptSimpleProjector(g_correctInd)) {
-      addNextLevel(SIMPLE_PROJECTOR, SUPERSCRIPT_PROJECTOR);
+    }  // if (isPowerDetailedProjector(g_translatingIndex))
+    else if (isSuperscriptSimpleProjector(g_translatingIndex)) {
+      addNextLevel(LTYPE_SIMPLE_PROJECTOR, PTYPE_SUPERSCRIPT_PROJECTOR);
       nLastSimpleProjectorMathBrlIndex = g_nMathBrlLen;
       addTranslatingMathBrl(SIMPLEPROJ_SUPERSCRIPT_MARKER);
       if (convertLowDecimalNumber()) {
-        if (isClosingSimpleProjector(g_correctInd + 1))
-          g_correctInd += g_additionalStep + 1;
-        nLastSimpleProjectorClosedCorrectInd = g_correctInd + 1;
+        if (isClosingSimpleProjector(g_translatingIndex + 1))
+          g_translatingIndex += g_additionalStep + 1;
+        nLastSimpleProjectorClosedTranIndex = g_translatingIndex + 1;
         addMathBrl(SIMPLEPROJ_CLOSING_MARKER);
         backToPreviousLevel();
       }  // if (convertLowDecimalNumber())
-    }    // if (isSuperscriptSimpleProjector(g_correctInd))
-    else if (isSuperscriptComplexProjector(g_correctInd)) {
-      addNextLevel(COMPLEX_PROJECTOR, SUPERSCRIPT_PROJECTOR);
+    }    // if (isSuperscriptSimpleProjector(g_translatingIndex))
+    else if (isSuperscriptComplexProjector(g_translatingIndex)) {
+      addNextLevel(LTYPE_COMPLEX_PROJECTOR, PTYPE_SUPERSCRIPT_PROJECTOR);
       nLastComplexProjectorMathBrlIndex = g_nMathBrlLen;
       addTranslatingMathBrl(COMPLEXPROJ_SUPERSCRIPT_MARKER);
-    }  // if (isSuperscriptComplexProjector(g_correctInd))
-    else if (isSuperscriptDetailedProjector(g_correctInd)) {
-      addNextLevel(DETAILED_PROJECTOR, SUPERSCRIPT_PROJECTOR);
+    }  // if (isSuperscriptComplexProjector(g_translatingIndex))
+    else if (isSuperscriptDetailedProjector(g_translatingIndex)) {
+      addNextLevel(LTYPE_DETAILED_PROJECTOR, PTYPE_SUPERSCRIPT_PROJECTOR);
       nLastDetailedProjectorMathBrlIndex = g_nMathBrlLen;
       addTranslatingMathBrl(DETAILEDPROJ_SUPERSCRIPT_MARKER);
-    }  // if (isSuperscriptDetailedProjector(g_correctInd))
-    else if (isSqrtSimpleProjector(g_correctInd)) {
+    }  // if (isSuperscriptDetailedProjector(g_translatingIndex))
+    else if (isSqrtSimpleProjector(g_translatingIndex)) {
       int nLastSuperscriptProjectorMathBrlIndex = -1;
       if (wasSuperscriptProjectorOnNextLevel()) {
         nLastSuperscriptProjectorMathBrlIndex =
-            ((nLastDetailedProjectorClosedCorrectInd == g_correctInd)
+            ((nLastDetailedProjectorClosedTranIndex == g_translatingIndex)
                  ? nLastDetailedProjectorMathBrlIndex
-                 : ((nLastComplexProjectorClosedCorrectInd == g_correctInd)
+                 : ((nLastComplexProjectorClosedTranIndex == g_translatingIndex)
                         ? nLastComplexProjectorMathBrlIndex
-                        : ((nLastSimpleProjectorClosedCorrectInd ==
-                            g_correctInd)
+                        : ((nLastSimpleProjectorClosedTranIndex ==
+                            g_translatingIndex)
                                ? nLastSimpleProjectorMathBrlIndex
                                : -1)));
       }
@@ -978,18 +1201,18 @@ wchar_t* correctBeforeBackTranslation(wchar_t* pwcsTranslatingStr,
         nLastSimpleProjectorMathBrlIndex = g_nMathBrlLen;
         addTranslatingMathBrl(SIMPLEPROJ_SQRT_MARKER);
       }  // else if (nLastProjectorMathBrlIndex != -1) {
-      addNextLevel(SIMPLE_PROJECTOR, SQRT_PROJECTOR);
-    }  // if (isSqrtSimpleProjector(g_correctInd))
-    else if (isSqrtComplexProjector(g_correctInd)) {
+      addNextLevel(LTYPE_SIMPLE_PROJECTOR, PTYPE_SQRT_PROJECTOR);
+    }  // if (isSqrtSimpleProjector(g_translatingIndex))
+    else if (isSqrtComplexProjector(g_translatingIndex)) {
       int nLastSuperscriptProjectorMathBrlIndex = -1;
       if (wasSuperscriptProjectorOnNextLevel()) {
         nLastSuperscriptProjectorMathBrlIndex =
-            ((nLastDetailedProjectorClosedCorrectInd == g_correctInd)
+            ((nLastDetailedProjectorClosedTranIndex == g_translatingIndex)
                  ? nLastDetailedProjectorMathBrlIndex
-                 : ((nLastComplexProjectorClosedCorrectInd == g_correctInd)
+                 : ((nLastComplexProjectorClosedTranIndex == g_translatingIndex)
                         ? nLastComplexProjectorMathBrlIndex
-                        : ((nLastSimpleProjectorClosedCorrectInd ==
-                            g_correctInd)
+                        : ((nLastSimpleProjectorClosedTranIndex ==
+                            g_translatingIndex)
                                ? nLastSimpleProjectorMathBrlIndex
                                : -1)));
       }
@@ -1003,18 +1226,18 @@ wchar_t* correctBeforeBackTranslation(wchar_t* pwcsTranslatingStr,
         nLastComplexProjectorMathBrlIndex = g_nMathBrlLen;
         addTranslatingMathBrl(COMPLEXPROJ_SQRT_MARKER);
       }  // else if (nLastSuperscriptProjectorMathBrlIndex != -1)
-      addNextLevel(COMPLEX_PROJECTOR, SQRT_PROJECTOR);
-    }  // if (isSqrtComplexProjector(g_correctInd))
-    else if (isSqrtDetailedProjector(g_correctInd)) {
+      addNextLevel(LTYPE_COMPLEX_PROJECTOR, PTYPE_SQRT_PROJECTOR);
+    }  // if (isSqrtComplexProjector(g_translatingIndex))
+    else if (isSqrtDetailedProjector(g_translatingIndex)) {
       int nLastSuperscriptProjectorMathBrlIndex = -1;
       if (wasSuperscriptProjectorOnNextLevel()) {
         nLastSuperscriptProjectorMathBrlIndex =
-            ((nLastDetailedProjectorClosedCorrectInd == g_correctInd)
+            ((nLastDetailedProjectorClosedTranIndex == g_translatingIndex)
                  ? nLastDetailedProjectorMathBrlIndex
-                 : ((nLastComplexProjectorClosedCorrectInd == g_correctInd)
+                 : ((nLastComplexProjectorClosedTranIndex == g_translatingIndex)
                         ? nLastComplexProjectorMathBrlIndex
-                        : ((nLastSimpleProjectorClosedCorrectInd ==
-                            g_correctInd)
+                        : ((nLastSimpleProjectorClosedTranIndex ==
+                            g_translatingIndex)
                                ? nLastSimpleProjectorMathBrlIndex
                                : -1)));
       }
@@ -1028,18 +1251,60 @@ wchar_t* correctBeforeBackTranslation(wchar_t* pwcsTranslatingStr,
         nLastDetailedProjectorMathBrlIndex = g_nMathBrlLen;
         addTranslatingMathBrl(DETAILEDPROJ_SQRT_MARKER);
       }  // else if (nLastSuperscriptProjectorMathBrlIndex != -1)
-      addNextLevel(DETAILED_PROJECTOR, SQRT_PROJECTOR);
-    }  // if (isSqrtDetailedProjector(g_correctInd))
-    else if (isLogFunction(g_correctInd)) {
+      addNextLevel(LTYPE_DETAILED_PROJECTOR, PTYPE_SQRT_PROJECTOR);
+    }  // if (isSqrtDetailedProjector(g_translatingIndex))
+    else if (isUnderscriptSimpleProjector(g_translatingIndex) &&
+             isMinusLowDigit(g_translatingIndex+1)) {
+      nLastSimpleProjectorMathBrlIndex = g_nMathBrlLen;
+      addTranslatingMathBrl(SIMPLEPROJ_UNDERSCRIPT_MARKER);
+      convertLowDecimalNumber();
+      if (isClosingSimpleProjector(g_translatingIndex + 1))
+        g_translatingIndex += g_additionalStep + 1;
+      nLastSimpleProjectorClosedTranIndex = g_translatingIndex + 1;
+      addMathBrl(SIMPLEPROJ_CLOSING_MARKER);
+    }    // if (isUnderscriptSimpleProjector(g_translatingIndex) &&
+    else if (isUnderscriptComplexProjector(g_translatingIndex)) {
+      addNextLevel(LTYPE_COMPLEX_PROJECTOR, PTYPE_UNDERSCRIPT_PROJECTOR);
+      nLastComplexProjectorMathBrlIndex = g_nMathBrlLen;
+      addTranslatingMathBrl(COMPLEXPROJ_UNDERSCRIPT_MARKER);
+    }  // if (isUnderscriptComplexProjector(g_translatingIndex))
+    else if (isUnderscriptDetailedProjector(g_translatingIndex)) {
+      addNextLevel(LTYPE_DETAILED_PROJECTOR, PTYPE_UNDERSCRIPT_PROJECTOR);
+      nLastDetailedProjectorMathBrlIndex = g_nMathBrlLen;
+      addTranslatingMathBrl(DETAILEDPROJ_UNDERSCRIPT_MARKER);
+    }  // if (isUnderscriptDetailedProjector(g_translatingIndex))
+    else if (isOverscriptSimpleProjector(g_translatingIndex)) {
+      addNextLevel(LTYPE_SIMPLE_PROJECTOR, PTYPE_OVERSCRIPT_PROJECTOR);
+      nLastSimpleProjectorMathBrlIndex = g_nMathBrlLen;
+      addTranslatingMathBrl(SIMPLEPROJ_OVERSCRIPT_MARKER);
+      if (convertLowDecimalNumber()) {
+        if (isClosingSimpleProjector(g_translatingIndex + 1))
+          g_translatingIndex += g_additionalStep + 1;
+        nLastSimpleProjectorClosedTranIndex = g_translatingIndex + 1;
+        addMathBrl(SIMPLEPROJ_CLOSING_MARKER);
+        backToPreviousLevel();
+      }  // if (convertLowDecimalNumber())
+    }    // if (isOverscriptSimpleProjector(g_translatingIndex))
+    else if (isOverscriptComplexProjector(g_translatingIndex)) {
+      addNextLevel(LTYPE_COMPLEX_PROJECTOR, PTYPE_OVERSCRIPT_PROJECTOR);
+      nLastComplexProjectorMathBrlIndex = g_nMathBrlLen;
+      addTranslatingMathBrl(COMPLEXPROJ_OVERSCRIPT_MARKER);
+    }  // if (isOverscriptComplexProjector(g_translatingIndex))
+    else if (isOverscriptDetailedProjector(g_translatingIndex)) {
+      addNextLevel(LTYPE_DETAILED_PROJECTOR, PTYPE_OVERSCRIPT_PROJECTOR);
+      nLastDetailedProjectorMathBrlIndex = g_nMathBrlLen;
+      addTranslatingMathBrl(DETAILEDPROJ_OVERSCRIPT_MARKER);
+    }  // if (isOverscriptDetailedProjector(g_translatingIndex))
+    else if (isLogFunction(g_translatingIndex)) {
       int nLastSuperscriptProjectorMathBrlIndex = -1;
       if (wasSuperscriptProjectorOnNextLevel()) {
         nLastSuperscriptProjectorMathBrlIndex =
-            ((nLastDetailedProjectorClosedCorrectInd == g_correctInd)
+            ((nLastDetailedProjectorClosedTranIndex == g_translatingIndex)
                  ? nLastDetailedProjectorMathBrlIndex
-                 : ((nLastComplexProjectorClosedCorrectInd == g_correctInd)
+                 : ((nLastComplexProjectorClosedTranIndex == g_translatingIndex)
                         ? nLastComplexProjectorMathBrlIndex
-                        : ((nLastSimpleProjectorClosedCorrectInd ==
-                            g_correctInd)
+                        : ((nLastSimpleProjectorClosedTranIndex ==
+                            g_translatingIndex)
                                ? nLastSimpleProjectorMathBrlIndex
                                : -1)));
       }
@@ -1051,12 +1316,11 @@ wchar_t* correctBeforeBackTranslation(wchar_t* pwcsTranslatingStr,
       } else {
         addTranslatingMathBrl(LOG_FUNCTION_MARKER);
       }  // else if (nLastSuperscriptProjectorMathBrlIndex != -1)
-    }    // if (isLogFunction(g_correctInd))
+    }    // if (isLogFunction(g_translatingIndex))
     else
-
-        if (isNumberSign(g_correctInd)) {
+        if (isNumberSign(g_translatingIndex)) {
       bool createFrac = false;
-      int tempIndex = g_correctInd;
+      int tempIndex = g_translatingIndex;
       if (isUpDigit(tempIndex + 1, &digitInd)) {
         while (true) {
           tempIndex++;
@@ -1084,13 +1348,13 @@ wchar_t* correctBeforeBackTranslation(wchar_t* pwcsTranslatingStr,
                   isLowZeroOrOneDigit(tempIndex2)))
               createFrac = true;
           }  // if
-      }      // if (isUpDigit(g_correctInd2+1, &digitInd)) {
+      }      // if (isUpDigit(g_translatingIndex2+1, &digitInd)) {
       if (createFrac) {
         addMathBrl(STARTING_FRACTION_MARKER);
         addMathBrl(HASH_BRAILLECHAR);
-        while (isUpDigit(g_correctInd + 1, &digitInd)) {
+        while (isUpDigit(g_translatingIndex + 1, &digitInd)) {
           addMathBrl(convertDigitInd(digitInd));
-          g_correctInd++;
+          g_translatingIndex++;
         }  // while
         addMathBrl(SPACE_BRAILLECHAR);
         addMathBrl(SEPARATOR_FRACTION_MARKER);
@@ -1098,66 +1362,126 @@ wchar_t* correctBeforeBackTranslation(wchar_t* pwcsTranslatingStr,
         addMathBrl(ENDING_FRACTION_MARKER);
       }  // if (createFrac)
       else {
-        addMathBrl(g_pwcsTranslatingStr[g_correctInd]);
+        addMathBrl(g_pwcsTranslatingStr[g_translatingIndex]);
       }
-    }  // if (isNumberSign(g_correctInd))
-    else if (isStartingFraction(g_correctInd)) {
-      printf("markedStartingFractionOnCurLevel: %d, %d\n", g_curLevel,
-             g_correctInd);
+    }  // if (isNumberSign(g_translatingIndex))
+    else if (isStartingFraction(g_translatingIndex) &&
+             !isNoBreakableProjectorOnCurLevel()) {
+      //printf("markedStartingFractionOnCurLevel: %d, %d\n", g_curLevel,
+             //g_translatingIndex);
       markStartingFractionOnCurLevel();
-      addMathBrl(g_pwcsTranslatingStr[g_correctInd]);
-    }  // if (isStartingFraction(g_correctInd))
-    else if (isSeparatorFraction(g_correctInd)) {
+      addMathBrl(g_pwcsTranslatingStr[g_translatingIndex]);
+    }  // if (isStartingFraction(g_translatingIndex) &&
+    else if (isSeparatorFraction(g_translatingIndex)) {
       if (isNominatorProjectorOnCurLevel()) {
-        addMathBrl(SEPARATOR_FRACTION_MARKER);
+        addTranslatingMathBrl(SEPARATOR_FRACTION_MARKER);
         backToPreviousLevel();
         if (convertLowDecimalNumber()) {
           addMathBrl(ENDING_FRACTION_MARKER);
-          if (isEndingFraction(g_correctInd + 1))
-            g_correctInd++;
-        } else
-          addNextLevel(DENOMINATOR_FRACTION, FRACTION_PROJECTOR);
+          if (isEndingFraction(g_translatingIndex + 1))
+            g_translatingIndex++;
+        } else {
+          addNextLevel(LTYPE_DENOMINATOR_PROJECTOR, PTYPE_FRACTION_PROJECTOR);
+        }
       }  // if (isNominatorProjectorOnCurLevel())
-      else if (!isAnyStartingFractionOnCurLevel() ||
-               !isAnySpace(g_correctInd - 1)) {
+      else if (isAnyStartingFractionOnCurLevel() &&
+               isAnySpace(g_translatingIndex - 1) &&
+               replaceStartingFractionOnCurLevel()) {
+        addTranslatingMathBrl(SEPARATOR_FRACTION_MARKER);
+        if (convertLowDecimalNumber()) {
+          addMathBrl(ENDING_FRACTION_MARKER);
+          if (isEndingFraction(g_translatingIndex + 1))
+            g_translatingIndex++;
+        } else {
+          addNextLevel(LTYPE_DENOMINATOR_FRACTION, PTYPE_NONE_PROJECTOR);
+        }
+      } else {
         addMathBrl(SLASH_FRACTION_MARKER);
         convertLowDecimalNumber();
-      }  // if (!isAnySpace(g_correctInd-1))
-      else {
-        printf("markedSeparatorFractionOnCurLevel: %d, %d\n", g_curLevel,
-               g_correctInd);
-        markSeparatorFractionOnCurLevel();
-        addMathBrl(g_pwcsTranslatingStr[g_correctInd]);
-        if (convertLowDecimalNumber()) {
-          if (replaceStartingAndSeparatorFractionOnCurLevel())
-            addMathBrl(ENDING_FRACTION_MARKER);
-        }  // if (convertLowDecimalNumber())
       }    // else if
-    }      // if (isSeparatorFraction(g_correctInd))
-    else if (isEndingFraction(g_correctInd)) {
-      if (isDenominatorProjectorOnCurLevel()) {
-        addTranslatingMathBrl(ENDING_FRACTION_MARKER);
+    }      // if (isSeparatorFraction(g_translatingIndex))
+    else if (isEndingFraction(g_translatingIndex) &&
+             (isDenominatorProjectorOnCurLevel() ||
+              isDenominatorFractionOnCurLevel())) {
+      addTranslatingMathBrl(ENDING_FRACTION_MARKER);
+      backToPreviousLevel();
+    }  // if (isEndingFraction(g_translatingIndex) &&
+    else if (isUnderscriptSimpleProjector(g_translatingIndex)) {
+      addNextLevel(LTYPE_SIMPLE_PROJECTOR, PTYPE_UNDERSCRIPT_PROJECTOR);
+      nLastSimpleProjectorMathBrlIndex = g_nMathBrlLen;
+      addTranslatingMathBrl(SIMPLEPROJ_UNDERSCRIPT_MARKER);
+    }    // if (isUnderscriptSimpleProjector(g_translatingIndex))
+    else if (isTableRowSeparator(g_translatingIndex) ||
+             isTableCellSeparator(g_translatingIndex)) {
+      while (!isBaseOnCurLevel()) {
         backToPreviousLevel();
-      } else if (replaceStartingAndSeparatorFractionOnCurLevel()) {
-        if (isSimpleProjectorOnCurLevel()) {
-          nLastSimpleProjectorClosedCorrectInd = g_correctInd;
-          addTranslatingMathBrl(SIMPLEPROJ_CLOSING_MARKER);
-          backToPreviousLevel();
-        }  // if
-        addMathBrl(ENDING_FRACTION_MARKER);
-      }  // if (replaceStartingAndSeparatorFractionOnCurLevel())
-      else
-        addMathBrl(g_pwcsTranslatingStr[g_correctInd]);
-    }  // if (isEndingFraction(g_correctInd))
-    else if (isEndLineChar(g_correctInd)) {
-      addMathBrl(SPACE_BRAILLECHAR);
-    }  // if (isEndLine(g_correctInd)) {
+        if (isSimpleProjectorOnCurLevel())
+          addMathBrl(SIMPLEPROJ_CLOSING_MARKER);
+        else if (isComplexProjectorOnCurLevel())
+          addMathBrl(COMPLEXPROJ_CLOSING_MARKER);
+        else if (isDetailedProjectorOnCurLevel())
+          addMathBrl(DETAILEDPROJ_CLOSING_MARKER);
+        else if (isNominatorProjectorOnCurLevel()) {
+          addMathBrl(SEPARATOR_FRACTION_MARKER);
+          addMathBrl(ENDING_FRACTION_MARKER);
+        } else
+        if (isDenominatorProjectorOnCurLevel() ||
+            isDenominatorFractionOnCurLevel()) {
+          addMathBrl(ENDING_FRACTION_MARKER);
+        }
+      }  // while
+      nLastSimpleProjectorClosedTranIndex = -1;
+      nLastComplexProjectorClosedTranIndex = -1;
+      nLastDetailedProjectorClosedTranIndex = -1;
+      if (nLeftBraceTableIndex < 0) {
+        insertMathBrl(0, STARTING_TABLE_MARKER);
+      } else {
+        insertMathBrl(nLeftBraceTableIndex+1, FIRST_ARGUMENT_SEPARATOR_FENCED_MARKER);
+        insertMathBrl(nLeftBraceTableIndex+2, SECOND_ARGUMENT_SEPARATOR_FENCED_MARKER);
+        insertMathBrl(nLeftBraceTableIndex+3, STARTING_TABLE_MARKER);
+        insertMathBrl(nLeftBraceTableIndex, STARTING_FENCED_MARKER);
+      }
+      bStartedTable = true;
+      addTranslatingMathBrl(TABLE_ROW_SEPARATOR_MARKER);
+    }  // if (isTableRowSeparator(g_translatingIndex) ||
+    else if (isUnitSymbol(g_translatingIndex)) {
+      addNextLevel(LTYPE_COMPLEX_PROJECTOR, PTYPE_UNIT_SYMBOL_PROJECTOR);
+      nLastComplexProjectorMathBrlIndex = g_nMathBrlLen;
+      addTranslatingMathBrl(UNIT_SYMBOL_MARKER);
+    }  // if (isUnitSymbol(g_translatingIndex))
+    else if (isEndLineChar(g_translatingIndex)) {
+      addTranslatingMathBrl(SPACE_BRAILLECHAR);
+    }  // if (isEndLine(g_translatingIndex)) {
     else {
-      addMathBrl(g_pwcsTranslatingStr[g_correctInd]);
+      addMathBrl(g_pwcsTranslatingStr[g_translatingIndex]);
     }
 
-  }  // for (g_correctInd = 0; g_correctInd < nTranslatingStrLen;
-     // g_correctInd++)
+  }  // for (g_translatingIndex = 0; g_translatingIndex < nTranslatingStrLen;
+     // g_translatingIndex++)
+
+  if (bStartedTable) {
+    addMathBrl(ENDING_TABLE_MARKER);
+    if (nLeftBraceTableIndex >= 0)
+      addMathBrl(ENDING_FENCED_MARKER);
+  }
+
+      while (!isBaseOnCurLevel()) {
+        if (isSimpleProjectorOnCurLevel())
+          addMathBrl(SIMPLEPROJ_CLOSING_MARKER);
+        else if (isComplexProjectorOnCurLevel())
+          addMathBrl(COMPLEXPROJ_CLOSING_MARKER);
+        else if (isDetailedProjectorOnCurLevel())
+          addMathBrl(DETAILEDPROJ_CLOSING_MARKER);
+        else if (isNominatorProjectorOnCurLevel()) {
+          addMathBrl(SEPARATOR_FRACTION_MARKER);
+          addMathBrl(ENDING_FRACTION_MARKER);
+        } else
+        if (isDenominatorProjectorOnCurLevel() ||
+            isDenominatorFractionOnCurLevel()) {
+          addMathBrl(ENDING_FRACTION_MARKER);
+        }
+        backToPreviousLevel();
+      }  // while
 
   {
     int i, j, k, ind;
@@ -1204,7 +1528,7 @@ wchar_t* correctBeforeBackTranslation(wchar_t* pwcsTranslatingStr,
           j--;
 
         if (j > (i + 1) && g_pwcsMathBrl[j] != SPACE_BRAILLECHAR &&
-            g_pwcsMathBrl[j] != NOBREAK_SPACE_BRAILLECHAR) {
+            g_pwcsMathBrl[j] != NO_BREAKABLE_SPACE_BRAILLECHAR) {
           insertMathBrl(j, SPACE_BRAILLECHAR);
           i = j;
         }  // if (j > (i+1) &&

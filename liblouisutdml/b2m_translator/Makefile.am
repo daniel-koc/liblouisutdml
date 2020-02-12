@@ -34,6 +34,5 @@ DOMEntityReference.cpp \
 DOMNamedNodeList.cpp \
 DOMNode.cpp \
 DOMNodeList.cpp \
-DOMNodeListItem.cpp \
 DOMProcessingInstruction.cpp \
 DOMText.cpp

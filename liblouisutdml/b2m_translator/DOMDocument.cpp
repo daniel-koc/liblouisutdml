@@ -31,26 +31,33 @@ CDOMDocument::~CDOMDocument() {
 
 CDOMNode* CDOMDocument::CopyNode() {
   CDOMDocument* pNewDocument = new CDOMDocument();
-  pNewDocument->m_pDocumentElement =
-      (CDOMElement*)m_pDocumentElement->CloneNode(true);
+  if (m_pDocumentElement) {
+    pNewDocument->SetDocumentElement(
+        (CDOMElement*)m_pDocumentElement->CloneNode(true));
+  }
   return pNewDocument;
 }  // CopyNode
 
+CString CDOMDocument::ToString() {
+  if (m_pDocumentElement)
+    return m_pDocumentElement->ToString();
+  else
+    return CDOMNode::ToString();
+}  // ToString
+
 void CDOMDocument::SetDocumentElement(CDOMElement* pDocumentElement) {
+  if (m_pDocumentElement)
+    RemoveChild(m_pDocumentElement);
   m_pDocumentElement = pDocumentElement;
   AppendChild(m_pDocumentElement);
-}
-
-CDOMElement* CDOMDocument::GetDocumentElement() {
-  return m_pDocumentElement;
-}
+}  // SetDocumentElement
 
 CDOMElement* CDOMDocument::CreateElement(wchar_t* pStrTagName) {
-  return CreateElement(new CString(pStrTagName));
+  return CreateElement(pStrTagName ? new CString(pStrTagName) : NULL);
 }
 
 CDOMElement* CDOMDocument::CreateElement(const wchar_t* pStrTagName) {
-  return CreateElement(new CString(pStrTagName));
+  return CreateElement(pStrTagName ? new CString(pStrTagName) : NULL);
 }
 
 CDOMElement* CDOMDocument::CreateElement(CString* pStrTagName) {
@@ -64,11 +71,11 @@ CDOMDocumentFragment* CDOMDocument::CreateDocumentFragment() {
 }
 
 CDOMText* CDOMDocument::CreateTextNode(wchar_t* pStrData) {
-  return CreateTextNode(new CString(pStrData));
+  return CreateTextNode(pStrData ? new CString(pStrData) : NULL);
 }
 
 CDOMText* CDOMDocument::CreateTextNode(const wchar_t* pStrData) {
-  return CreateTextNode(new CString(pStrData));
+  return CreateTextNode(pStrData ? new CString(pStrData) : NULL);
 }
 
 CDOMText* CDOMDocument::CreateTextNode(CString* pStrData) {
@@ -112,12 +119,7 @@ CDOMEntityReference* CDOMDocument::CreateEntityReference(CString* pStrName) {
 }  // CreateEntityReference
 
 CDOMNodeList* CDOMDocument::GetElementsByTagName(CString* pStrTagName) {
+  if (!m_pDocumentElement)
+    return new CDOMNodeList();
   return m_pDocumentElement->GetElementsByTagName(pStrTagName);
 }  // GetElementsByTagName
-
-CString CDOMDocument::ToString() {
-  if (m_pDocumentElement != NULL)
-    return m_pDocumentElement->ToString();
-  else
-    return CDOMNode::ToString();
-}

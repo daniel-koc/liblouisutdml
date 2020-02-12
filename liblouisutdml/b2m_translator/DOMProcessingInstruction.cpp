@@ -24,40 +24,41 @@ CDOMProcessingInstruction::CDOMProcessingInstruction(
 }  // CDOMProcessingInstruction
 
 CDOMProcessingInstruction::~CDOMProcessingInstruction() {
-  if (m_pStrTarget != NULL)
+  if (m_pStrTarget)
     delete m_pStrTarget;
-  if (m_pStrData != NULL)
+  if (m_pStrData)
     delete m_pStrData;
 }  // ~CDOMProcessingInstruction
 
 CDOMNode* CDOMProcessingInstruction::CopyNode() {
   CDOMProcessingInstruction* pNewProcessingInstruction =
-      m_pOwnerDocument->CreateProcessingInstruction(new CString(*m_pStrTarget),
-                                                    new CString(*m_pStrData));
+      GetOwnerDocument()->CreateProcessingInstruction(
+          m_pStrTarget ? new CString(*m_pStrTarget) : NULL,
+          m_pStrData ? new CString(*m_pStrData) : NULL);
   return pNewProcessingInstruction;
 }  // CopyNode
 
+CString CDOMProcessingInstruction::ToString() {
+  CString str;
+  if (m_pStrTarget) {
+    str = L"<!";
+    str += *m_pStrTarget;
+    str += L" ";
+    if (m_pStrData)
+      str += *m_pStrData;
+    str += L">";
+  }
+  return str;
+}  // ToString
+
 void CDOMProcessingInstruction::SetTarget(CString* pStrTarget) {
-  if (m_pStrTarget != NULL)
+  if (m_pStrTarget)
     delete m_pStrTarget;
   m_pStrTarget = pStrTarget;
 }  // SetTarget
 
 void CDOMProcessingInstruction::SetData(CString* pStrData) {
-  if (m_pStrData != NULL)
+  if (m_pStrData)
     delete m_pStrData;
   m_pStrData = pStrData;
 }  // SetData
-
-CString CDOMProcessingInstruction::ToString() {
-  CString str;
-  if (m_pStrTarget != NULL) {
-    str = L"<!";
-    str += *m_pStrTarget;
-    str += L" ";
-    if (m_pStrData != NULL)
-      str += *m_pStrData;
-    str += L">";
-  }
-  return str;
-}

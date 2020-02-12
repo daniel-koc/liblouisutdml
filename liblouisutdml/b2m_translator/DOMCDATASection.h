@@ -13,10 +13,13 @@ class CDOMCDATASection : public CDOMText {
  public:
   CDOMCDATASection(CDOMDocument* pOwnerDocument);
   virtual ~CDOMCDATASection();
-  virtual CString ToString();
+
+  // CDOMNode override:
+  CString ToString() override;
 
  protected:
-  virtual CDOMNode* CopyNode();
+  // CDOMNode override:
+  CDOMNode* CopyNode() override;
 };
 
 #endif  // !defined(DOMCDATASECTION_H_)

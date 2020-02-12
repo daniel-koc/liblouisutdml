@@ -5,7 +5,9 @@
 #if !defined(DOMNODELIST_H_)
 #define DOMNODELIST_H_
 
-#include "DOMNodeListItem.h"
+#include "DOMNode.h"
+
+typedef CDOMNode* CDOMNodePtr;
 
 class CDOMNodeList {
  public:
@@ -14,11 +16,11 @@ class CDOMNodeList {
   virtual ~CDOMNodeList();
   void AddItem(CDOMNode* pNode);
   CDOMNode* Item(int nIndex);
-  int GetLength();
+  int GetLength() { return m_nItemsCount; }
 
  protected:
-  CDOMNodeListItem* m_pFirstNodeListItem;
-  CDOMNodeListItem* m_pLastNodeListItem;
+  CDOMNodePtr* m_ppItems;
+  int m_nMaxItemsCount;
   int m_nItemsCount;
 };
 

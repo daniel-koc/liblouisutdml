@@ -20,10 +20,6 @@ CListItem::CListItem(LISTITEM pItem) {
 CListItem::~CListItem() {
 }
 
-void CList::SetDeletingAllItemsFlag() {
-  m_bDeletingAllItemsFlag = true;
-}
-
 CList::CList() {
   m_pFirst = NULL;
   m_pLast = NULL;
@@ -40,7 +36,7 @@ CList::~CList() {
 
 void CList::AddItem(const LISTITEM pItem) {
   CListItem* pNew = new CListItem(pItem);
-  if (m_pFirst == NULL)
+  if (!m_pFirst)
     m_pCur = m_pFirst = m_pLast = pNew;
   else {
     m_pLast->m_pNext = pNew;
@@ -58,43 +54,23 @@ LISTITEM* CList::GetItems() {
   do {
     pItems[i++] = pTmp->m_pItem;
     pTmp = (CListItem*)pTmp->m_pNext;
-  } while (pTmp != NULL);
+  } while (pTmp);
   return pItems;
 }  // GetItems
 
-int CList::GetCount() {
-  return m_nItemsCount;
-}
-
-bool CList::IsEmpty() {
-  return ((m_nItemsCount == 0) ? true : false);
-}
-
 LISTITEM CList::Next() {
-  if (m_pCur == NULL)
+  if (!m_pCur)
     return NULL;
   LISTITEM pItem = m_pCur->m_pItem;
   m_pCur = (CListItem*)m_pCur->m_pNext;
   return pItem;
 }  // Next
 
-bool CList::HasNext() {
-  return ((m_pCur != NULL) ? true : false);
-}
-
-void CList::Reset() {
-  m_pCur = m_pFirst;
-}
-
-LISTITEM CList::GetFirst() {
-  if (m_pFirst == NULL)
-    return NULL;
-  return m_pFirst->m_pItem;
-}  // GetFirst
-
 LISTITEM CList::RemoveFirst() {
-  if (m_pFirst == NULL)
+  if (!m_pFirst)
     return NULL;
+  if (m_pCur == m_pFirst)
+    m_pCur = NULL;
   LISTITEM pItem = m_pFirst->m_pItem;
   CListItem* pTmp = m_pFirst;
   m_pFirst = (CListItem*)m_pFirst->m_pNext;
@@ -103,28 +79,23 @@ LISTITEM CList::RemoveFirst() {
   return pItem;
 }  // RemoveGetFirst
 
-LISTITEM CList::GetLast() {
-  if (m_pLast == NULL)
-    return NULL;
-  return m_pLast->m_pItem;
-}  // GetLast
-
 LISTITEM CList::RemoveLast() {
-  if (m_pLast == NULL)
+  if (!m_pLast)
     return NULL;
+  if (m_pCur == m_pLast)
+    m_pCur = NULL;
   m_nItemsCount--;
-  LISTITEM pItem;
-  if (m_pFirst->m_pNext == NULL) {
-    pItem = m_pFirst->m_pItem;
+  if (!m_pFirst->m_pNext) {
+    LISTITEM pItem = m_pFirst->m_pItem;
     delete m_pFirst;
     m_pFirst = m_pLast = NULL;
     return pItem;
   } else {
     CListItem* pTmp = m_pFirst;
-    while (((CListItem*)pTmp->m_pNext)->m_pNext != NULL)
+    while (((CListItem*)pTmp->m_pNext)->m_pNext)
       pTmp = (CListItem*)pTmp->m_pNext;
     pTmp->m_pNext = NULL;
-    pItem = ((CListItem*)m_pLast)->m_pItem;
+    LISTITEM pItem = m_pLast->m_pItem;
     delete m_pLast;
     m_pLast = pTmp;
     return pItem;
@@ -132,7 +103,7 @@ LISTITEM CList::RemoveLast() {
 }  // RemoveLast
 
 LISTITEM CList::GetAt(int nIndex) {
-  if (m_nItemsCount == 0 || nIndex < 0 || nIndex >= m_nItemsCount)
+  if (nIndex < 0 || nIndex >= m_nItemsCount)
     return NULL;
   CListItem* pTmp = m_pFirst;
   int i = 0;
@@ -143,21 +114,9 @@ LISTITEM CList::GetAt(int nIndex) {
   return pTmp->m_pItem;
 }  // GetAt
 
-LISTITEM CList::operator[](int nIndex) {
-  if (m_nItemsCount == 0 || nIndex < 0 || nIndex >= m_nItemsCount)
-    return NULL;
-  CListItem* pTmp = m_pFirst;
-  int i = 0;
-  while (i < nIndex) {
-    pTmp = (CListItem*)pTmp->m_pNext;
-    i++;
-  }  // while
-  return pTmp->m_pItem;
-}  // operator[]
-
 void CList::RemoveAll() {
   CListItem* pTmpItem;
-  while (m_pFirst != NULL) {
+  while (m_pFirst) {
     pTmpItem = m_pFirst;
     m_pFirst = (CListItem*)m_pFirst->m_pNext;
     delete pTmpItem;
@@ -170,7 +129,7 @@ void CList::RemoveAll() {
 
 void CList::DeleteAll() {
   CListItem* pTmpItem;
-  while (m_pFirst != NULL) {
+  while (m_pFirst) {
     pTmpItem = m_pFirst;
     m_pFirst = (CListItem*)m_pFirst->m_pNext;
     delete pTmpItem->m_pItem;
@@ -194,72 +153,97 @@ CDOMElement::CDOMElement(CDOMDocument* pOwnerDocument)
 }  // CDOMElement
 
 CDOMElement::~CDOMElement() {
-  if (m_pStrTagName != NULL)
+  if (m_pStrTagName)
     delete m_pStrTagName;
-  while (m_pFirstAttr != NULL) {
+  while (m_pFirstAttr) {
     m_pLastAttr = m_pFirstAttr;
     m_pFirstAttr = (CDOMAttr*)m_pFirstAttr->GetNextNodeSibling();
     delete m_pLastAttr;
   }  // while
 }  // ~CDOMElement
 
+CDOMNamedNodeList* CDOMElement::GetAttributeNodes() {
+  return new CDOMNamedNodeList(m_pFirstAttr);
+}
+
 CDOMNode* CDOMElement::CopyNode() {
-  CDOMElement* pNewElement =
-      m_pOwnerDocument->CreateElement(new CString(*m_pStrTagName));
+  CDOMElement* pNewElement = GetOwnerDocument()->CreateElement(
+      m_pStrTagName ? new CString(*m_pStrTagName) : NULL);
   CDOMAttr* pTmpAttr = m_pFirstAttr;
-  while (pTmpAttr != NULL) {
+  while (pTmpAttr) {
     CString* pStrName = pTmpAttr->GetName();
     CString* pStrValue = pTmpAttr->GetValue();
-    pNewElement->AddAttribute(new CString(*pStrName), new CString(*pStrValue));
+    pNewElement->AddAttribute(
+        pStrName ? new CString(*pStrName) : NULL,
+        pStrValue ? new CString(*pStrValue) : NULL);
     pTmpAttr = (CDOMAttr*)pTmpAttr->GetNextNodeSibling();
   }  // while
   return pNewElement;
 }  // CopyNode
 
-void CDOMElement::SetNodeName(CString* pStrName) {
-  if (m_pStrTagName != NULL)
-    delete m_pStrTagName;
-  m_pStrTagName = pStrName;
-}  // SetNodeName
+CString CDOMElement::ToString() {
+  CString str;
+  str += L"<";
+  str += *m_pStrTagName;
+  if (m_pFirstAttr) {
+    CDOMAttr* pTmpAttr = m_pFirstAttr;
+    while (pTmpAttr) {
+      str += L" ";
+      str += pTmpAttr->ToString();
+      pTmpAttr = (CDOMAttr*)pTmpAttr->GetNextNodeSibling();
+    }  // while
+  }    // if
+  str += L">";
+  str += CDOMNode::ToString();
+  str += L"</";
+  str += *m_pStrTagName;
+  str += L">\r\n";
+  return str;
+}  // ToString
 
 void CDOMElement::SetTagName(CString* pStrTagName) {
-  if (m_pStrTagName != NULL)
+  if (m_pStrTagName)
     delete m_pStrTagName;
   m_pStrTagName = pStrTagName;
 }  // SetTagName
 
-CDOMNamedNodeList* CDOMElement::GetAttributeNodes() {
-  return new CDOMNamedNodeList(m_pFirstAttr);
-}
-
-void CDOMElement::AddAttribute(CString* pStrName, CString* pStrValue) {
-  CDOMAttr* pNewAttr = m_pOwnerDocument->CreateAttribute(pStrName);
+bool CDOMElement::AddAttribute(CString* pStrName, CString* pStrValue) {
+  if (HasAttribute(pStrName))
+    return false;
+  CDOMAttr* pNewAttr = GetOwnerDocument()->CreateAttribute(pStrName);
   pNewAttr->SetOwnerElement(this);
   pNewAttr->SetValue(pStrValue);
-  if (m_pFirstAttr == NULL)
+  if (!m_pFirstAttr)
     m_pFirstAttr = m_pLastAttr = pNewAttr;
   else {
     m_pLastAttr->SetNextNodeSibling(pNewAttr);
     pNewAttr->SetPreviousNodeSibling(m_pLastAttr);
     m_pLastAttr = pNewAttr;
   }  // else if
+  return true;
 }  // AddAttribute
 
 bool CDOMElement::SetAttribute(wchar_t* pStrName, wchar_t* pStrValue) {
-  return SetAttribute(new CString(pStrName), new CString(pStrValue));
+  return SetAttribute(
+      pStrName ? new CString(pStrName) : NULL,
+      pStrValue ? new CString(pStrValue) : NULL);
 }
 
 bool CDOMElement::SetAttribute(const wchar_t* pStrName,
                                const wchar_t* pStrValue) {
-  return SetAttribute(new CString(pStrName), new CString(pStrValue));
+  return SetAttribute(
+      pStrName ? new CString(pStrName) : NULL,
+      pStrValue ? new CString(pStrValue) : NULL);
 }
 
 bool CDOMElement::SetAttribute(const wchar_t* pStrName, wchar_t* pStrValue) {
-  return SetAttribute(new CString(pStrName), new CString(pStrValue));
+  return SetAttribute(
+      pStrName ? new CString(pStrName) : NULL,
+      pStrValue ? new CString(pStrValue) : NULL);
 }
 
 bool CDOMElement::SetAttribute(CString* pStrName, CString* pStrValue) {
-  if (m_pFirstAttr != NULL) {
+  if (m_pFirstAttr) {
     CDOMAttr* pTmpAttr = m_pFirstAttr;
     do {
       if (*(pTmpAttr->GetName()) == *pStrName) {
@@ -267,12 +251,12 @@ bool CDOMElement::SetAttribute(CString* pStrName, CString* pStrValue) {
         return true;
       }  // if
       pTmpAttr = (CDOMAttr*)pTmpAttr->GetNextNodeSibling();
-    } while (pTmpAttr != NULL);
+    } while (pTmpAttr);
   }  // if
-  CDOMAttr* pNewAttr = m_pOwnerDocument->CreateAttribute(pStrName);
+  CDOMAttr* pNewAttr = GetOwnerDocument()->CreateAttribute(pStrName);
   pNewAttr->SetOwnerElement(this);
   pNewAttr->SetValue(pStrValue);
-  if (m_pFirstAttr == NULL)
+  if (!m_pFirstAttr)
     m_pFirstAttr = m_pLastAttr = pNewAttr;
   else {
     m_pLastAttr->SetNextNodeSibling(pNewAttr);
@@ -283,41 +267,43 @@ bool CDOMElement::SetAttribute(CString* pStrName, CString* pStrValue) {
 }  // SetAttribute
 
 CString* CDOMElement::GetAttribute(CString* pStrName) {
-  if (m_pFirstAttr != NULL) {
+  if (m_pFirstAttr) {
     CDOMAttr* pTmpAttr = m_pFirstAttr;
     do {
       if (*(pTmpAttr->GetName()) == *pStrName)
         return pTmpAttr->GetValue();
       pTmpAttr = (CDOMAttr*)pTmpAttr->GetNextNodeSibling();
-    } while (pTmpAttr != NULL);
+    } while (pTmpAttr);
   }  // if
   return NULL;
 }  // GetAttribute
 
-void CDOMElement::RemoveAttribute(CString* pStrName) {
-  if (m_pFirstAttr != NULL) {
+bool CDOMElement::RemoveAttribute(CString* pStrName) {
+  if (m_pFirstAttr) {
     CDOMAttr* pTmpAttr = m_pFirstAttr;
     do {
       if (*(pTmpAttr->GetName()) == *pStrName) {
-        if (pTmpAttr->GetPreviousNodeSibling() != NULL)
+        if (pTmpAttr->GetPreviousNodeSibling()) {
           pTmpAttr->GetPreviousNodeSibling()->SetNextNodeSibling(
               pTmpAttr->GetNextNodeSibling());
-        else
+        } else
           m_pFirstAttr = (CDOMAttr*)pTmpAttr->GetNextNodeSibling();
-        if (pTmpAttr->GetNextNodeSibling() != NULL)
+        if (pTmpAttr->GetNextNodeSibling()) {
           pTmpAttr->GetNextNodeSibling()->SetPreviousNodeSibling(
               pTmpAttr->GetPreviousNodeSibling());
-        else
+        } else
           m_pLastAttr = (CDOMAttr*)pTmpAttr->GetPreviousNodeSibling();
-        return;
+        return true;
       }  // if
       pTmpAttr = (CDOMAttr*)pTmpAttr->GetNextNodeSibling();
-    } while (pTmpAttr != NULL);
+    } while (pTmpAttr);
   }  // if
+  return false;
 }  // RemoveAttribute
 
 CDOMAttr* CDOMElement::SetAttributeNode(CDOMAttr* pNewAttr) {
-  if (m_pFirstAttr == NULL)
+  RemoveAttribute(pNewAttr->GetName());
+  if (!m_pFirstAttr)
     m_pFirstAttr = m_pLastAttr = pNewAttr;
   else {
     m_pLastAttr->SetNextNodeSibling(pNewAttr);
@@ -328,31 +314,31 @@ CDOMAttr* CDOMElement::SetAttributeNode(CDOMAttr* pNewAttr) {
 }  // SetAttributeNode
 
 CDOMAttr* CDOMElement::GetAttributeNode(CString* pStrName) {
-  if (m_pFirstAttr != NULL) {
+  if (m_pFirstAttr) {
     CDOMAttr* pTmpAttr = m_pFirstAttr;
     do {
       if (*(pTmpAttr->GetName()) == *pStrName)
         return pTmpAttr;
       pTmpAttr = (CDOMAttr*)pTmpAttr->GetNextNodeSibling();
-    } while (pTmpAttr != NULL);
+    } while (pTmpAttr);
   }  // if
   return NULL;
 }  // GetAttributeNode
 
 CDOMAttr* CDOMElement::RemoveAttributeNode(CDOMAttr* pOldAttr) {
   CDOMAttr* pTmpAttr = m_pFirstAttr;
-  while (pTmpAttr != NULL && pTmpAttr != pOldAttr)
+  while (pTmpAttr && pTmpAttr != pOldAttr)
     pTmpAttr = (CDOMAttr*)pTmpAttr->GetNextNodeSibling();
   if (pTmpAttr == pOldAttr) {
-    if (pTmpAttr->GetPreviousNodeSibling() != NULL)
+    if (pTmpAttr->GetPreviousNodeSibling()) {
       pTmpAttr->GetPreviousNodeSibling()->SetNextNodeSibling(
           pTmpAttr->GetNextNodeSibling());
-    else
+    } else
       m_pFirstAttr = (CDOMAttr*)pTmpAttr->GetNextNodeSibling();
-    if (pTmpAttr->GetNextNodeSibling() != NULL)
+    if (pTmpAttr->GetNextNodeSibling()) {
       pTmpAttr->GetNextNodeSibling()->SetPreviousNodeSibling(
           pTmpAttr->GetPreviousNodeSibling());
-    else
+    } else
       m_pLastAttr = (CDOMAttr*)pTmpAttr->GetPreviousNodeSibling();
     return pTmpAttr;
   }  // if
@@ -360,13 +346,13 @@ CDOMAttr* CDOMElement::RemoveAttributeNode(CDOMAttr* pOldAttr) {
 }  // RemoveAttribute
 
 bool CDOMElement::HasAttribute(CString* pStrName) {
-  if (m_pFirstAttr != NULL) {
+  if (m_pFirstAttr) {
     CDOMAttr* pTmpAttr = m_pFirstAttr;
     do {
       if (*(pTmpAttr->GetName()) == *pStrName)
         return true;
       pTmpAttr = (CDOMAttr*)pTmpAttr->GetNextNodeSibling();
-    } while (pTmpAttr != NULL);
+    } while (pTmpAttr);
   }  // if
   return false;
 }  // HasAttribute
@@ -381,7 +367,7 @@ CDOMNodeList* CDOMElement::GetElementsByTagName(CString* pStrName) {
   while (!queue.IsEmpty()) {
     pTmpElement = (CDOMElement*)queue.RemoveFirst();
     pTmpNode = pTmpElement->GetFirstNode();
-    while (pTmpNode != NULL) {
+    while (pTmpNode) {
       nNodeType = pTmpNode->GetNodeType();
       if (nNodeType == DOM_ELEMENT_NODE) {
         queue.AddItem(pTmpNode);
@@ -393,23 +379,3 @@ CDOMNodeList* CDOMElement::GetElementsByTagName(CString* pStrName) {
   }    // while
   return pNodeList;
 }  // GetElementsByTagName
-
-CString CDOMElement::ToString() {
-  CString str;
-  str += L"<";
-  str += *m_pStrTagName;
-  if (m_pFirstAttr != NULL) {
-    CDOMAttr* pTmpAttr = m_pFirstAttr;
-    while (pTmpAttr != NULL) {
-      str += L" ";
-      str += pTmpAttr->ToString();
-      pTmpAttr = (CDOMAttr*)pTmpAttr->GetNextNodeSibling();
-    }  // while
-  }    // if
-  str += L">";
-  str += CDOMNode::ToString();
-  str += L"</";
-  str += *m_pStrTagName;
-  str += L">\r\n";
-  return str;
-}  // ToString

@@ -25,44 +25,30 @@ CDOMNamedNodeList::~CDOMNamedNodeList() {
 }
 
 CDOMNode* CDOMNamedNodeList::GetNamedItem(CString* pStrName) {
-  CDOMNodeListItem* pTmpNodeListItem = m_pFirstNodeListItem;
-  CString* pStrNodeName;
-  while (pTmpNodeListItem != NULL) {
-    pStrNodeName = pTmpNodeListItem->GetNode()->GetNodeName();
-    if (pStrNodeName != NULL && *pStrNodeName == *pStrName)
-      return pTmpNodeListItem->GetNode();
-    pTmpNodeListItem = pTmpNodeListItem->GetNextNodeListItem();
-  }  // while
+  if (m_nItemsCount == 0)
+    return NULL;
+  for (int i = 0; i < m_nItemsCount; i++) {
+    CString* pStrNodeName = m_ppItems[i]->GetNodeName();
+    if (pStrNodeName && *pStrNodeName == *pStrName)
+      return m_ppItems[i];
+  }  // for
   return NULL;
 }  // GetNamedItem
 
 CDOMNode* CDOMNamedNodeList::RemoveNamedItem(CString* pStrName) {
-  CDOMNodeListItem* pTmpNodeListItem = m_pFirstNodeListItem;
-  CDOMNodeListItem* pTNodeListItem;
-  CString* pStrNodeName;
-  CDOMNode* pTmpNode;
-  while (pTmpNodeListItem != NULL) {
-    pStrNodeName = pTmpNodeListItem->GetNode()->GetNodeName();
-    if (pStrNodeName != NULL && *pStrNodeName == *pStrName) {
-      pTmpNode = pTmpNodeListItem->GetNode();
-      if (m_pFirstNodeListItem == pTmpNodeListItem) {
-        m_pFirstNodeListItem = pTmpNodeListItem->GetNextNodeListItem();
-        if (m_pFirstNodeListItem == NULL)
-          m_pLastNodeListItem = NULL;
-      } else {
-        pTNodeListItem = m_pFirstNodeListItem;
-        while (pTNodeListItem->GetNextNodeListItem() != pTmpNodeListItem)
-          pTNodeListItem = pTNodeListItem->GetNextNodeListItem();
-        pTNodeListItem->SetNextNodeListItem(
-            pTmpNodeListItem->GetNextNodeListItem());
-        if (pTNodeListItem->GetNextNodeListItem() == NULL)
-          m_pLastNodeListItem = pTNodeListItem;
-      }  // else if
-      delete pTmpNodeListItem;
-      m_nItemsCount--;
-      return pTmpNode;
-    }  // if
-    pTmpNodeListItem = pTmpNodeListItem->GetNextNodeListItem();
-  }  // while
-  return NULL;
+  if (m_nItemsCount == 0)
+    return NULL;
+  int i = 0;
+  for (; i < m_nItemsCount; i++) {
+    CString* pStrNodeName = m_ppItems[i]->GetNodeName();
+    if (pStrNodeName && *pStrNodeName == *pStrName)
+      break;
+  }  // for
+  if (i == m_nItemsCount)
+    return NULL;
+  CDOMNode* pNode = m_ppItems[i];
+  for (int j = i+1; j < m_nItemsCount; j++)
+    m_ppItems[j-1] = m_ppItems[j];
+  m_nItemsCount--;
+  return pNode;
 }  // RemoveNamedItem

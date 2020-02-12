@@ -14,6 +14,6 @@ CDOMDocumentFragment::~CDOMDocumentFragment() {
 
 CDOMNode* CDOMDocumentFragment::CopyNode() {
   CDOMDocumentFragment* pNewDocumentFragment =
-      m_pOwnerDocument->CreateDocumentFragment();
+      GetOwnerDocument()->CreateDocumentFragment();
   return pNewDocumentFragment;
 }  // CopyNode

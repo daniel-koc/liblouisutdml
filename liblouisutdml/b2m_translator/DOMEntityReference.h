@@ -13,17 +13,21 @@ class CDOMEntityReference : public CDOMNode {
  public:
   CDOMEntityReference(CDOMDocument* pOwnerDocument);
   virtual ~CDOMEntityReference();
-  virtual void SetNodeName(CString* pStrName);
-  virtual CString* GetNodeName();
-  void SetNotationName(CString* pStrName);
-  CString* GetNotationName();
+
+  // CDOMNode override:
+  void SetNodeName(CString* pStrName) override { SetNotationName(pStrName); }
+  CString* GetNodeName() override { return GetNotationName(); }
+  CString ToString() override;
+
+  void SetNotationName(CString* pStrNotationName);
+  CString* GetNotationName() { return m_pStrNotationName; }
   //@LPCTSTR GetNotationValue();
-  virtual CString ToString();
 
  protected:
-  virtual CDOMNode* CopyNode();
+  // CDOMNode override:
+  CDOMNode* CopyNode() override;
 
- protected:
+ private:
   CString* m_pStrNotationName;
   /*@
   static LPCTSTR s_lpszLessNotationName;
@@ -36,13 +40,5 @@ class CDOMEntityReference : public CDOMNode {
   static LPCTSTR s_lpszQuoteNotationValue;
   @*/
 };
-
-inline CString* CDOMEntityReference::GetNodeName() {
-  return m_pStrNotationName;
-}
-
-inline CString* CDOMEntityReference::GetNotationName() {
-  return m_pStrNotationName;
-}
 
 #endif  // !defined(DOMENTITYREFERENCE_H_)

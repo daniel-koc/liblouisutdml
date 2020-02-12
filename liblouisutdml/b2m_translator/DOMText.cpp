@@ -27,18 +27,19 @@ CDOMText::~CDOMText() {
 }
 
 CDOMNode* CDOMText::CopyNode() {
-  CDOMText* pNewText =
-      m_pOwnerDocument->CreateTextNode(new CString(*m_pStrData));
+  CDOMText* pNewText = GetOwnerDocument()->CreateTextNode(
+      m_pStrData ? new CString(*m_pStrData) : NULL);
   return pNewText;
 }  // CopyNode
 
 CDOMText* CDOMText::SplitText(int nOffset) {
+  if (!m_pStrData)
+    return NULL;
   CString* pStrPart1 = new CString();
   CString* pStrPart2 = new CString();
   *pStrPart1 = m_pStrData->substring(0, nOffset);
   *pStrPart2 = m_pStrData->substring(nOffset, m_pStrData->length());
   delete m_pStrData;
   m_pStrData = pStrPart1;
-  CDOMText* pNewText = m_pOwnerDocument->CreateTextNode(pStrPart2);
-  return pNewText;
+  return GetOwnerDocument()->CreateTextNode(pStrPart2);
 }  // SplitText

@@ -20,8 +20,12 @@ class CDOMDocument : public CDOMNode {
  public:
   CDOMDocument();
   virtual ~CDOMDocument();
+
+  // CDOMNode override:
+  CString ToString() override;
+
   void SetDocumentElement(CDOMElement* pDocumentElement);
-  CDOMElement* GetDocumentElement();
+  CDOMElement* GetDocumentElement() { return m_pDocumentElement; }
   CDOMElement* CreateElement(wchar_t* pStrTagName);
   CDOMElement* CreateElement(const wchar_t* pStrTagName);
   CDOMElement* CreateElement(CString* pStrTagName);
@@ -36,12 +40,12 @@ class CDOMDocument : public CDOMNode {
   CDOMAttr* CreateAttribute(CString* pStrName);
   CDOMEntityReference* CreateEntityReference(CString* pStrName);
   CDOMNodeList* GetElementsByTagName(CString* pStrTagName);
-  virtual CString ToString();
 
  protected:
-  virtual CDOMNode* CopyNode();
+  // CDOMNode override:
+  CDOMNode* CopyNode() override;
 
- protected:
+ private:
   CDOMElement* m_pDocumentElement;
 };
 
