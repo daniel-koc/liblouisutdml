@@ -3427,11 +3427,13 @@ back_translate_braille_string ()
 	  leadingBlanks++;
 	  continue;
 	}
+/*@
       if (ch == escapeChar)
 	ch = 32;
       if (ch == '[' || ch == '\\' || ch == '^' || ch == ']' || ch == '@'
 	  || (ch >= 'A' && ch <= 'Z'))
 	ch |= 32;
+@*/
       if (ch == 10 && printPage)
 	{
 	  handlePrintPageNumber ();
@@ -3517,11 +3519,13 @@ back_translate_file ()
 	  leadingBlanks++;
 	  continue;
 	}
+/*@
       if (ch == escapeChar)
 	ch = 32;
       if (ch == '[' || ch == '\\' || ch == '^' || ch == ']' || ch == '@'
 	  || (ch >= 'A' && ch <= 'Z'))
 	ch |= 32;
+@*/
       if (ch == 10 && printPage)
 	{
 	  handlePrintPageNumber ();
@@ -4267,9 +4271,11 @@ utd_back_translate_file ()
 	  leadingBlanks++;
 	  continue;
 	}
+/*@
       if (ch == '[' || ch == '\\' || ch == '^' || ch == ']' || ch == '@'
 	  || (ch >= 'A' && ch <= 'Z'))
 	ch |= 32;
+@*/
       if (pch == 10 && (ch == 10 || leadingBlanks > 1))
 	{
 	  formatBackBlock ();
@@ -4317,9 +4323,11 @@ utd_back_translate_braille_string ()
 	  leadingBlanks++;
 	  continue;
 	}
+/*@
       if (ch == '[' || ch == '\\' || ch == '^' || ch == ']' || ch == '@'
 	  || (ch >= 'A' && ch <= 'Z'))
 	ch |= 32;
+@*/
       if (pch == 10 && (ch == 10 || leadingBlanks > 1))
 	{
 	  formatBackBlock ();

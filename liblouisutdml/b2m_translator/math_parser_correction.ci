@@ -4,6 +4,9 @@ const wchar_t SUPERSCRIPT_MARKER = 0xf00b;
 const wchar_t STARTING_FRACTION_MARKER = 0xf005;
 const wchar_t ENDING_FRACTION_MARKER = 0xf006;
 const wchar_t SEPARATOR_FRACTION_MARKER = 0xf00c;
+const wchar_t STARTING_ROOT_MARKER = 0xf012;
+const wchar_t ENDING_ROOT_MARKER = 0xf013;
+const wchar_t SQRT_MARKER = 0xf014;
 
 const wchar_t* upDigits = L"abcdefghij";
 const wchar_t* lowDigits = L",;:/?+=(*)";
@@ -118,10 +121,19 @@ int startFracCount = 0;
 int midFrac[200];
 int midFracCount = 0;
 int nInsertingEndingFractionMarker = -1;
+bool bSimplifiedIndex = false;
+bool bStartedRoot = false;
 int digitInd;
 
+wprintf(L"correction:\n");
 for (g_correctInd = 0; g_correctInd < nTranslatingStrLen; g_correctInd++) {
 
+if (g_pwcsTranslatingStr[g_correctInd] == L'\"' &&
+g_pwcsTranslatingStr[g_correctInd+1] == 243) {
+g_correctInd++;
+addMathBrl(SUPERSCRIPT_MARKER);
+bSimplifiedIndex = true;
+} else
 if (g_pwcsTranslatingStr[g_correctInd] == 243) {
 addMathBrl(SUPERSCRIPT_MARKER);
 if (isLowDigit(g_correctInd+1, &digitInd)) {
@@ -149,6 +161,12 @@ addMathBrl(CLOSING_MARKER);
 }  // if (isLowDigit
 }  // if (g_pwcsTranslatingStr[g_correctInd] == 243)
 else
+if (g_pwcsTranslatingStr[g_correctInd] == L'\"' &&
+g_pwcsTranslatingStr[g_correctInd+1] == 185) {
+g_correctInd++;
+addMathBrl(SUBSCRIPT_MARKER);
+bSimplifiedIndex = true;
+} else
 if (g_pwcsTranslatingStr[g_correctInd] == 185) {
 addMathBrl(SUBSCRIPT_MARKER);
 if (isLowDigit(g_correctInd+1, &digitInd)) {
@@ -175,6 +193,52 @@ break;
 addMathBrl(CLOSING_MARKER);
 }  // if (isLowDigit
 }  // if (g_pwcsTranslatingStr[g_correctInd] == 243)
+else
+// starting root:
+if (g_pwcsTranslatingStr[g_correctInd] == 92) {
+addMathBrl(STARTING_ROOT_MARKER);
+if (isLowDigit(g_correctInd+1, &digitInd)) {
+addMathBrl(L'#');
+while (true) {
+addMathBrl(L'a'+digitInd);
+g_correctInd++;
+if (!isLowDigit(g_correctInd+1, &digitInd))
+break;
+}  // while
+}  // if (isLowDigit
+else
+if (isMinusSign(g_correctInd+1) && isLowDigit(g_correctInd+2, &digitInd)) {
+addMathBrl(L'-');
+addMathBrl(L'#');
+g_correctInd++;
+while (true) {
+addMathBrl(L'a'+digitInd);
+g_correctInd++;
+if (!isLowDigit(g_correctInd+1, &digitInd))
+break;
+}  // while
+}  // if (isLowDigit
+bStartedRoot = true;
+}  // if (g_pwcsTranslatingStr[g_correctInd] == L'\\')
+else
+// ending root / sqrt:
+if (g_pwcsTranslatingStr[g_correctInd] == L'\"' &&
+g_pwcsTranslatingStr[g_correctInd+1] == 230) {
+g_correctInd++;
+if (bStartedRoot)
+addMathBrl(ENDING_ROOT_MARKER);
+else
+addMathBrl(SQRT_MARKER);
+bStartedRoot = false;
+bSimplifiedIndex = true;
+} else
+if (g_pwcsTranslatingStr[g_correctInd] == 230) {
+if (bStartedRoot)
+addMathBrl(ENDING_ROOT_MARKER);
+else
+addMathBrl(SQRT_MARKER);
+bStartedRoot = false;
+}  // if (g_pwcsTranslatingStr[g_correctInd] == 230) {
 else
 if (g_pwcsTranslatingStr[g_correctInd] == 234) {
 addMathBrl(CLOSING_MARKER);
@@ -247,6 +311,10 @@ addMathBrl(L'a'+digitInd);
 g_correctInd++;
 }  // while
 addMathBrl(ENDING_FRACTION_MARKER);
+if (bSimplifiedIndex) {
+addMathBrl(CLOSING_MARKER);
+bSimplifiedIndex = false;
+}
 }  // if (isLowDigit(g_correctInd+1, &digitInd) ||
 else {
 tempIndex = g_correctInd;
@@ -277,11 +345,15 @@ addMathBrl(g_pwcsTranslatingStr[g_correctInd]);
 if (g_correctInd == nInsertingEndingFractionMarker) {
 addMathBrl(ENDING_FRACTION_MARKER);
 nInsertingEndingFractionMarker = -1;
+if (bSimplifiedIndex) {
+addMathBrl(CLOSING_MARKER);
+bSimplifiedIndex = false;
+}
 }
 }  // for
 
 g_pwcsMathBrl[g_nMathBrlLen] = wcNULL;
 widestring_buf_len += g_nMathBrlLen+1;
-
+wprintf(L"\n");
 return g_pwcsMathBrl;
 }  // correctBeforeBackTranslation
