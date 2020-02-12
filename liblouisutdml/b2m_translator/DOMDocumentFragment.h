@@ -8,12 +8,12 @@
 #include "DOMNode.h"
 
 class CDOMDocumentFragment : public CDOMNode {
-public:
-CDOMDocumentFragment(CDOMDocument* pOwnerDocument);
-virtual ~CDOMDocumentFragment();
+ public:
+  CDOMDocumentFragment(CDOMDocument* pOwnerDocument);
+  virtual ~CDOMDocumentFragment();
 
-protected:
-virtual CDOMNode* CopyNode();
+ protected:
+  virtual CDOMNode* CopyNode();
 };
 
 #endif  // !defined(DOM_DOCUMENT_FRAGMENT_H_)

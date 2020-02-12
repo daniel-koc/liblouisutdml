@@ -9,16 +9,15 @@
 
 class CDOMDocument;
 
-class CDOMText: public CDOMCharacterData
-{
-public:
-CDOMText(CDOMDocument* pOwnerDocument);
-CDOMText(CDOMDocument* pOwnerDocument, EDOMNodeType nNodeType);
-virtual ~CDOMText();
-CDOMText* SplitText(int nOffset);
+class CDOMText : public CDOMCharacterData {
+ public:
+  CDOMText(CDOMDocument* pOwnerDocument);
+  CDOMText(CDOMDocument* pOwnerDocument, EDOMNodeType nNodeType);
+  virtual ~CDOMText();
+  CDOMText* SplitText(int nOffset);
 
-protected:
-virtual CDOMNode* CopyNode();
+ protected:
+  virtual CDOMNode* CopyNode();
 };
 
-#endif // !defined(DOMTEXT_H_)
+#endif  // !defined(DOMTEXT_H_)

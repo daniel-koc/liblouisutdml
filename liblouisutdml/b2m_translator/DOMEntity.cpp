@@ -7,7 +7,7 @@
 
 #ifdef _DEBUG
 #undef THIS_FILE
-static char THIS_FILE[]=__FILE__;
+static char THIS_FILE[] = __FILE__;
 #define new DEBUG_NEW
 #endif
 
@@ -16,10 +16,8 @@ static char THIS_FILE[]=__FILE__;
 //////////////////////////////////////////////////////////////////////
 
 CDOMEntity::CDOMEntity(CDOMDocument* pOwnerDocument)
-: CDOMNode(pOwnerDocument, DOM_ENTITY_NODE)
-{
+    : CDOMNode(pOwnerDocument, DOM_ENTITY_NODE) {
 }
 
-CDOMEntity::~CDOMEntity()
-{
+CDOMEntity::~CDOMEntity() {
 }

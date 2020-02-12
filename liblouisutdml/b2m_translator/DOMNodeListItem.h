@@ -7,33 +7,30 @@
 
 #include "DOMNode.h"
 
-class CDOMNodeListItem  
-{
-public:
-	CDOMNodeListItem(CDOMNode* pNode);
-	virtual ~CDOMNodeListItem();
-CDOMNode* GetNode();
-void SetNextNodeListItem(CDOMNodeListItem* pNextNodeListItem);
-CDOMNodeListItem* GetNextNodeListItem();
+class CDOMNodeListItem {
+ public:
+  CDOMNodeListItem(CDOMNode* pNode);
+  virtual ~CDOMNodeListItem();
+  CDOMNode* GetNode();
+  void SetNextNodeListItem(CDOMNodeListItem* pNextNodeListItem);
+  CDOMNodeListItem* GetNextNodeListItem();
 
-protected:
-CDOMNode* m_pNode;
-CDOMNodeListItem* m_pNextNodeListItem;
+ protected:
+  CDOMNode* m_pNode;
+  CDOMNodeListItem* m_pNextNodeListItem;
 };
 
-inline CDOMNode* CDOMNodeListItem::GetNode()
-{
-return m_pNode;
+inline CDOMNode* CDOMNodeListItem::GetNode() {
+  return m_pNode;
 }
 
-inline void CDOMNodeListItem::SetNextNodeListItem(CDOMNodeListItem* pNextNodeListItem)
-{
-m_pNextNodeListItem = pNextNodeListItem;
+inline void CDOMNodeListItem::SetNextNodeListItem(
+    CDOMNodeListItem* pNextNodeListItem) {
+  m_pNextNodeListItem = pNextNodeListItem;
 }
 
-inline CDOMNodeListItem* CDOMNodeListItem::GetNextNodeListItem()
-{
-return m_pNextNodeListItem;
+inline CDOMNodeListItem* CDOMNodeListItem::GetNextNodeListItem() {
+  return m_pNextNodeListItem;
 }
 
-#endif // !defined(DOMNODELISTITEM_H_)
+#endif  // !defined(DOMNODELISTITEM_H_)

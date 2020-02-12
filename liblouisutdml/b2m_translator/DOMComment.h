@@ -9,15 +9,14 @@
 
 class CDOMDocument;
 
-class CDOMComment: public CDOMText
-{
-public:
-CDOMComment(CDOMDocument* pOwnerDocument);
-virtual ~CDOMComment();
-virtual CString ToString();
+class CDOMComment : public CDOMText {
+ public:
+  CDOMComment(CDOMDocument* pOwnerDocument);
+  virtual ~CDOMComment();
+  virtual CString ToString();
 
-protected:
-virtual CDOMNode* CopyNode();
+ protected:
+  virtual CDOMNode* CopyNode();
 };
 
-#endif // !defined(DOMCOMMENT_H_)
+#endif  // !defined(DOMCOMMENT_H_)

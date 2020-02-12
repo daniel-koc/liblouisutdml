@@ -9,15 +9,14 @@
 
 class CDOMDocument;
 
-class CDOMCDATASection: public CDOMText
-{
-public:
-CDOMCDATASection(CDOMDocument* pOwnerDocument);
-virtual ~CDOMCDATASection();
-virtual CString ToString();
+class CDOMCDATASection : public CDOMText {
+ public:
+  CDOMCDATASection(CDOMDocument* pOwnerDocument);
+  virtual ~CDOMCDATASection();
+  virtual CString ToString();
 
-protected:
-virtual CDOMNode* CopyNode();
+ protected:
+  virtual CDOMNode* CopyNode();
 };
 
-#endif // !defined(DOMCDATASECTION_H_)
+#endif  // !defined(DOMCDATASECTION_H_)

@@ -1,4 +1,5 @@
-// DOMProcessingInstruction.h: interface for the CDOMProcessingInstruction class.
+// DOMProcessingInstruction.h: interface for the CDOMProcessingInstruction
+// class.
 //
 //////////////////////////////////////////////////////////////////////
 
@@ -9,33 +10,30 @@
 
 class CDOMDocument;
 
-class CDOMProcessingInstruction: public CDOMNode
-{
-public:
-CDOMProcessingInstruction(CDOMDocument* pOwnerDocument);
-virtual ~CDOMProcessingInstruction();
-void SetTarget(CString* pStrTarget);
-CString* GetTarget();
-void SetData(CString* pStrData);
-CString* GetData();
-virtual CString ToString();
+class CDOMProcessingInstruction : public CDOMNode {
+ public:
+  CDOMProcessingInstruction(CDOMDocument* pOwnerDocument);
+  virtual ~CDOMProcessingInstruction();
+  void SetTarget(CString* pStrTarget);
+  CString* GetTarget();
+  void SetData(CString* pStrData);
+  CString* GetData();
+  virtual CString ToString();
 
-protected:
-virtual CDOMNode* CopyNode();
+ protected:
+  virtual CDOMNode* CopyNode();
 
-protected:
-CString* m_pStrTarget;
-CString* m_pStrData;
+ protected:
+  CString* m_pStrTarget;
+  CString* m_pStrData;
 };
 
-inline CString* CDOMProcessingInstruction::GetTarget()
-{
-return m_pStrTarget;
+inline CString* CDOMProcessingInstruction::GetTarget() {
+  return m_pStrTarget;
 }
 
-inline CString* CDOMProcessingInstruction::GetData()
-{
-return m_pStrData;
+inline CString* CDOMProcessingInstruction::GetData() {
+  return m_pStrData;
 }
 
-#endif // !defined(DOMPROCESSINGINSTRUCTION_H_)
+#endif  // !defined(DOMPROCESSINGINSTRUCTION_H_)

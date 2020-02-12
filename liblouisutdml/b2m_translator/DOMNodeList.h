@@ -7,20 +7,19 @@
 
 #include "DOMNodeListItem.h"
 
-class CDOMNodeList  
-{
-public:
-CDOMNodeList();
-CDOMNodeList(CDOMNode* pFirstNode);
-virtual ~CDOMNodeList();
-void AddItem(CDOMNode* pNode);
-CDOMNode* Item(int nIndex);
-int GetLength();
+class CDOMNodeList {
+ public:
+  CDOMNodeList();
+  CDOMNodeList(CDOMNode* pFirstNode);
+  virtual ~CDOMNodeList();
+  void AddItem(CDOMNode* pNode);
+  CDOMNode* Item(int nIndex);
+  int GetLength();
 
-protected:
-CDOMNodeListItem* m_pFirstNodeListItem;
-CDOMNodeListItem* m_pLastNodeListItem;
-int m_nItemsCount;
+ protected:
+  CDOMNodeListItem* m_pFirstNodeListItem;
+  CDOMNodeListItem* m_pLastNodeListItem;
+  int m_nItemsCount;
 };
 
-#endif // !defined(DOMNODELIST_H_)
+#endif  // !defined(DOMNODELIST_H_)

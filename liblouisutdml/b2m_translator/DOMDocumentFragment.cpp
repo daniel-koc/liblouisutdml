@@ -6,15 +6,14 @@
 #include "DOMDocument.h"
 
 CDOMDocumentFragment::CDOMDocumentFragment(CDOMDocument* pOwnerDocument)
-: CDOMNode(pOwnerDocument, DOM_DOCUMENT_FRAGMENT)
-{
+    : CDOMNode(pOwnerDocument, DOM_DOCUMENT_FRAGMENT) {
 }
 
 CDOMDocumentFragment::~CDOMDocumentFragment() {
 }
 
-CDOMNode* CDOMDocumentFragment::CopyNode()
-{
-CDOMDocumentFragment* pNewDocumentFragment = m_pOwnerDocument->CreateDocumentFragment();
-return pNewDocumentFragment;
+CDOMNode* CDOMDocumentFragment::CopyNode() {
+  CDOMDocumentFragment* pNewDocumentFragment =
+      m_pOwnerDocument->CreateDocumentFragment();
+  return pNewDocumentFragment;
 }  // CopyNode

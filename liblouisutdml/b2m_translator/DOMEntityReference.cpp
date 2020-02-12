@@ -7,7 +7,7 @@
 
 #ifdef _DEBUG
 #undef THIS_FILE
-static char THIS_FILE[]=__FILE__;
+static char THIS_FILE[] = __FILE__;
 #define new DEBUG_NEW
 #endif
 
@@ -25,60 +25,63 @@ LPCTSTR CDOMEntityReference::s_lpszQuoteNotationName = "quot";
 LPCTSTR CDOMEntityReference::s_lpszQuoteNotationValue = "\"";
 @*/
 CDOMEntityReference::CDOMEntityReference(CDOMDocument* pOwnerDocument)
-: CDOMNode(pOwnerDocument, DOM_ENTITY_REFERENCE_NODE)
-{
-m_pStrNotationName = NULL;
+    : CDOMNode(pOwnerDocument, DOM_ENTITY_REFERENCE_NODE) {
+  m_pStrNotationName = NULL;
 }
 
-CDOMEntityReference::~CDOMEntityReference()
-{
-if (m_pStrNotationName != NULL)
-delete m_pStrNotationName;
+CDOMEntityReference::~CDOMEntityReference() {
+  if (m_pStrNotationName != NULL)
+    delete m_pStrNotationName;
 }
 
-CDOMNode* CDOMEntityReference::CopyNode()
-{
-CDOMEntityReference* pNewEntityReference = m_pOwnerDocument->CreateEntityReference(new CString(*m_pStrNotationName));
-return pNewEntityReference;
+CDOMNode* CDOMEntityReference::CopyNode() {
+  CDOMEntityReference* pNewEntityReference =
+      m_pOwnerDocument->CreateEntityReference(new CString(*m_pStrNotationName));
+  return pNewEntityReference;
 }
 
-void CDOMEntityReference::SetNodeName(CString* pStrName)
-{
-if (m_pStrNotationName != NULL)
-delete m_pStrNotationName;
-m_pStrNotationName = pStrName;
+void CDOMEntityReference::SetNodeName(CString* pStrName) {
+  if (m_pStrNotationName != NULL)
+    delete m_pStrNotationName;
+  m_pStrNotationName = pStrName;
 }  // SetNodeName
 
-void CDOMEntityReference::SetNotationName(CString* pStrName)
-{
-if (m_pStrNotationName != NULL)
-delete m_pStrNotationName;
-m_pStrNotationName = pStrName;
+void CDOMEntityReference::SetNotationName(CString* pStrName) {
+  if (m_pStrNotationName != NULL)
+    delete m_pStrNotationName;
+  m_pStrNotationName = pStrName;
 }  // SetNotationName
 /*@
 LPCTSTR CDOMEntityReference::GetNotationValue()
 {
-if (m_pStrNotationName->CompareNoCase(CDOMEntityReference::s_lpszLessNotationName) == 0)
+if
+(m_pStrNotationName->CompareNoCase(CDOMEntityReference::s_lpszLessNotationName)
+== 0)
 return CDOMEntityReference::s_lpszLessNotationValue;
 else
-if (m_pStrNotationName->CompareNoCase(CDOMEntityReference::s_lpszGreaterNotationName) == 0)
+if
+(m_pStrNotationName->CompareNoCase(CDOMEntityReference::s_lpszGreaterNotationName)
+== 0)
 return CDOMEntityReference::s_lpszGreaterNotationValue;
 else
-if (m_pStrNotationName->CompareNoCase(CDOMEntityReference::s_lpszAmpersantNotationName) == 0)
+if
+(m_pStrNotationName->CompareNoCase(CDOMEntityReference::s_lpszAmpersantNotationName)
+== 0)
 return CDOMEntityReference::s_lpszAmpersantNotationValue;
 else
-if (m_pStrNotationName->CompareNoCase(CDOMEntityReference::s_lpszQuoteNotationName) == 0)
+if
+(m_pStrNotationName->CompareNoCase(CDOMEntityReference::s_lpszQuoteNotationName)
+== 0)
 return CDOMEntityReference::s_lpszQuoteNotationValue;
 else
 return "";
 }  // GetNotationValue
 @*/
-CString CDOMEntityReference::ToString()
-{
-CString str;
-str = L"&";
-if (m_pStrNotationName != NULL)
-str += *m_pStrNotationName;
-str += L";";
-return str;
+CString CDOMEntityReference::ToString() {
+  CString str;
+  str = L"&";
+  if (m_pStrNotationName != NULL)
+    str += *m_pStrNotationName;
+  str += L";";
+  return str;
 }

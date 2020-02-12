@@ -9,14 +9,13 @@
 
 class CDOMDocument;
 
-class CDOMEntity: public CDOMNode
-{
-public:
-CDOMEntity(CDOMDocument* pOwnerDocument);
-virtual ~CDOMEntity();
+class CDOMEntity : public CDOMNode {
+ public:
+  CDOMEntity(CDOMDocument* pOwnerDocument);
+  virtual ~CDOMEntity();
 
-protected:
-virtual CDOMNode* CopyNode() = 0;
+ protected:
+  virtual CDOMNode* CopyNode() = 0;
 };
 
-#endif // !defined(DOMENTITY_H_)
+#endif  // !defined(DOMENTITY_H_)

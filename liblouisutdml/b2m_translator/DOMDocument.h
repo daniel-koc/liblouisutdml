@@ -16,33 +16,33 @@ class CDOMProcessingInstruction;
 class CDOMAttr;
 class CDOMEntityReference;
 
-class CDOMDocument: public CDOMNode
-{
-public:
-CDOMDocument();
-virtual ~CDOMDocument();
-void SetDocumentElement(CDOMElement* pDocumentElement);
-CDOMElement* GetDocumentElement();
-CDOMElement* CreateElement(wchar_t* pStrTagName);
-CDOMElement* CreateElement(const wchar_t* pStrTagName);
-CDOMElement* CreateElement(CString* pStrTagName);
-CDOMDocumentFragment* CreateDocumentFragment();
-CDOMText* CreateTextNode(wchar_t* pStrData);
-CDOMText* CreateTextNode(const wchar_t* pStrData);
-CDOMText* CreateTextNode(CString* pStrData);
-CDOMComment* CreateComment(CString* pStrData);
-CDOMCDATASection* CreateCDATASection(CString* pStrData);
-CDOMProcessingInstruction* CreateProcessingInstruction(CString* pStrTarget, CString* pStrData);
-CDOMAttr* CreateAttribute(CString* pStrName);
-CDOMEntityReference* CreateEntityReference(CString* pStrName);
-CDOMNodeList* GetElementsByTagName(CString* pStrTagName);
-virtual CString ToString();
+class CDOMDocument : public CDOMNode {
+ public:
+  CDOMDocument();
+  virtual ~CDOMDocument();
+  void SetDocumentElement(CDOMElement* pDocumentElement);
+  CDOMElement* GetDocumentElement();
+  CDOMElement* CreateElement(wchar_t* pStrTagName);
+  CDOMElement* CreateElement(const wchar_t* pStrTagName);
+  CDOMElement* CreateElement(CString* pStrTagName);
+  CDOMDocumentFragment* CreateDocumentFragment();
+  CDOMText* CreateTextNode(wchar_t* pStrData);
+  CDOMText* CreateTextNode(const wchar_t* pStrData);
+  CDOMText* CreateTextNode(CString* pStrData);
+  CDOMComment* CreateComment(CString* pStrData);
+  CDOMCDATASection* CreateCDATASection(CString* pStrData);
+  CDOMProcessingInstruction* CreateProcessingInstruction(CString* pStrTarget,
+                                                         CString* pStrData);
+  CDOMAttr* CreateAttribute(CString* pStrName);
+  CDOMEntityReference* CreateEntityReference(CString* pStrName);
+  CDOMNodeList* GetElementsByTagName(CString* pStrTagName);
+  virtual CString ToString();
 
-protected:
-virtual CDOMNode* CopyNode();
+ protected:
+  virtual CDOMNode* CopyNode();
 
-protected:
-CDOMElement* m_pDocumentElement;
+ protected:
+  CDOMElement* m_pDocumentElement;
 };
 
-#endif // !defined(DOMDOCUMENT_H_)
+#endif  // !defined(DOMDOCUMENT_H_)
