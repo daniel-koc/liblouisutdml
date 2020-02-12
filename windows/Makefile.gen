@@ -36,6 +36,7 @@ OBJ = Jliblouisutdml.obj \
     examine_document.obj \
     liblouisutdml.obj \
     paths.obj \
+    readbacktranslationconfig.obj \
     readconfig.obj \
     semantics.obj \
     transcribe_cdataSection.obj \
@@ -52,7 +53,24 @@ OBJ = Jliblouisutdml.obj \
     utd2brf.obj \
     utd2pef.obj \
     utd2volumes.obj \
-    transcriber.obj 
+    transcriber.obj \
+    math_parser.obj \
+    String_utils.obj \
+    DOMAttr.obj \
+    DOMCDATASection.obj \
+    DOMCharacterData.obj \
+    DOMComment.obj \
+    DOMDocument.obj \
+    DOMDocumentFragment.obj \
+    DOMElement.obj \
+    DOMEntity.obj \
+    DOMEntityReference.obj \
+    DOMNamedNodeList.obj \
+    DOMNode.obj \
+    DOMNodeList.obj \
+    DOMNodeListItem.obj \
+    DOMProcessingInstruction.obj \
+    DOMText.obj 
 LIBXML2_OBJ = \
     SAX.obj \
     entities.obj \
@@ -127,6 +145,8 @@ liblouisutdml.obj: $(HEADERS) $(SRCDIR)\liblouisutdml.c
     $(CC) $(CCFLAGS) $(SRCDIR)\liblouisutdml.c
 paths.obj: $(HEADERS) $(SRCDIR)\paths.c
     $(CC) $(CCFLAGS) $(SRCDIR)\paths.c
+readbacktranslationconfig.obj: $(HEADERS) $(SRCDIR)\readbacktranslationconfig.c
+    $(CC) $(CCFLAGS) $(SRCDIR)\readbacktranslationconfig.c
 readconfig.obj: $(HEADERS) $(SRCDIR)\readconfig.c
     $(CC) $(CCFLAGS) $(SRCDIR)\readconfig.c
 semantics.obj: $(HEADERS) $(SRCDIR)\semantics.c
@@ -161,6 +181,40 @@ utd2volumes.obj: $(HEADERS) $(SRCDIR)\utd2volumes.c
     $(CC) $(CCFLAGS) $(SRCDIR)\utd2volumes.c
 transcriber.obj: $(HEADERS) $(SRCDIR)\transcriber.c
     $(CC) $(CCFLAGS) $(SRCDIR)\transcriber.c
+math_parser.obj: $(HEADERS) $(SRCDIR)\b2m_translator\math_parser.cpp
+    $(CC) $(CCFLAGS) $(SRCDIR)\b2m_translator\math_parser.cpp
+String_utils.obj: $(HEADERS) $(SRCDIR)\b2m_translator\String_utils.cpp
+    $(CC) $(CCFLAGS) $(SRCDIR)\b2m_translator\String_utils.cpp
+DOMAttr.obj: $(HEADERS) $(SRCDIR)\b2m_translator\DOMAttr.cpp
+    $(CC) $(CCFLAGS) $(SRCDIR)\b2m_translator\DOMAttr.cpp
+DOMCDATASection.obj: $(HEADERS) $(SRCDIR)\b2m_translator\DOMCDATASection.cpp
+    $(CC) $(CCFLAGS) $(SRCDIR)\b2m_translator\DOMCDATASection.cpp
+DOMCharacterData.obj: $(HEADERS) $(SRCDIR)\b2m_translator\DOMCharacterData.cpp
+    $(CC) $(CCFLAGS) $(SRCDIR)\b2m_translator\DOMCharacterData.cpp
+DOMComment.obj: $(HEADERS) $(SRCDIR)\b2m_translator\DOMComment.cpp
+    $(CC) $(CCFLAGS) $(SRCDIR)\b2m_translator\DOMComment.cpp
+DOMDocument.obj: $(HEADERS) $(SRCDIR)\b2m_translator\DOMDocument.cpp
+    $(CC) $(CCFLAGS) $(SRCDIR)\b2m_translator\DOMDocument.cpp
+DOMDocumentFragment.obj: $(HEADERS) $(SRCDIR)\b2m_translator\DOMDocumentFragment.cpp
+    $(CC) $(CCFLAGS) $(SRCDIR)\b2m_translator\DOMDocumentFragment.cpp
+DOMElement.obj: $(HEADERS) $(SRCDIR)\b2m_translator\DOMElement.cpp
+    $(CC) $(CCFLAGS) $(SRCDIR)\b2m_translator\DOMElement.cpp
+DOMEntity.obj: $(HEADERS) $(SRCDIR)\b2m_translator\DOMEntity.cpp
+    $(CC) $(CCFLAGS) $(SRCDIR)\b2m_translator\DOMEntity.cpp
+DOMEntityReference.obj: $(HEADERS) $(SRCDIR)\b2m_translator\DOMEntityReference.cpp
+    $(CC) $(CCFLAGS) $(SRCDIR)\b2m_translator\DOMEntityReference.cpp
+DOMNamedNodeList.obj: $(HEADERS) $(SRCDIR)\b2m_translator\DOMNamedNodeList.cpp
+    $(CC) $(CCFLAGS) $(SRCDIR)\b2m_translator\DOMNamedNodeList.cpp
+DOMNode.obj: $(HEADERS) $(SRCDIR)\b2m_translator\DOMNode.cpp
+    $(CC) $(CCFLAGS) $(SRCDIR)\b2m_translator\DOMNode.cpp
+DOMNodeList.obj: $(HEADERS) $(SRCDIR)\b2m_translator\DOMNodeList.cpp
+    $(CC) $(CCFLAGS) $(SRCDIR)\b2m_translator\DOMNodeList.cpp
+DOMNodeListItem.obj: $(HEADERS) $(SRCDIR)\b2m_translator\DOMNodeListItem.cpp
+    $(CC) $(CCFLAGS) $(SRCDIR)\b2m_translator\DOMNodeListItem.cpp
+DOMProcessingInstruction.obj: $(HEADERS) $(SRCDIR)\b2m_translator\DOMProcessingInstruction.cpp
+    $(CC) $(CCFLAGS) $(SRCDIR)\b2m_translator\DOMProcessingInstruction.cpp
+DOMText.obj: $(HEADERS) $(SRCDIR)\b2m_translator\DOMText.cpp
+    $(CC) $(CCFLAGS) $(SRCDIR)\b2m_translator\DOMText.cpp
 SAX.obj: $(LXHEADERS) $(LXSRCDIR)\SAX.c
     $(CC) $(LXCCFLAGS) $(LXSRCDIR)\SAX.c
 entities.obj: $(LXHEADERS) $(LXSRCDIR)\entities.c
