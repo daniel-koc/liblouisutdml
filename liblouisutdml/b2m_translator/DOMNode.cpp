@@ -26,6 +26,7 @@ m_pFirstNode = NULL;
 m_pLastNode = NULL;
 m_nDocLineNumber = 0;
 m_nDocColumnNumber = 0;
+m_bUnderOverType = false;
 }  // CDOCNode
 
 CDOMNode::~CDOMNode()

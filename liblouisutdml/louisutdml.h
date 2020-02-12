@@ -99,7 +99,7 @@ typedef struct
 #define CHARSIZE sizeof (widechar)
 #endif
 
-#define BUFSIZE 8192
+#define BUFSIZE 10*8192
 #define BIG_BUFSIZE 4 * BUFSIZE - 8
 #define MAX_LENGTH BUFSIZE - 4
 #define MAX_TEXT_LENGTH 2 * BUFSIZE - 4
@@ -107,7 +107,7 @@ typedef struct
 #define MAXNAMELEN 1024
 #define MAXNUMLEN 32
 #define STACKSIZE 100
-#define MAXLINES 512
+#define MAXLINES 10*512
 
 typedef enum
 {

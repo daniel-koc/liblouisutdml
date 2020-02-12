@@ -2305,10 +2305,10 @@ doAlignColumns ()
 	    cellsToWrite--;
 	  if (cellsToWrite == 0)
 	    break;
-	  for (k = charactersWritten;
-	       k < (charactersWritten + cellsToWrite); k++)
-	    if (rowBuf[k] == 0xa0)	/*unbreakable space */
-	      rowBuf[k] = 0x20;	/*space */
+//@	  for (k = charactersWritten;
+//@	       k < (charactersWritten + cellsToWrite); k++)
+//@	    if (rowBuf[k] == 0xa0)	/*unbreakable space */
+//@	      rowBuf[k] = 0x20;	/*space */
 	  if (!insertWidechars (&rowBuf[charactersWritten], cellsToWrite))
 	    return 0;
 	  charactersWritten += cellsToWrite;
@@ -2391,10 +2391,10 @@ doListColumns ()
 				    &insertHyphen))
 		      cellsToWrite = breakAt - charactersWritten;
 		}
-	      for (k = charactersWritten;
-		   k < (charactersWritten + cellsToWrite); k++)
-		if (thisRow[k] == 0xa0)	/*unbreakable space */
-		  thisRow[k] = 0x20;	/*space */
+//@	      for (k = charactersWritten;
+//@		   k < (charactersWritten + cellsToWrite); k++)
+//@		if (thisRow[k] == 0xa0)	/*unbreakable space */
+//@		  thisRow[k] = 0x20;	/*space */
 	      if (!insertWidechars
 		  (&thisRow[charactersWritten], cellsToWrite))
 		return 0;
@@ -2481,10 +2481,10 @@ doListLines ()
 				  &insertHyphen))
 		    cellsToWrite = breakAt - charactersWritten;
 	      }
-	    for (k = charactersWritten;
-		 k < (charactersWritten + cellsToWrite); k++)
-	      if (thisLine[k] == 0xa0)	/*unbreakable space */
-		thisLine[k] = 0x20;	/*space */
+//@	    for (k = charactersWritten;
+//@		 k < (charactersWritten + cellsToWrite); k++)
+//@	      if (thisLine[k] == 0xa0)	/*unbreakable space */
+//@		thisLine[k] = 0x20;	/*space */
 	    if (!insertWidechars (&thisLine[charactersWritten], cellsToWrite))
 	      return 0;
 	    charactersWritten += cellsToWrite;
@@ -2528,9 +2528,9 @@ doComputerCode ()
 	}
       if (translatedBuffer[charactersWritten + cellsToWrite] == 0x0a)
 	translatedBuffer[charactersWritten + cellsToWrite] = ' ';
-      for (k = charactersWritten; k < (charactersWritten + cellsToWrite); k++)
-	if (translatedBuffer[k] == 0xa0)	/*unbreakable space */
-	  translatedBuffer[k] = 0x20;	/*space */
+//@      for (k = charactersWritten; k < (charactersWritten + cellsToWrite); k++)
+//@	if (translatedBuffer[k] == 0xa0)	/*unbreakable space */
+//@	  translatedBuffer[k] = 0x20;	/*space */
       if (!insertWidechars
 	  (&translatedBuffer[charactersWritten], cellsToWrite))
 	return 0;
@@ -2597,9 +2597,9 @@ doLeftJustify ()
 			    &insertHyphen))
 	      cellsToWrite = breakAt - charactersWritten;
 	}
-      for (k = charactersWritten; k < (charactersWritten + cellsToWrite); k++)
-	if (translatedBuffer[k] == 0xa0)	/*unbreakable space */
-	  translatedBuffer[k] = 0x20;	/*space */
+//@      for (k = charactersWritten; k < (charactersWritten + cellsToWrite); k++)
+//@	if (translatedBuffer[k] == 0xa0)	/*unbreakable space */
+//@	  translatedBuffer[k] = 0x20;	/*space */
       if (!insertWidechars
 	  (&translatedBuffer[charactersWritten], cellsToWrite))
 	return 0;
@@ -2648,9 +2648,9 @@ doContents ()
   numbersLength = translatedLength - numbersStart;
   for (--k; k >= 0 && translatedBuffer[k] > 32; k--);
   lastWord = k + 1;
-  for (k = numbersStart; k < translatedLength; k++)
-    if (translatedBuffer[k] == 0xa0)
-      translatedBuffer[k] = ' ';
+//@  for (k = numbersStart; k < translatedLength; k++)
+//@    if (translatedBuffer[k] == 0xa0)
+//@      translatedBuffer[k] = ' ';
   untilLastWord = lastWord - 1;
   while (charactersWritten < untilLastWord)
     {
@@ -2698,9 +2698,9 @@ doContents ()
 		cellsToWrite = 1;
 	    }
 	}
-      for (k = charactersWritten; k < (charactersWritten + cellsToWrite); k++)
-	if (translatedBuffer[k] == 0xa0)	/*unbreakable space */
-	  translatedBuffer[k] = 0x20;	/*space */
+//@      for (k = charactersWritten; k < (charactersWritten + cellsToWrite); k++)
+//@	if (translatedBuffer[k] == 0xa0)	/*unbreakable space */
+//@	  translatedBuffer[k] = 0x20;	/*space */
       if (!insertWidechars
 	  (&translatedBuffer[charactersWritten], cellsToWrite))
 	return 0;
@@ -2867,9 +2867,9 @@ doCenterRight ()
 	      wordTooLong = 1;
 	    }
 	}
-      for (k = charactersWritten; k < (charactersWritten + cellsToWrite); k++)
-	if (translatedBuffer[k] == 0xa0)	/*unbreakable space */
-	  translatedBuffer[k] = 0x20;	/*space */
+//@      for (k = charactersWritten; k < (charactersWritten + cellsToWrite); k++)
+//@	if (translatedBuffer[k] == 0xa0)	/*unbreakable space */
+//@	  translatedBuffer[k] = 0x20;	/*space */
       if (!wordTooLong)
 	{
 	  k = availableCells - cellsToWrite;

@@ -59,6 +59,9 @@ void SetDocLineColumnNumbers(int nDocLineNumber, int nDocColumnNumber);
 int GetDocLineNumber();
 int GetDocColumnNumber();
 
+void SetUnderOverType() { m_bUnderOverType = true; }
+bool IsUnderOverType() { return m_bUnderOverType; }
+
 protected:
 virtual CDOMNode* CopyNode() = 0;
 
@@ -72,6 +75,7 @@ CDOMNode* m_pFirstNode;
 CDOMNode* m_pLastNode;
 int m_nDocLineNumber;
 int m_nDocColumnNumber;
+bool m_bUnderOverType;
 };
 
 inline CDOMDocument* CDOMNode::GetOwnerDocument()

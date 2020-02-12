@@ -14,6 +14,12 @@ extern "C" {
 #include "DOMElement.h"
 #include "DOMText.h"
 
+const wchar_t wcNULL = L'\0';
+
+static CDOMDocument* g_document = NULL;
+static CDOMDocumentFragment* g_operatorsFrag = NULL;
+static bool g_gatheringOperators = false;
+
 static wchar_t g_wcDecimalSign = L',';
 static wchar_t* g_mathExprSeparator = L"_.";
 static wchar_t* g_mathColor = L"blue";        // change it to "" (to inherit) or another color
@@ -21,12 +27,6 @@ static wchar_t* g_mathFontSize = L"1em";      // change to e.g. 1.2em for larger
 static wchar_t* g_mathFontFamily = L"mathvariant";  // change to "" to inherit (works in IE) or another family (e.g. "arial")
 static bool g_displayStyle = true;      // puts limits above and below large operators
 static bool g_showAsciiFormulaOnHover = true;
-
-bool isIE() {
-return false;
-}
-
-const wchar_t wcNULL = L'\0';
 
 const wchar_t* MATH_ELNAME = L"math";
 const wchar_t* MFENCED_ELNAME = L"mfenced";
@@ -85,13 +85,9 @@ this->tag = t;
 }
 };
 
-typedef void* LPVOID;
-
-static CDOMDocument* g_document = NULL;
-static CDOMDocumentFragment* g_operatorsFrag = NULL;
-static bool g_gatheringOperators = false;
-
 TokenType LMpreviousSymbol, LMcurrentSymbol;
+
+typedef void* LPVOID;
 
 #define WIDESTRING_BUFFER_SIZE 8 * BUFSIZE
 static wchar_t widestring_buffer[WIDESTRING_BUFFER_SIZE];
@@ -104,7 +100,7 @@ alloc_widestring(const wchar_t* inString, int length)
 int inStringLen;
   if (inString == NULL)
     return NULL;
-  if ((widestring_buf_len + length) >= WIDESTRING_BUFFER_SIZE)
+  if ((length + widestring_buf_len) >= WIDESTRING_BUFFER_SIZE)
     memoryError();
   newString = &widestring_buffer[widestring_buf_len];
 inStringLen = (int) wcslen(inString);
@@ -116,10 +112,16 @@ newString[inStringLen] = wcNULL;
   return newString;
 }
 
+ParseResult* LMparseExpr(wchar_t* str, bool rightbracket, bool matrix);
+
+bool isIE() {
+return false;
+}
+
 int CompareLMSymbolInput( LPVOID plmSymbol1, LPVOID plmSymbol2 )
 {
 return wcscmp( ((LMSymbol*) plmSymbol1)->input, ((LMSymbol*) plmSymbol2)->input );
-}  // CompareLMSymbolInput
+}  // CompareFileEntriesByName
 
 typedef int (*CompareItemsFunc)( LPVOID p1, LPVOID p2 );
 static CompareItemsFunc CompareItems = CompareLMSymbolInput;
@@ -144,7 +146,9 @@ static CompareItemsFunc CompareItems = CompareLMSymbolInput;
     void QuickSort( LPVOID* x, int off, int len )
     {
 if (CompareItems == NULL)
+{
 return;
+}
 
         LPVOID t;
         register int i;
@@ -235,9 +239,9 @@ int i = 0;
 return (st + i);
 }
 
-int positionInLMsymbols(const wchar_t* str, int n) { 
+int positionInLMsymbols(wchar_t* str, int n) { 
 // return position >=n where str appears or would be inserted
-// assumes LMSymbols is sorted
+// assumes arr is sorted
 int i = 0;
   if (n==0) {
     int h, m;
@@ -253,10 +257,10 @@ h = m;
     return h;
   } else
   for (i = n; i < LMsymbolsCount && wcscmp(LM_SYMBOL_NAME(i), str) < 0; i++);
-  return i;	// i=LMsymbolsCount || LM_SYMBOL_NAME(i) >= str
+  return i; // i=LMsymbolsCount || LM_SYMBOL_NAME(i) >= str
 }  // positionInLMsymbols
 
-LMSymbol* LMgetSymbol(const wchar_t* str) {
+LMSymbol* LMgetSymbol(wchar_t* str) {
 //return maximal initial substring of str that appears in names
 //return NULL if there is none
   int k = 0; //new pos
@@ -317,7 +321,7 @@ do {
 k++;
   } while (L'0' <= wc && wc <= L'9' && k <= strLen);
 }  // if
-}  // while (wc == g_wcDecimalSign)
+}  // while (wc == g_wcDecimalSign) {
 k--;
     tagst = (wchar_t*) MN_ELNAME;
   }  // if (L'0' <= wc && wc <= L'9')
@@ -344,7 +348,7 @@ k = 1;
 }  // if (L'a' <= wc && wc <= L'z')
 }  // if (wc == L'&')
 tagst = (wchar_t*) MO_ELNAME;
-  }  // else if
+  }
 
 // Commented out by DRW (not fully understood, but probably to do with
 // use of "/" as an INFIX version of "\\frac", which we don't want):
@@ -358,8 +362,6 @@ tagst = (wchar_t*) MO_ELNAME;
   return CreateTempLMSymbol(inout, tagst, inout, TTYPE_CONST);
 }  // LMgetSymbol
 
-ParseResult LMparseExpr(wchar_t* str, bool rightbracket, bool matrix);
-
 // Parsing ASCII math expressions with the following grammar
 // v ::= [A-Za-z] | greek letters | numbers | other constant symbols
 // u ::= sqrt | text | bb | other unary symbols for font commands
@@ -371,57 +373,23 @@ ParseResult LMparseExpr(wchar_t* str, bool rightbracket, bool matrix);
 // E ::= IE | I/I			Expression
 // Each terminal symbol is translated into a corresponding mathml node.
 
-        ParseResult LMbuildUnaryAccent(wchar_t* str, LMSymbol* symbol, ParseResult result) {
-CDOMElement* node = createMmlNode(symbol->tag, result.node);
-	wchar_t* output = symbol->output;
-/*
-	if (isIE) {
-		if (symbol.input == "\\hat")
-			output = "\u0302";
-		else if (symbol.input == "\\widehat")
-			output = "\u005E";
-		else if (symbol.input == "\\bar")
-			output = "\u00AF";
-		else if (symbol.input == "\\grave")
-			output = "\u0300";
-		else if (symbol.input == "\\tilde")
-			output = "\u0303";
-	}
-*/
-	CDOMElement* node1 = createMmlNode(MO_ELNAME, g_document->CreateTextNode(output));
-	if (wcscmp(symbol->input, L"\\vec") == 0 || wcscmp(symbol->input, L"\\check") == 0)
-						// don't allow to stretch
-	    node1->SetAttribute(MAXSIZE_ATTRNAME, L"1.2");
-		 // why doesn't "1" work?  \vec nearly disappears in firefox
-	if (isIE() && wcscmp(symbol->input, L"\\bar") == 0)
-	    node1->SetAttribute(MAXSIZE_ATTRNAME, L"0.5");
-	if (wcscmp(symbol->input, L"\\underbrace") == 0 || wcscmp(symbol->input, L"\\underline") == 0)
-	  node1->SetAttribute(L"accentunder", L"true");
-	else
-	  node1->SetAttribute(L"accent", L"true");
-	node->AppendChild(node1);
-	if (wcscmp(symbol->input, L"\\overbrace") == 0 || wcscmp(symbol->input, L"\\underbrace") == 0)
-	  node->SetUnderOverType();
-
-	return ParseResult(node, str, symbol->tag);
-}  // LMbuildUnaryAccent
-
-ParseResult LMparseSexpr(wchar_t* str) { //parses str and returns [node,tailstr,(node)tag]
+ParseResult* LMparseSexpr(wchar_t* str) { //parses str and returns [node,tailstr,(node)tag]
   LMSymbol* symbol;
   CDOMElement* node;
-  ParseResult result;
-  ParseResult result2;
+  ParseResult* result;
+  ParseResult* result2;
 wchar_t* atval;
   int i;
   wchar_t* st;
   wchar_t* output;
 wchar_t atvalStr[100];
+// rightvert = false,
 
   CDOMDocumentFragment* newFrag = g_document->CreateDocumentFragment();
   str = LMremoveCharsAndBlanks(str,0);
   symbol = LMgetSymbol(str);             //either a token or a bracket or empty
   if (symbol == NULL || symbol->ttype == TTYPE_RIGHTBRACKET)
-    return ParseResult(NULL, str, NULL);
+    return new ParseResult(NULL, str, NULL);
   if (symbol->ttype == TTYPE_DEFINITION) {
     int symbolInputLen = (int) wcslen(symbol->input);
     st = alloc_widestring(symbol->output, (wcslen(symbol->output) + wcslen(str) - symbolInputLen));
@@ -429,15 +397,14 @@ wchar_t atvalStr[100];
     str = st;
     symbol = LMgetSymbol(str);
     if (symbol == NULL || symbol->ttype == TTYPE_RIGHTBRACKET)
-      return ParseResult(NULL, str, NULL);
+      return new ParseResult(NULL, str, NULL);
   }
   str = LMremoveCharsAndBlanks(str, wcslen(symbol->input));
-
   switch (symbol->ttype) {
   case TTYPE_SPACE:
     node = createMmlNode(symbol->tag, NULL);
     node->SetAttribute(symbol->atname, symbol->atval);
-    return ParseResult(node, str, symbol->tag);
+    return new ParseResult(node, str, symbol->tag);
   case TTYPE_UNDEROVER:
     if (isIE()) {
       if (symbol->rinput != NULL) {   // botch for missing symbols
@@ -446,30 +413,27 @@ wchar_t atvalStr[100];
         str = st;
         symbol = LMgetSymbol(str);
         if (symbol == NULL || symbol->ttype == TTYPE_RIGHTBRACKET)
-          return ParseResult(NULL, str, NULL);
+          return new ParseResult(NULL, str, NULL);
         symbol->ttype = TTYPE_UNDEROVER;
         str = LMremoveCharsAndBlanks(str, wcslen(symbol->input));
       }
     }
-    return ParseResult(createMmlNode(symbol->tag,
+    return new ParseResult(createMmlNode(symbol->tag,
 			g_document->CreateTextNode(symbol->output)), str, symbol->tag);
   case TTYPE_CONST:
   case TTYPE_OPERATOR:
     output = symbol->output;
     if (isIE() && symbol->ieoutput != NULL)
       output = symbol->ieoutput;
-if (output)
-    node = createMmlNode(symbol->tag, g_document->CreateTextNode(output));
-else
-    node = createMmlNode(symbol->tag, NULL);
-    return ParseResult(node, str, symbol->tag);
+    node = createMmlNode(symbol->tag,g_document->CreateTextNode(output));
+    return new ParseResult(node, str, symbol->tag);
   case TTYPE_LONG:  // added by DRW
     node = createMmlNode(symbol->tag,g_document->CreateTextNode(symbol->output));
     node->SetAttribute(MINSIZE_ATTRNAME, L"1.5");
     node->SetAttribute(MAXSIZE_ATTRNAME, L"1.5");
     node = createMmlNode(MOVER_ELNAME, node);
     node->AppendChild(createMmlNode(MSPACE_ELNAME, NULL));
-    return ParseResult(node, str, symbol->tag);
+    return new ParseResult(node, str, symbol->tag);
   case TTYPE_STRETCHY: // added by DRW
     output = symbol->output;
     if (isIE() && symbol->ieoutput != NULL)
@@ -482,14 +446,14 @@ else
     if (symbol->atval != NULL)
     node->SetAttribute(MAXSIZE_ATTRNAME, symbol->atval);  // don't allow to stretch here
     if (symbol->rtag != NULL)
-      return ParseResult(node, str, symbol->rtag);
+      return new ParseResult(node, str, symbol->rtag);
     else
-      return ParseResult(node, str, symbol->tag);
+      return new ParseResult(node, str, symbol->tag);
   case TTYPE_BIG:  // added by DRW
     atval = symbol->atval;
     symbol = LMgetSymbol(str);
     if (symbol == NULL)
-      return ParseResult(NULL, str, NULL);
+      return new ParseResult(NULL, str, NULL);
     str = LMremoveCharsAndBlanks(str, wcslen(symbol->input));
     node = createMmlNode(symbol->tag,g_document->CreateTextNode(symbol->output));
     if (isIE()) {		// to get brackets to expand
@@ -503,7 +467,7 @@ else
       node->SetAttribute(MINSIZE_ATTRNAME, atval);
       node->SetAttribute(MAXSIZE_ATTRNAME, atval);
     }
-    return ParseResult(node, str, symbol->tag);
+    return new ParseResult(node, str, symbol->tag);
   case TTYPE_LEFTBRACKET:   //read (expr+)
     if (symbol->tsubtype == TSUBTYPE_LEFT) { // left what?
       symbol = LMgetSymbol(str);
@@ -516,13 +480,13 @@ else
     result = LMparseExpr(str, true, false);
     if (symbol == NULL ||
 	symbol->invisible == BOOL_TRUE)
-      node = createMmlNode(MROW_ELNAME, result.node);
+      node = createMmlNode(MROW_ELNAME, result->node);
     else {
       node = createMmlNode(MO_ELNAME, g_document->CreateTextNode(symbol->output));
       node = createMmlNode(MROW_ELNAME, node);
-      node->AppendChild(result.node);
+      node->AppendChild(result->node);
     }
-    result.node = node;
+    result->node = node;
     return result;
 /*
   case TTYPE_MATRIX:	 //read (expr+)
@@ -601,26 +565,27 @@ else
 */
   case TTYPE_UNARY:
       result = LMparseSexpr(str);
-      if (result.node == NULL) {
-      return ParseResult(createMmlNode(symbol->tag,
+      if (result->node == NULL) {
+      delete result;
+      return new ParseResult(createMmlNode(symbol->tag,
                              g_document->CreateTextNode(symbol->output)), str, NULL);
     }
       if (symbol->func == BOOL_TRUE) { // functions hack
 	wchar_t st = str[0];
-//	if (st=="^" || st=="_" || st=="/" || st=="|" || st==",") {
+//	if (st == L'^' || st == L'_' || st == L'/' || st == L'|' || st == L',') {
 	if (st == L'^' || st == L'_' || st == L',') {
-	  return ParseResult(createMmlNode(symbol->tag,
+	  return new ParseResult(createMmlNode(symbol->tag,
 		    g_document->CreateTextNode(symbol->output)),str,symbol->tag);
         } else {
 	  node = createMmlNode(MROW_ELNAME,
 	   createMmlNode(symbol->tag,g_document->CreateTextNode(symbol->output)));
-	  if (isIE()) {
+	  if (isIE) {
 	    CDOMElement* space = createMmlNode(MSPACE_ELNAME, NULL);
 	    space->SetAttribute(WIDTH_ATTRNAME, L"0.167em");
 	    node->AppendChild(space);
 	  }
-	  node->AppendChild(result.node);
-	  return ParseResult(node,result.str,symbol->tag);
+	  node->AppendChild(result->node);
+	  return new ParseResult(node,result->str,symbol->tag);
         }
       }
       if (wcscmp(symbol->input, L"\\sqrt") == 0) {		// sqrt
@@ -628,20 +593,56 @@ else
 	  CDOMElement* space = createMmlNode(MSPACE_ELNAME, NULL);
 	  space->SetAttribute(HEIGHT_ATTRNAME, L"1.2ex");
 	  space->SetAttribute(WIDTH_ATTRNAME, L"0em");	// probably no effect
-	  node = createMmlNode(symbol->tag,result.node);
+	  node = createMmlNode(symbol->tag,result->node);
 //	  node.setAttribute(MINSIZE_ATTRNAME, L"1");	// ignored
 //	  node = createMmlNode(MROW_ELNAME, node);  // hopefully unnecessary
 	  node->AppendChild(space);
-	  result.node = node;
-	  result.tag = symbol->tag;
+	  result->node = node;
+	  result->tag = symbol->tag;
 	  return result;
 	} else {
-	  result.node = createMmlNode(symbol->tag, result.node);
-	  result.tag = symbol->tag;
+	  result->node = createMmlNode(symbol->tag, result->node);
+	  result->tag = symbol->tag;
 	  return result;
 	}
       } else if (symbol->acc == BOOL_TRUE) {   // accent
-	return LMbuildUnaryAccent(result.str, symbol, result);
+        node = createMmlNode(symbol->tag, result->node);
+	wchar_t* output = symbol->output;
+/*
+	if (isIE) {
+		if (symbol.input == "\\hat")
+			output = "\u0302";
+		else if (symbol.input == "\\widehat")
+			output = "\u005E";
+		else if (symbol.input == "\\bar")
+			output = "\u00AF";
+		else if (symbol.input == "\\grave")
+			output = "\u0300";
+		else if (symbol.input == "\\tilde")
+			output = "\u0303";
+	}
+*/
+	CDOMElement* node1 = createMmlNode(MO_ELNAME, g_document->CreateTextNode(output));
+/*
+	if (symbol.input == "\\vec" || symbol.input == "\\check")
+						// don't allow to stretch
+	    node1.setAttribute(MAXSIZE_ATTRNAME, L"1.2");
+		 // why doesn't "1" work?  \vec nearly disappears in firefox
+	if (isIE && symbol.input == "\\bar")
+	    node1.setAttribute(MAXSIZE_ATTRNAME, L"0.5");
+	if (symbol.input == "\\underbrace" || symbol.input == "\\underline")
+	  node1.setAttribute("accentunder","true");
+	else
+	  node1.setAttribute("accent","true");
+*/
+	node->AppendChild(node1);
+/*
+	if (symbol.input == "\\overbrace" || symbol.input == "\\underbrace")
+	  node.ttype = TTYPE_UNDEROVER;
+*/
+	result->node = node;
+	result->tag = symbol->tag;
+	return result;
       } else {			      // font change or displaystyle command
 /*
         if (!isIE && typeof symbol.codes != "undefined") {
@@ -662,15 +663,15 @@ else
             }
         }
 */
-        node = createMmlNode(symbol->tag, result.node);
+        node = createMmlNode(symbol->tag, result->node);
         node->SetAttribute(symbol->atname, symbol->atval);
 /*
 	if (symbol.input == "\\scriptstyle" ||
 	    symbol.input == "\\scriptscriptstyle")
 		node.setAttribute("displaystyle","false");
 */
-	result.node = node;
-	result.tag = symbol->tag;
+	result->node = node;
+	result->tag = symbol->tag;
 	return result;
       }
   case TTYPE_BINARY:
@@ -680,145 +681,121 @@ g_gatheringOperators = true;
 }
 result = LMparseSexpr(str);
 g_gatheringOperators = false;
-    if (result.node == NULL) {
+    if (result->node == NULL) {
 g_operatorsFrag = NULL;
-      return ParseResult(createMmlNode(MO_ELNAME,
+      delete result;
+      return new ParseResult(createMmlNode(MO_ELNAME,
 			   g_document->CreateTextNode(symbol->input)), str, NULL);
     }
-    result2 = LMparseSexpr(result.str);
-    if (result2.node == NULL) {
+    result2 = LMparseSexpr(result->str);
+    if (result2->node == NULL) {
 g_operatorsFrag = NULL;
-      return ParseResult(createMmlNode(MO_ELNAME,
+      delete result;
+      delete result2;
+      return new ParseResult(createMmlNode(MO_ELNAME,
 			   g_document->CreateTextNode(symbol->input)), str, NULL);
     }
     if (wcscmp(symbol->input, L"\\root") == 0 || wcscmp(symbol->input, L"\\stackrel") == 0)
-      newFrag->AppendChild(result2.node);
-    newFrag->AppendChild(result.node);
+      newFrag->AppendChild(result2->node);
+    newFrag->AppendChild(result->node);
     if (wcscmp(symbol->input, L"\\frac") == 0 || wcscmp(symbol->input, L"\\sfrac") == 0)
-newFrag->AppendChild(result2.node);
-    str = result2.str;
+newFrag->AppendChild(result2->node);
+    str = result2->str;
+    delete result;
+    delete result2;
 if (g_operatorsFrag != NULL && g_operatorsFrag->HasChildNodes()) {
 g_operatorsFrag->AppendChild(createMmlNode(symbol->tag, newFrag));
 newFrag = g_operatorsFrag;
 g_operatorsFrag = NULL;
-    return ParseResult(newFrag, str, symbol->tag);
+    return new ParseResult(newFrag, str, symbol->tag);
 }
-    return ParseResult(createMmlNode(symbol->tag, newFrag), str, symbol->tag);
+    return new ParseResult(createMmlNode(symbol->tag, newFrag), str, symbol->tag);
 	case TTYPE_INFIX:
     str = LMremoveCharsAndBlanks(str, wcslen(symbol->input));
-    return ParseResult(createMmlNode(MO_ELNAME, g_document->CreateTextNode(symbol->output)),
+    return new ParseResult(createMmlNode(MO_ELNAME, g_document->CreateTextNode(symbol->output)),
 	str, symbol->tag);
   default:
-    return ParseResult(createMmlNode(symbol->tag,        //its a constant
+    return new ParseResult(createMmlNode(symbol->tag,        //its a constant
 	g_document->CreateTextNode(symbol->output)), str, symbol->tag);
   }
 }
 
-ParseResult LMparseIexpr(wchar_t* str) {
+ParseResult* LMparseIexpr(wchar_t* str) {
 LMSymbol* symbol;
-LMSymbol* symbol1;
-LMSymbol* symbol2;
+LMSymbol* sym1;
+LMSymbol* sym2;
 CDOMNode* node;
+ParseResult* result;
 wchar_t* tag;
 bool underover;
   str = LMremoveCharsAndBlanks(str,0);
-  symbol1 = LMgetSymbol(str);
-  ParseResult result = LMparseSexpr(str);
-  node = result.node;
-  tag = result.tag;
-  str = result.str;
+  sym1 = LMgetSymbol(str);
+  result = LMparseSexpr(str);
+  node = result->node;
+  str = result->str;
+  tag = result->tag;
+delete result;
   symbol = LMgetSymbol(str);
-
-  if (symbol != NULL && symbol->ttype == TTYPE_REVERTUNARY) {
-    str = LMremoveCharsAndBlanks(str, wcslen(symbol->input));
-      symbol2 = LMgetSymbol(str);
-if (symbol2->acc == BOOL_TRUE) {
-    str = LMremoveCharsAndBlanks(str, wcslen(symbol2->input));
-ParseResult result2 = LMbuildUnaryAccent(str, symbol2, result);
-  node = result2.node;
-  tag = result2.tag;
-  str = result2.str;
-}
-} else
   if (symbol != NULL && symbol->ttype == TTYPE_INFIX) {
     str = LMremoveCharsAndBlanks(str, wcslen(symbol->input));
     result = LMparseSexpr(str);
-    if (result.node == NULL) // show box in place of missing argument
-      result.node = createMmlNode(MO_ELNAME, g_document->CreateTextNode(L"\u25A1"));
-    str = result.str;
-    tag = result.tag;
-    if (symbol->tsubtype == TSUBTYPE_SUBSCRIPT || symbol->tsubtype == TSUBTYPE_SUPERSCRIPT) {
-      symbol2 = LMgetSymbol(str);
+    if (result->node == NULL) // show box in place of missing argument
+      result->node = createMmlNode(MO_ELNAME, g_document->CreateTextNode(L"\u25A1"));
+    str = result->str;
+    tag = result->tag;
+    if (wcscmp(symbol->input, L"_") == 0 || wcscmp(symbol->input, L"^") == 0) {
+      sym2 = LMgetSymbol(str);
 tag = NULL;	// no space between x^2 and a following sin, cos, etc.
 // This is for \underbrace and \overbrace
-      underover = ((symbol1 && symbol1->ttype == TTYPE_UNDEROVER) || (node && node->IsUnderOverType()));
-//    underover = (symbol1->ttype == TTYPE_UNDEROVER);
-      if (symbol2 != NULL && symbol->tsubtype == TSUBTYPE_SUBSCRIPT && symbol2->tsubtype == TSUBTYPE_SUPERSCRIPT) {
-        str = LMremoveCharsAndBlanks(str, wcslen(symbol2->input));
-        ParseResult result2 = LMparseSexpr(str);
-	str = result2.str;
-	tag = result2.tag;  // leave space between x_1^2 and a following sin etc.
+      underover = false; //((sym1.ttype == TTYPE_UNDEROVER) || (node.ttype == TTYPE_UNDEROVER));
+//    underover = (sym1.ttype == TTYPE_UNDEROVER);
+      if (sym2 != NULL && wcscmp(symbol->input, L"_") == 0 && wcscmp(sym2->input, L"^") == 0) {
+        str = LMremoveCharsAndBlanks(str, wcslen(sym2->input));
+        ParseResult* res2 = LMparseSexpr(str);
+	str = res2->str;
+	tag = res2->tag;  // leave space between x_1^2 and a following sin etc.
         node = createMmlNode((underover ? MUNDEROVER_ELNAME : MSUBSUP_ELNAME), node);
-        node->AppendChild(result.node);
-        node->AppendChild(result2.node);
-      } else if (symbol->tsubtype == TSUBTYPE_SUBSCRIPT) {
+        node->AppendChild(result->node);
+        node->AppendChild(res2->node);
+      } else if (wcscmp(symbol->input, L"_") == 0) {
 	node = createMmlNode((underover ? MUNDER_ELNAME : MSUB_ELNAME), node);
-        node->AppendChild(result.node);
+        node->AppendChild(result->node);
       } else {
 	node = createMmlNode((underover ? MOVER_ELNAME : MSUP_ELNAME), node);
-        node->AppendChild(result.node);
-      }
-      node = createMmlNode(MROW_ELNAME, node); // so sum does not stretch
-    } else 
-    if (symbol->tsubtype == TSUBTYPE_UNDERSCRIPT || symbol->tsubtype == TSUBTYPE_OVERSCRIPT) {
-      symbol2 = LMgetSymbol(str);
-tag = NULL;	// no space between x^2 and a following sin, cos, etc.
-      if (symbol2 != NULL && symbol->tsubtype == TSUBTYPE_UNDERSCRIPT && symbol2->tsubtype == TSUBTYPE_OVERSCRIPT) {
-        str = LMremoveCharsAndBlanks(str, wcslen(symbol2->input));
-        ParseResult result2 = LMparseSexpr(str);
-	str = result2.str;
-	tag = result2.tag;  // leave space between x_1^2 and a following sin etc.
-        node = createMmlNode(MUNDEROVER_ELNAME, node);
-        node->AppendChild(result.node);
-        node->AppendChild(result2.node);
-      } else if (symbol->tsubtype == TSUBTYPE_UNDERSCRIPT) {
-	node = createMmlNode(MUNDER_ELNAME, node);
-        node->AppendChild(result.node);
-      } else {
-	node = createMmlNode(MOVER_ELNAME, node);
-        node->AppendChild(result.node);
+        node->AppendChild(result->node);
       }
       node = createMmlNode(MROW_ELNAME, node); // so sum does not stretch
     } else {
       node = createMmlNode(symbol->tag, node);
       if (wcscmp(symbol->input, L"\\atop") == 0 || wcscmp(symbol->input, L"\\choose") == 0)
 	((CDOMElement*) node)->SetAttribute(LINETHICKNESS_ATTRNAME, L"0ex");
-      node->AppendChild(result.node);
+      node->AppendChild(result->node);
       if (wcscmp(symbol->input, L"\\choose") == 0)
 	node = createMmlNode(MFENCED_ELNAME, node);
     }
   }
-  return ParseResult(node, str, tag);
+  return new ParseResult(node, str, tag);
 }
 
-ParseResult LMparseExpr(wchar_t* str, bool rightbracket, bool matrix) {
+ParseResult* LMparseExpr(wchar_t* str, bool rightbracket, bool matrix) {
 LMSymbol* operatorSymbol;
 LMSymbol* symbol;
 CDOMNode* node;
 int i;
 wchar_t* tag;
-ParseResult result;
+ParseResult* result;
   CDOMDocumentFragment* newFrag = g_document->CreateDocumentFragment();
   do {
     str = LMremoveCharsAndBlanks(str, 0);
 operatorSymbol = LMgetSymbol(str);
     result = LMparseIexpr(str);
-    node = result.node;
-    str = result.str;
-    tag = result.tag;
+    node = result->node;
+    str = result->str;
+    tag = result->tag;
+    delete result;
     symbol = LMgetSymbol(str);
     if (node != NULL) {
-	if ((tag && (wcscmp(tag, MN_ELNAME) == 0 || wcscmp(tag, MI_ELNAME) == 0)) && symbol != NULL &&
+/*	if ((wcscmp(tag, MN_ELNAME) == 0 || wcscmp(tag, MI_ELNAME) == 0) && symbol != NULL &&
 	symbol->func == BOOL_TRUE) {
 			// Add space before \sin in 2\sin x or x\sin x
 	  CDOMElement* space = createMmlNode(MSPACE_ELNAME, NULL);
@@ -826,6 +803,7 @@ operatorSymbol = LMgetSymbol(str);
 	  node = createMmlNode(MROW_ELNAME, node);
 	  node->AppendChild(space);
       }
+*/
 if (g_gatheringOperators && g_operatorsFrag != NULL) {
 if (operatorSymbol->ttype == TTYPE_OPERATOR) {
       g_operatorsFrag->AppendChild(node);
@@ -896,15 +874,16 @@ tag = NULL;
     }
 */
   }
-  return ParseResult(newFrag, str, tag);
+  return new ParseResult(newFrag, str, tag);
 }
 
 CDOMElement* parseMath(wchar_t* str) {
 wprintf(L"*parseMath: \"%s\"\n", str);
 // str.replace(/^\s+/g,"")
 str = LMremoveCharsAndBlanks(str, 0);
-ParseResult result = LMparseExpr(str, false, false);
-  CDOMDocumentFragment* frag = (CDOMDocumentFragment*) result.node;
+ParseResult* result = LMparseExpr(str, false, false);
+  CDOMDocumentFragment* frag = (CDOMDocumentFragment*) result->node;
+  delete result;
 
   CDOMElement* node = createMmlNode(MSTYLE_ELNAME, frag);
   node->SetAttribute(MATHCOLOR_ATTRNAME, g_mathColor);

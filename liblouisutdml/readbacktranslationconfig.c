@@ -331,7 +331,7 @@ unsigned char* value = (unsigned char*)nested->value[actionIndex];
 	      k += unicodeLength;
 	      break;
 	    default:
-	      configureError (nested, "invalid value '%s'", nested->value[actionIndex][k]);
+	      configureError (nested, "invalid value '%s'", value);
 	      return 0;
 	    }
 	  k++;
@@ -534,18 +534,30 @@ checkValues (FileInfo * nested, const char **values, int actionIndex)
 "13",
 "MATRIX",
 "14",
+"OPERATOR",
+"15",
+"REVERTUNARY",
+"16",
     NULL
   };
 
   static const char *tokenSubtypes[] = {
-"UNDEFINED",
-"0",
-"VERT",
-"1",
-"LEFT",
-"2",
-"DOT",
-"3",
+    "UNDEFINED",
+    "0",
+    "VERT",
+    "1",
+    "LEFT",
+    "2",
+    "DOT",
+    "3",
+    "SUBSCRIPT",
+    "4",
+    "SUPERSCRIPT",
+    "5",
+    "UNDERSCRIPT",
+    "6",
+    "OVERSCRIPT",
+    "7",
     NULL
   };
 

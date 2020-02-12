@@ -320,7 +320,7 @@ return (curChar == TILDE_BRAILLECHAR && nextChar == L'l');
 }
 
 DEFINE_CHECKER(isSeparatorFraction)
-return (curChar == SEPARATOR_FRACTION_BRAILLEMARKER && prevChar != LESSTHAN_BRAILLECHAR);
+return (curChar == SEPARATOR_FRACTION_BRAILLEMARKER);
 }
 
 DEFINE_CHECKER(isStartingFraction)
