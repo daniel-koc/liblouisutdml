@@ -68,6 +68,7 @@ OBJ = Jliblouisutdml.obj \
     DOMNamedNodeList.obj \
     DOMNode.obj \
     DOMNodeList.obj \
+    DOMNodeListItem.obj \
     DOMProcessingInstruction.obj \
     DOMText.obj 
 LIBXML2_OBJ = \
@@ -208,6 +209,8 @@ DOMNode.obj: $(HEADERS) $(SRCDIR)\b2m_translator\DOMNode.cpp
     $(CC) $(CCFLAGS) $(SRCDIR)\b2m_translator\DOMNode.cpp
 DOMNodeList.obj: $(HEADERS) $(SRCDIR)\b2m_translator\DOMNodeList.cpp
     $(CC) $(CCFLAGS) $(SRCDIR)\b2m_translator\DOMNodeList.cpp
+DOMNodeListItem.obj: $(HEADERS) $(SRCDIR)\b2m_translator\DOMNodeListItem.cpp
+    $(CC) $(CCFLAGS) $(SRCDIR)\b2m_translator\DOMNodeListItem.cpp
 DOMProcessingInstruction.obj: $(HEADERS) $(SRCDIR)\b2m_translator\DOMProcessingInstruction.cpp
     $(CC) $(CCFLAGS) $(SRCDIR)\b2m_translator\DOMProcessingInstruction.cpp
 DOMText.obj: $(HEADERS) $(SRCDIR)\b2m_translator\DOMText.cpp
