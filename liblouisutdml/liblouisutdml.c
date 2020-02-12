@@ -293,10 +293,74 @@ wc_string_to_utf8(settingsString, &settingsStringInSize, s_settingsString, &sett
 return lbu_translateString(
 	((configFileList != 0) ? (const char *)s_configFileList : 0),
 	((inbuf != 0) ? (const char *)s_inbuf : 0),
-	inlen, outbuf, outlen,
+	inbufOutSize, outbuf, outlen,
 	((logFileName != 0) ? (const char *)s_logFileName : 0),
 	((settingsString != 0) ? (const char *)s_settingsString : 0),
 	mode);
+}
+
+_DLL_EXPORT int EXPORT_CALL lbu_translateStringArrayW(
+	widechar *configFileList,
+	widechar *inbuf,
+	 int* inlens,
+	widechar *outbuf,
+	int *outlens,
+	int count,
+	widechar *logFileName,
+	widechar *settingsString,
+	unsigned int mode)
+{
+int configFileListInSize = 0;
+int configFileListOutSize = MAXNAMELEN-1;
+int inbufInSize = 0;
+int inbufOutSize = MAX_LENGTH;
+int logFileNameInSize = 0;
+int logFileNameOutSize = MAXNAMELEN-1;
+int settingsStringInSize = 0;
+int settingsStringOutSize = MAX_SETTINGS_STRING_SIZE-1;
+int i, inStartIndex, outStartIndex;
+
+if (inbuf == 0)
+return 0;
+
+if (configFileList != 0)
+{
+configFileListInSize = wcslen(configFileList);
+wc_string_to_utf8(configFileList, &configFileListInSize, s_configFileList, &configFileListOutSize);
+}
+if (logFileName != 0)
+{
+logFileNameInSize = wcslen(logFileName);
+wc_string_to_utf8(logFileName, &logFileNameInSize, s_logFileName, &logFileNameOutSize);
+}
+if (settingsString != 0)
+{
+settingsStringInSize = wcslen(settingsString);
+wc_string_to_utf8(settingsString, &settingsStringInSize, s_settingsString, &settingsStringOutSize);
+}
+
+inStartIndex = 0;
+outStartIndex = 0;
+for (i = 0; i < count; i++)
+{
+inbufInSize = inlens[i];
+inbufOutSize = MAX_LENGTH;
+wc_string_to_utf8(&inbuf[inStartIndex], &inbufInSize, s_inbuf, &inbufOutSize);
+inStartIndex = inStartIndex + inlens[i] + 1;
+
+if (!lbu_translateString(
+	((configFileList != 0) ? (const char *)s_configFileList : 0),
+	((inbuf != 0) ? (const char *)s_inbuf : 0),
+	inbufOutSize, &outbuf[outStartIndex], &outlens[i],
+	((logFileName != 0) ? (const char *)s_logFileName : 0),
+	((settingsString != 0) ? (const char *)s_settingsString : 0),
+	mode))
+return 0;
+outStartIndex = outStartIndex + outlens[i];
+outbuf[outStartIndex++] = 0;
+}
+
+return 1;
 }
 
 _DLL_EXPORT int EXPORT_CALL
@@ -613,6 +677,9 @@ lbu_backTranslateString (const char *configFileList,
   if (!read_configuration_file
       (configFileList, logFileName, settingsString, mode))
     return 0;
+  if (!read_symbol_definitions_file(ud->forback_math_symbol_definitions_file))
+    return 0;
+
   if (inbuf == NULL || outbuf == NULL || outlen == NULL)
     return 0;
   ud->inbuf = inbuf;
@@ -703,6 +770,9 @@ _DLL_EXPORT int
   if (!read_configuration_file
       (configFileList, logFileName, settingsString, mode))
     return 0;
+  if (!read_symbol_definitions_file(ud->forback_math_symbol_definitions_file))
+    return 0;
+
   if (inFileName == NULL || outFileName == NULL)
     return 0;
   ud->outbuf = outbuf;

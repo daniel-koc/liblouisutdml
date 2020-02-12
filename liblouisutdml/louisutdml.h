@@ -278,8 +278,10 @@ typedef struct
   const char *compbrl_table_name;
   const char *mathtext_table_name;
   const char *mathexpr_table_name;
+  const char *forback_mathexpr_table_name;
   const char *edit_table_name;
   const char *main_braille_table;
+  const char *forback_math_symbol_definitions_file;
   const char *semantic_files;
   const char *converter_sem;
   const char *pass2_conv_sem;
@@ -319,6 +321,7 @@ int read_configuration_file (const char *configFileName,
 			     const char *logFileName, const char
 			     *settingsString, unsigned int mode);
 int config_compileSettings (const char *fileName);
+int read_symbol_definitions_file (const char *symbolDefsFileList);
 int do_xpath_expr ();
 int examine_document (xmlNode * node);
 int transcribe_document (xmlNode * node);

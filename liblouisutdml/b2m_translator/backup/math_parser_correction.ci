@@ -1,0 +1,148 @@
+wchar_t* correctBeforeBackTranslation(wchar_t* pwcsTranslatingStr, int nTranslatingStrLen)
+{
+wchar_t* mathBrl = &widestring_buffer[widestring_buf_len];
+int mathBrlLen = 0;
+
+const wchar_t* upDigits = L"abcdefghij";
+const wchar_t* lowDigits = L",;:/?+=(*)";
+int startFrac[200];
+int startFracCount = 0;
+int midFrac[200];
+int midFracCount = 0;
+int correctInd, digitInd;
+
+for (correctInd = 0; correctInd < nTranslatingStrLen; correctInd++) {
+
+if (pwcsTranslatingStr[correctInd] == 243) {
+mathBrl[mathBrlLen++] = 0xf020;
+for (digitInd = 0; digitInd < wcslen(lowDigits); digitInd++)
+if (pwcsTranslatingStr[correctInd+1] == lowDigits[digitInd])
+break;
+if (digitInd < wcslen(lowDigits) && (correctInd+1) < nTranslatingStrLen) {
+mathBrl[mathBrlLen++] = L'#';
+while (true) {
+mathBrl[mathBrlLen++] = L'a'+digitInd;
+correctInd++;
+if ((correctInd+1) >= nTranslatingStrLen)
+break;
+for (digitInd = 0; digitInd < wcslen(lowDigits); digitInd++)
+if (pwcsTranslatingStr[correctInd+1] == lowDigits[digitInd])
+break;
+if (digitInd == wcslen(lowDigits))
+break;
+}  // while
+mathBrl[mathBrlLen++] = 0xf021;
+}  // if (digitInd < wcslen(lowDigits)) {
+}  // if (pwcsTranslatingStr[correctInd] == 243)
+else
+if (pwcsTranslatingStr[correctInd] == 185) {
+mathBrl[mathBrlLen++] = 0xf022;
+for (digitInd = 0; digitInd < wcslen(lowDigits); digitInd++)
+if (pwcsTranslatingStr[correctInd+1] == lowDigits[digitInd])
+break;
+if (digitInd < wcslen(lowDigits) && (correctInd+1) < nTranslatingStrLen) {
+mathBrl[mathBrlLen++] = L'#';
+while (true) {
+mathBrl[mathBrlLen++] = L'a'+digitInd;
+correctInd++;
+if ((correctInd+1) >= nTranslatingStrLen)
+break;
+for (digitInd = 0; digitInd < wcslen(lowDigits); digitInd++)
+if (pwcsTranslatingStr[correctInd+1] == lowDigits[digitInd])
+break;
+if (digitInd == wcslen(lowDigits))
+break;
+}  // while
+mathBrl[mathBrlLen++] = 0xf021;
+}  // if (digitInd < wcslen(lowDigits))
+}  // if (pwcsTranslatingStr[correctInd] == 185)
+else
+if (pwcsTranslatingStr[correctInd] == 234) {
+mathBrl[mathBrlLen++] = 0xf021;
+}  // if (pwcsTranslatingStr[correctInd] == 234) {
+else
+if (pwcsTranslatingStr[correctInd] == L'#' && (correctInd+1) < nTranslatingStrLen) {
+bool createFrac = false;
+int correctInd2 = correctInd;
+for (digitInd = 0; digitInd < wcslen(upDigits); digitInd++)
+if (pwcsTranslatingStr[correctInd2+1] == upDigits[digitInd])
+break;
+if (digitInd < wcslen(upDigits) && (correctInd2+1) < nTranslatingStrLen) {
+while (true) {
+correctInd2++;
+if ((correctInd2+1) >= nTranslatingStrLen)
+break;
+for (digitInd = 0; digitInd < wcslen(upDigits); digitInd++)
+if (pwcsTranslatingStr[correctInd2+1] == upDigits[digitInd])
+break;
+if (digitInd == wcslen(upDigits))
+break;
+}  // while
+if ((correctInd2+1) < nTranslatingStrLen) {
+for (digitInd = 0; digitInd < wcslen(lowDigits); digitInd++)
+if (pwcsTranslatingStr[correctInd2+1] == lowDigits[digitInd])
+break;
+if (digitInd < wcslen(lowDigits) && (correctInd2+1) < nTranslatingStrLen)
+createFrac = true;
+}
+}  // if (digitInd < wcslen(upDigits)) {
+if (createFrac) {
+mathBrl[mathBrlLen++] = 0xf023;
+mathBrl[mathBrlLen++] = L'#';
+while (true) {
+for (digitInd = 0; digitInd < wcslen(upDigits); digitInd++)
+if (pwcsTranslatingStr[correctInd+1] == upDigits[digitInd])
+break;
+if (digitInd >= wcslen(upDigits))
+break;
+mathBrl[mathBrlLen++] = L'a'+digitInd;
+correctInd++;
+}  // while
+mathBrl[mathBrlLen++] = 0xf024;
+mathBrl[mathBrlLen++] = L'#';
+while (true) {
+for (digitInd = 0; digitInd < wcslen(lowDigits); digitInd++)
+if (pwcsTranslatingStr[correctInd+1] == lowDigits[digitInd])
+break;
+if (digitInd >= wcslen(lowDigits))
+break;
+mathBrl[mathBrlLen++] = L'a'+digitInd;
+correctInd++;
+if ((correctInd+1) >= nTranslatingStrLen)
+break;
+}  // while
+mathBrl[mathBrlLen++] = 0xf021;
+}  // if (createFrac)
+else {
+mathBrl[mathBrlLen++] = pwcsTranslatingStr[correctInd];
+}
+}  // if (pwcsTranslatingStr[correctInd] == L'#')
+else
+if (pwcsTranslatingStr[correctInd] == L';')
+{
+startFrac[startFracCount++] = mathBrlLen;
+mathBrl[mathBrlLen++] = pwcsTranslatingStr[correctInd];
+}  // if (pwcsTranslatingStr[correctInd] == L';')
+else
+if (pwcsTranslatingStr[correctInd] == 128)
+{
+midFrac[midFracCount++] = mathBrlLen;
+mathBrl[mathBrlLen++] = pwcsTranslatingStr[correctInd];
+}  // if (pwcsTranslatingStr[correctInd] == 128)
+else
+if (pwcsTranslatingStr[correctInd] == L'<' && startFracCount > 0 && midFracCount > 0)
+{
+mathBrl[startFrac[--startFracCount]] = 0xf023;
+mathBrl[midFrac[--midFracCount]] = 0xf024;
+mathBrl[mathBrlLen++] = 0xf021;
+}  // if (pwcsTranslatingStr[correctInd] == L'<' && startFracCount > 0 && midFracCount > 0)
+else {
+mathBrl[mathBrlLen++] = pwcsTranslatingStr[correctInd];
+}
+}  // for
+
+mathBrl[mathBrlLen] = wcNULL;
+widestring_buf_len += mathBrlLen+1;
+
+return mathBrl;
+}  // correctBeforeBackTranslation

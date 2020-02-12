@@ -48,9 +48,11 @@ static int inbuf_pos = 0;
 int
 convert_to_wide_inbuf(char* inbuf, int inlen)
 {
+  int outSize;
   inbuf_size = 0;
   inbuf_pos = 0;
-  int outSize = INBUFSIZE-1;
+  outSize = INBUFSIZE-1;
+//  ud->input_encoding = ascii8;
   utf8_string_to_wc(inbuf, &inlen, widechar_inbuf, &outSize);
   widechar_inbuf[outSize] = 0;
   inbuf_size = outSize;
@@ -60,12 +62,14 @@ return 1;
 int
 read_file_to_wide_inbuf(FILE *inFile)
 {
+  int inSize, outSize ;
   inbuf_size = 0;
   inbuf_pos = 0;
-  int inSize = (int) fread(char_inbuf, 1, INBUFSIZE-1 , inFile);
+  inSize = (int) fread(char_inbuf, 1, INBUFSIZE-1 , inFile);
   if (inSize  == 0)
     return 0;
-  int outSize = INBUFSIZE-1;
+  outSize = INBUFSIZE-1;
+//  ud->input_encoding = ascii8;
   utf8_string_to_wc(char_inbuf, &inSize, widechar_inbuf, &outSize);
   widechar_inbuf[outSize] = 0;
   inbuf_size = outSize;
@@ -3223,8 +3227,6 @@ insert_translated_buffer()
 	    return 0;
 	}
     }
-  ud->outbuf2[ud->outbuf2_len] = 0;
-printf("ending!\n");
 return 1;
 }
 
@@ -3243,38 +3245,34 @@ back_translate_with_main_table(widechar* text_buffer, int textLength, widechar**
 				&ud->translated_length,
 				(char *) ud->typeform, NULL, 0))
     return 0;
-ud->translated_buffer[ud->translated_length] = 0;
-*translated_buffer = &ud->translated_buffer[0];
-*translatedLength = ud->translated_length;
   if (!insert_translated_buffer())
     return 0;
-//  *translatedLength = ud->outbuf2_len;
-  ud->outbuf2_len = 0;
+  ud->outbuf2[ud->outbuf2_len_so_far ] = 0;
+  *translatedLength = ud->outbuf2_len_so_far ;
+  ud->outbuf2_len_so_far  = 0;
   return 1;
 }
 
 int
 back_translate_with_mathexpr_table(widechar* text_buffer, int textLength, widechar** translated_buffer, int* translatedLength)
 {
-  if (ud->mathexpr_table_name == 0)
+  if (ud->forback_mathexpr_table_name == 0)
     return 0;
   *translated_buffer = &ud->outbuf2[0];
   (*translated_buffer)[0] = 0;
   *translatedLength = 0;
   ud->translated_length = MAX_TRANS_LENGTH;
-  if (!lou_backTranslateString (ud->mathexpr_table_name,
+  if (!lou_backTranslateString (ud->forback_mathexpr_table_name,
 				text_buffer, &textLength,
 				&ud->translated_buffer[0],
 				&ud->translated_length,
 				(char *) ud->typeform, NULL, 0))
     return 0;
-ud->translated_buffer[ud->translated_length] = 0;
-*translated_buffer = &ud->translated_buffer[0];
-*translatedLength = ud->translated_length;
   if (!insert_translated_buffer())
     return 0;
-  *translatedLength = ud->outbuf2_len;
-//  ud->outbuf2_len = 0;
+  ud->outbuf2[ud->outbuf2_len_so_far ] = 0;
+  *translatedLength = ud->outbuf2_len_so_far ;
+  ud->outbuf2_len_so_far  = 0;
   return 1;
 }
 
@@ -3398,7 +3396,7 @@ back_translate_braille_string ()
   int leadingBlanks = 0;
   int printPage = 0;
   int newPage = 0;
-  char *htmlStart = "<html><head><title>No Title</title></head><body>";
+  char *htmlStart = "<html><head><title></title></head><body>";
   char *htmlEnd = "</body></html>";
   if (ud->format_for == utd)
     return utd_back_translate_braille_string ();
@@ -3406,6 +3404,10 @@ back_translate_braille_string ()
     return 0;
   if (ud->back_text == html)
     {
+      if (!insertCharacters(ud->xml_header, strlen(ud->xml_header)))
+	return 0;
+      if (!insertCharacters (ud->lineEnd, strlen (ud->lineEnd)))
+	return 0;
       if (!insertCharacters (htmlStart, strlen (htmlStart)))
 	return 0;
       if (!insertCharacters (ud->lineEnd, strlen (ud->lineEnd)))
@@ -3484,7 +3486,7 @@ back_translate_file ()
   int printPage = 0;
   int newPage = 0;
   widechar outbufx[BUFSIZE];
-  char *htmlStart = "<html><head><title>No Title</title></head><body>";
+  char *htmlStart = "<html><head><title></title></head><body>";
   char *htmlEnd = "</body></html>";
   if (!start_document ())
     return 0;
@@ -3492,6 +3494,10 @@ back_translate_file ()
   ud->outbuf1_len = MAX_LENGTH;
   if (ud->back_text == html)
     {
+      if (!insertCharacters(ud->xml_header, strlen(ud->xml_header)))
+	return 0;
+      if (!insertCharacters (ud->lineEnd, strlen (ud->lineEnd)))
+	return 0;
       if (!insertCharacters (htmlStart, strlen (htmlStart)))
 	return 0;
       if (!insertCharacters (ud->lineEnd, strlen (ud->lineEnd)))

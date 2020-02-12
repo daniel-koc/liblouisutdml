@@ -144,6 +144,8 @@ CString CDOMNode::ToString()
 {
 CString str;
 CDOMNode* pTmpNode = m_pFirstNode;
+if (pTmpNode != NULL && pTmpNode->GetNodeType() == DOM_ELEMENT_NODE)
+str += L"\r\n";
 while (pTmpNode != NULL)
 {
 str += pTmpNode->ToString();

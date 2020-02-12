@@ -278,6 +278,21 @@ m_pLastAttr = pNewAttr;
 }  // else if
 }  // AddAttribute
 
+bool CDOMElement::SetAttribute(wchar_t* pStrName, wchar_t* pStrValue)
+{
+return SetAttribute(new CString(pStrName), new CString(pStrValue));
+}
+
+bool CDOMElement::SetAttribute(const wchar_t* pStrName, const wchar_t* pStrValue)
+{
+return SetAttribute(new CString(pStrName), new CString(pStrValue));
+}
+
+bool CDOMElement::SetAttribute(const wchar_t* pStrName, wchar_t* pStrValue)
+{
+return SetAttribute(new CString(pStrName), new CString(pStrValue));
+}
+
 bool CDOMElement::SetAttribute(CString* pStrName, CString* pStrValue)
 {
 if (m_pFirstAttr != NULL)

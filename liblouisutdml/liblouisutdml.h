@@ -98,6 +98,10 @@ include louisutdml.h */
     (widechar *configFileList,
      widechar *inbuf, int inlen, widechar *outbuf, int *outlen,
      widechar *logFileName, widechar *settingsString, unsigned int mode);
+  _DLL_EXPORT int EXPORT_CALL lbu_translateStringArrayW
+    (widechar *configFileList,
+     widechar *inbuf, int* inlens, widechar *outbuf, int* outlens, int count,
+     widechar *logFileName, widechar *settingsString, unsigned int mode);
 
 /* This function takes a well-formed xml expression in inbuf and
 translates it into a string of 16- or 32-bit braille characters in

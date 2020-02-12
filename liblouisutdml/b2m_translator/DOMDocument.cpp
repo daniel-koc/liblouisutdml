@@ -50,6 +50,16 @@ CDOMElement* CDOMDocument::GetDocumentElement()
 return m_pDocumentElement;
 }
 
+CDOMElement* CDOMDocument::CreateElement(wchar_t* pStrTagName)
+{
+return CreateElement(new CString(pStrTagName));
+}
+
+CDOMElement* CDOMDocument::CreateElement(const wchar_t* pStrTagName)
+{
+return CreateElement(new CString(pStrTagName));
+}
+
 CDOMElement* CDOMDocument::CreateElement(CString* pStrTagName)
 {
 CDOMElement* pNewElement = new CDOMElement(this);
@@ -59,6 +69,16 @@ return pNewElement;
 
 CDOMDocumentFragment* CDOMDocument::CreateDocumentFragment() {
 return new CDOMDocumentFragment(this);
+}
+
+CDOMText* CDOMDocument::CreateTextNode(wchar_t* pStrData)
+{
+return CreateTextNode(new CString(pStrData));
+}
+
+CDOMText* CDOMDocument::CreateTextNode(const wchar_t* pStrData)
+{
+return CreateTextNode(new CString(pStrData));
 }
 
 CDOMText* CDOMDocument::CreateTextNode(CString* pStrData)

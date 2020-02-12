@@ -10,9 +10,10 @@
 
 CString::CString()
 {
-	this->m_pszStr = NULL;
+	this->m_pszStr = new wchar_t[1];
+	this->m_pszStr[0] = L'\0';
 	this->m_nStrLen = 0;
-	this->m_nStrBufLen = 0;
+	this->m_nStrBufLen = 1;
 m_pszCountBuf = new wchar_t[50];
 }
 
@@ -1096,6 +1097,35 @@ CString CString::substring(size_t nStartIndex, size_t nEndIndex)
 	*(pszNewStr+nNewStrLen) = NULL;
 	return CString(pszNewStr, nNewStrLen);
 }  // substring
+
+CString CString::slice(size_t nStartIndex, size_t nLength) {
+return substring(nStartIndex, nStartIndex+nLength);
+}
+
+CString* CString::substringPtr(size_t nStartIndex, size_t nEndIndex)
+{
+	if (nStartIndex < 0)
+	{
+		nStartIndex = 0;
+	}
+	if (nEndIndex > this->m_nStrLen)
+	{
+		nEndIndex = this->m_nStrLen;
+	}
+	if (nEndIndex <= nStartIndex)
+	{
+		return new CString();
+	}
+	size_t nNewStrLen = nEndIndex - nStartIndex;
+	wchar_t* pszNewStr = new wchar_t[nNewStrLen+1];
+	wcsncpy(pszNewStr, this->m_pszStr+nStartIndex, nNewStrLen);
+	*(pszNewStr+nNewStrLen) = NULL;
+	return new CString(pszNewStr, nNewStrLen);
+}  // substringPtr
+
+CString* CString::slicePtr(size_t nStartIndex, size_t nLength) {
+return substringPtr(nStartIndex, nStartIndex+nLength);
+}
 
 CStringArray* CString::split(const wchar_t* wcsSeparator)
 {

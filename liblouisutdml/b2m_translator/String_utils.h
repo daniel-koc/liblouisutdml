@@ -201,6 +201,9 @@ wchar_t* c_str() {
 	void operator+=(long double nDouble);
 
 	CString substring(size_t nStartIndex, size_t nEndIndex);
+	CString* substringPtr(size_t nStartIndex, size_t nEndIndex);
+	CString slice(size_t nStartIndex, size_t nLength);
+	CString* slicePtr(size_t nStartIndex, size_t nLength);
 
 void remove()
 {

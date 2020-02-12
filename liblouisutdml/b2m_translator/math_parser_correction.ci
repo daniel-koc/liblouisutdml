@@ -1,0 +1,287 @@
+const wchar_t CLOSING_MARKER = 0xf009;
+const wchar_t SUBSCRIPT_MARKER = 0xf00a;
+const wchar_t SUPERSCRIPT_MARKER = 0xf00b;
+const wchar_t STARTING_FRACTION_MARKER = 0xf005;
+const wchar_t ENDING_FRACTION_MARKER = 0xf006;
+const wchar_t SEPARATOR_FRACTION_MARKER = 0xf00c;
+
+const wchar_t* upDigits = L"abcdefghij";
+const wchar_t* lowDigits = L",;:/?+=(*)";
+const wchar_t* decimalFracChars = L"abcdefghijklmnopqrstuvwxyz,#$_|<-";
+
+static wchar_t* g_pwcsTranslatingStr = NULL;
+static int g_nTranslatingStrLen = 0;
+static wchar_t* g_pwcsMathBrl = NULL;
+static int g_nMathBrlLen = 0;
+static int g_correctInd = 0;
+
+bool isGreekLetter(wchar_t wchr) {
+return ((wchr >= L'a' && wchr <= L'z') ||
+wchr == 241 || wchr == 191 || wchr == L':');
+}
+
+void addMathBrl(wchar_t chr) {
+g_pwcsMathBrl[g_nMathBrlLen++] = chr;
+}
+
+void insertMathBrl(int index, wchar_t chr) {
+if (index < 0 || index > g_nMathBrlLen)
+return;
+int i = g_nMathBrlLen;
+while (i > index) {
+g_pwcsMathBrl[i] = g_pwcsMathBrl[i-1];
+i--;
+}
+g_pwcsMathBrl[index] = chr;
+g_nMathBrlLen++;
+}
+
+bool isMinusSign(int index) {
+if (index < 0 || index >= g_nTranslatingStrLen)
+return false;
+return (g_pwcsTranslatingStr[index] == L'-');
+}
+
+bool isDecimalPoint(int index) {
+if (index < 0 || index >= g_nTranslatingStrLen)
+return false;
+return (g_pwcsTranslatingStr[index] == L',');
+}
+
+bool isLowDigit(int index, int* digitInd) {
+if (index < 0 || index >= g_nTranslatingStrLen)
+return false;
+int ind = 0;
+for (; ind < wcslen(lowDigits); ind++)
+if (g_pwcsTranslatingStr[index] == lowDigits[ind])
+break;
+*digitInd = ind;
+return (ind < wcslen(lowDigits));
+}
+
+bool isUpDigit(int index, int* digitInd) {
+if (index < 0 || index >= g_nTranslatingStrLen)
+return false;
+int ind = 0;
+for (; ind < wcslen(upDigits); ind++)
+if (g_pwcsTranslatingStr[index] == upDigits[ind])
+break;
+*digitInd = ind;
+return (ind < wcslen(upDigits));
+}
+
+bool isDecimalFracChar(int index) {
+if (index < 0 || index >= g_nTranslatingStrLen)
+return false;
+int digitInd;
+if (isLowDigit(index, &digitInd))
+return true;
+if (isGreekLetter(g_pwcsTranslatingStr[index]))
+return true;
+int ind = 0;
+for (; ind < wcslen(decimalFracChars); ind++)
+if (g_pwcsTranslatingStr[index] == decimalFracChars[ind])
+break;
+return (ind < wcslen(decimalFracChars));
+}
+
+bool isMinusSignMathBrlChar(int index) {
+if (index < 0 || index >= g_nMathBrlLen)
+return false;
+return (g_pwcsMathBrl[index] == L'-');
+}
+
+bool isDecimalFracMathBrlChar(int index) {
+if (index < 0 || index >= g_nMathBrlLen)
+return false;
+if (g_pwcsMathBrl[index] == STARTING_FRACTION_MARKER ||
+g_pwcsMathBrl[index] == ENDING_FRACTION_MARKER ||
+g_pwcsMathBrl[index] == SEPARATOR_FRACTION_MARKER ||
+isGreekLetter(g_pwcsMathBrl[index]))
+return true;
+int ind = 0;
+for (; ind < wcslen(decimalFracChars); ind++)
+if (g_pwcsMathBrl[index] == decimalFracChars[ind])
+break;
+return (ind < wcslen(decimalFracChars));
+}
+
+wchar_t* correctBeforeBackTranslation(wchar_t* pwcsTranslatingStr, int nTranslatingStrLen)
+{
+g_pwcsTranslatingStr = pwcsTranslatingStr;
+g_nTranslatingStrLen = nTranslatingStrLen;
+g_pwcsMathBrl = &widestring_buffer[widestring_buf_len];
+g_nMathBrlLen = 0;
+
+int startFrac[200];
+int startFracCount = 0;
+int midFrac[200];
+int midFracCount = 0;
+int nInsertingEndingFractionMarker = -1;
+int digitInd;
+
+for (g_correctInd = 0; g_correctInd < nTranslatingStrLen; g_correctInd++) {
+
+if (g_pwcsTranslatingStr[g_correctInd] == 243) {
+addMathBrl(SUPERSCRIPT_MARKER);
+if (isLowDigit(g_correctInd+1, &digitInd)) {
+addMathBrl(L'#');
+while (true) {
+addMathBrl(L'a'+digitInd);
+g_correctInd++;
+if (!isLowDigit(g_correctInd+1, &digitInd))
+break;
+}  // while
+addMathBrl(CLOSING_MARKER);
+}  // if (isLowDigit
+else
+if (isMinusSign(g_correctInd+1) && isLowDigit(g_correctInd+2, &digitInd)) {
+addMathBrl(L'-');
+addMathBrl(L'#');
+g_correctInd++;
+while (true) {
+addMathBrl(L'a'+digitInd);
+g_correctInd++;
+if (!isLowDigit(g_correctInd+1, &digitInd))
+break;
+}  // while
+addMathBrl(CLOSING_MARKER);
+}  // if (isLowDigit
+}  // if (g_pwcsTranslatingStr[g_correctInd] == 243)
+else
+if (g_pwcsTranslatingStr[g_correctInd] == 185) {
+addMathBrl(SUBSCRIPT_MARKER);
+if (isLowDigit(g_correctInd+1, &digitInd)) {
+addMathBrl(L'#');
+while (true) {
+addMathBrl(L'a'+digitInd);
+g_correctInd++;
+if (!isLowDigit(g_correctInd+1, &digitInd))
+break;
+}  // while
+addMathBrl(CLOSING_MARKER);
+}  // if (isLowDigit
+else
+if (isMinusSign(g_correctInd+1) && isLowDigit(g_correctInd+2, &digitInd)) {
+addMathBrl(L'-');
+addMathBrl(L'#');
+g_correctInd++;
+while (true) {
+addMathBrl(L'a'+digitInd);
+g_correctInd++;
+if (!isLowDigit(g_correctInd+1, &digitInd))
+break;
+}  // while
+addMathBrl(CLOSING_MARKER);
+}  // if (isLowDigit
+}  // if (g_pwcsTranslatingStr[g_correctInd] == 243)
+else
+if (g_pwcsTranslatingStr[g_correctInd] == 234) {
+addMathBrl(CLOSING_MARKER);
+}  // if (g_pwcsTranslatingStr[g_correctInd] == 234) {
+else
+if (g_pwcsTranslatingStr[g_correctInd] == L'#') {
+bool createFrac = false;
+int tempIndex = g_correctInd;
+if (isUpDigit(tempIndex+1, &digitInd)) {
+while (true) {
+tempIndex++;
+if (!isUpDigit(tempIndex+1, &digitInd))
+break;
+}  // while
+if (!(isDecimalPoint(tempIndex+1) && isUpDigit(tempIndex+2, &digitInd)))
+if (isLowDigit(tempIndex+1, &digitInd) ||
+(isMinusSign(tempIndex+1) && isLowDigit(tempIndex+2, &digitInd)))
+createFrac = true;
+}  // if (isUpDigit(g_correctInd2+1, &digitInd)) {
+if (createFrac) {
+addMathBrl(STARTING_FRACTION_MARKER);
+addMathBrl(L'#');
+while (isUpDigit(g_correctInd+1, &digitInd)) {
+addMathBrl(L'a'+digitInd);
+g_correctInd++;
+}  // while
+addMathBrl(SEPARATOR_FRACTION_MARKER);
+if (isMinusSign(g_correctInd+1)) {
+addMathBrl(L'-');
+g_correctInd++;
+}
+addMathBrl(L'#');
+while (isLowDigit(g_correctInd+1, &digitInd)) {
+addMathBrl(L'a'+digitInd);
+g_correctInd++;
+}  // while
+addMathBrl(ENDING_FRACTION_MARKER);
+}  // if (createFrac)
+else {
+addMathBrl(g_pwcsTranslatingStr[g_correctInd]);
+}
+}  // if (g_pwcsTranslatingStr[g_correctInd] == L'#')
+else
+if (g_pwcsTranslatingStr[g_correctInd] == L';') {
+startFrac[startFracCount++] = g_nMathBrlLen;
+addMathBrl(g_pwcsTranslatingStr[g_correctInd]);
+}  // if (g_pwcsTranslatingStr[g_correctInd] == L';')
+else
+if (g_pwcsTranslatingStr[g_correctInd] == 128) {
+int tempIndex = g_nMathBrlLen-1;
+if (isDecimalFracMathBrlChar(tempIndex) && !isMinusSignMathBrlChar(tempIndex)) {
+while (true) {
+tempIndex--;
+if (!isDecimalFracMathBrlChar(tempIndex))
+break;
+}  // while
+if (isMinusSignMathBrlChar(tempIndex+1))
+tempIndex++;
+insertMathBrl(tempIndex+1, STARTING_FRACTION_MARKER);
+addMathBrl(SEPARATOR_FRACTION_MARKER);
+if (isLowDigit(g_correctInd+1, &digitInd) ||
+(isMinusSign(g_correctInd+1) && isLowDigit(g_correctInd+2, &digitInd))) {
+if (isMinusSign(g_correctInd+1)) {
+addMathBrl(L'-');
+g_correctInd++;
+}
+addMathBrl(L'#');
+while (isLowDigit(g_correctInd+1, &digitInd)) {
+addMathBrl(L'a'+digitInd);
+g_correctInd++;
+}  // while
+addMathBrl(ENDING_FRACTION_MARKER);
+}  // if (isLowDigit(g_correctInd+1, &digitInd) ||
+else {
+tempIndex = g_correctInd;
+while (isDecimalFracChar(tempIndex+1))
+tempIndex++;
+nInsertingEndingFractionMarker = tempIndex;
+}  // else if (isLowDigit(g_correctInd+1, &digitInd) ||
+}  // if (isDecimalFracMathBrlChar(tempIndex) && !isMinusSignMathBrlChar(tempIndex))
+else {
+midFrac[midFracCount++] = g_nMathBrlLen;
+addMathBrl(g_pwcsTranslatingStr[g_correctInd]);
+}  // else if (isDecimalFracMathBrlChar(tempIndex) && !isMinusSignMathBrlChar(tempIndex))
+}  // if (g_pwcsTranslatingStr[g_correctInd] == 128)
+else
+if (g_pwcsTranslatingStr[g_correctInd] == L'<' && !isGreekLetter(g_pwcsTranslatingStr[g_correctInd+1])) {
+if (startFracCount > 0 && midFracCount > 0) {
+g_pwcsMathBrl[startFrac[--startFracCount]] = STARTING_FRACTION_MARKER;
+g_pwcsMathBrl[midFrac[--midFracCount]] = SEPARATOR_FRACTION_MARKER;
+addMathBrl(ENDING_FRACTION_MARKER);
+}  // if (startFracCount > 0 && midFracCount > 0)
+else
+addMathBrl(g_pwcsTranslatingStr[g_correctInd]);
+}  // if (g_pwcsTranslatingStr[g_correctInd] == L'<' && !isGreekLetter(g_correctInd+1))
+else {
+addMathBrl(g_pwcsTranslatingStr[g_correctInd]);
+}
+
+if (g_correctInd == nInsertingEndingFractionMarker) {
+addMathBrl(ENDING_FRACTION_MARKER);
+nInsertingEndingFractionMarker = -1;
+}
+}  // for
+
+g_pwcsMathBrl[g_nMathBrlLen] = wcNULL;
+widestring_buf_len += g_nMathBrlLen+1;
+
+return g_pwcsMathBrl;
+}  // correctBeforeBackTranslation

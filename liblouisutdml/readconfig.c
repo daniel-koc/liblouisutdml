@@ -351,7 +351,7 @@ getLine (FileInfo * nested)
 	  pch = ch;
 	}
       nested->line[lineLen] = 0;
-      if (ch == EOF)
+      if (lineLen == 0 && ch == EOF)
 	return 0;
       return 1;
     }
@@ -711,9 +711,11 @@ compileConfig (FileInfo * nested)
     "55",
     "mode",
     "56",
-// available    "57",
+    "forbackMathexprTable",
+    "57",
 // available     "58",
-// available    "59",
+    "forbackMathSymbolDefinitions",
+    "59",
     "macro",
     "60",
     "style",
@@ -912,7 +914,7 @@ compileConfig (FileInfo * nested)
 	  return 0;
 	  }
 	  break;
-	case 24:
+	  case 24:
 	  topMargin = atof (nested->value);
 	  break;
 	case 25:
@@ -1064,9 +1066,18 @@ compileConfig (FileInfo * nested)
 	  if ((k = orValues (nested, configModes)) != NOTFOUND)
 	    ud->config_mode = k;
 	  break;
-// available	case 57:
+	case 57:
+	  ud->forback_mathexpr_table_name = findTable (nested);
+	  if (ud->forback_mathexpr_table_name == NULL)
+	  {
+	  configureError (nested, "invalid forbackMathexprTableName");
+	  return 0;
+	  }
+	  break;
 // available	case 58:
-// available	case 59:
+	case 59:
+	  ud->forback_math_symbol_definitions_file = alloc_string (nested->value);
+	  break;
 	case 60:
 	  new_macro (nested->value, nested->value2);
 	  break;

@@ -7,6 +7,7 @@ EXPORTS
 	lbu_initializeW
 	lbu_translateString
 	lbu_translateStringW
+	lbu_translateStringArrayW
 	lbu_backTranslateString
 	lbu_backTranslateStringW
 	lbu_translateFile
