@@ -54,22 +54,7 @@ OBJ = Jliblouisutdml.obj \
     utd2pef.obj \
     utd2volumes.obj \
     transcriber.obj \
-    math_parser.obj \
-    String_utils.obj \
-    DOMAttr.obj \
-    DOMCDATASection.obj \
-    DOMCharacterData.obj \
-    DOMComment.obj \
-    DOMDocument.obj \
-    DOMDocumentFragment.obj \
-    DOMElement.obj \
-    DOMEntity.obj \
-    DOMEntityReference.obj \
-    DOMNamedNodeList.obj \
-    DOMNode.obj \
-    DOMNodeList.obj \
-    DOMProcessingInstruction.obj \
-    DOMText.obj 
+    math_parser.obj 
 LIBXML2_OBJ = \
     SAX.obj \
     entities.obj \
@@ -117,16 +102,16 @@ LIBXML2_OBJ = \
 collect_results: liblouisutdml.dll
     if not exist brailleblasterlib mkdir brailleblasterlib
     copy liblouisutdml.dll brailleblasterlib
-    copy liblouisutdml.dll ..\..\bin
+    copy liblouisutdml.dll ..\..\bnm_bin
     copy $(LIBLOUIS_PATH)\windows\liblouis.dll brailleblasterlib
-    copy $(LIBLOUIS_PATH)\windows\liblouis.dll ..\..\bin
+    copy $(LIBLOUIS_PATH)\windows\liblouis.dll ..\..\bnm_bin
     if not exist libslib mkdir libslib
     copy liblouisutdml.lib libslib
     copy $(LIBLOUIS_PATH)\windows\liblouis.lib libslib
 liblouisutdml.dll:  liblouisutdml.def liblouisutdml.lib
     link $(DLLFLAGS) $(LIBXML2_OBJ) $(OBJ) \
    $(LIBLOUIS_PATH)\windows\liblouis.lib \
-    wsock32.lib ws2_32.lib kernel32.lib \
+    legacy_stdio_definitions.lib wsock32.lib ws2_32.lib kernel32.lib \
     /DEF:liblouisutdml.def /OUT:liblouisutdml.dll
 liblouisutdml.lib: $(LIBXML2_OBJ) $(OBJ) configure.mk
    lib /nologo $(OBJ) $(LIBXML2_OBJ) /out:liblouisutdml.lib
@@ -180,38 +165,8 @@ utd2volumes.obj: $(HEADERS) $(SRCDIR)\utd2volumes.c
     $(CC) $(CCFLAGS) $(SRCDIR)\utd2volumes.c
 transcriber.obj: $(HEADERS) $(SRCDIR)\transcriber.c
     $(CC) $(CCFLAGS) $(SRCDIR)\transcriber.c
-math_parser.obj: $(HEADERS) $(SRCDIR)\b2m_translator\math_parser.cpp
-    $(CC) $(CCFLAGS) $(SRCDIR)\b2m_translator\math_parser.cpp
-String_utils.obj: $(HEADERS) $(SRCDIR)\b2m_translator\String_utils.cpp
-    $(CC) $(CCFLAGS) $(SRCDIR)\b2m_translator\String_utils.cpp
-DOMAttr.obj: $(HEADERS) $(SRCDIR)\b2m_translator\DOMAttr.cpp
-    $(CC) $(CCFLAGS) $(SRCDIR)\b2m_translator\DOMAttr.cpp
-DOMCDATASection.obj: $(HEADERS) $(SRCDIR)\b2m_translator\DOMCDATASection.cpp
-    $(CC) $(CCFLAGS) $(SRCDIR)\b2m_translator\DOMCDATASection.cpp
-DOMCharacterData.obj: $(HEADERS) $(SRCDIR)\b2m_translator\DOMCharacterData.cpp
-    $(CC) $(CCFLAGS) $(SRCDIR)\b2m_translator\DOMCharacterData.cpp
-DOMComment.obj: $(HEADERS) $(SRCDIR)\b2m_translator\DOMComment.cpp
-    $(CC) $(CCFLAGS) $(SRCDIR)\b2m_translator\DOMComment.cpp
-DOMDocument.obj: $(HEADERS) $(SRCDIR)\b2m_translator\DOMDocument.cpp
-    $(CC) $(CCFLAGS) $(SRCDIR)\b2m_translator\DOMDocument.cpp
-DOMDocumentFragment.obj: $(HEADERS) $(SRCDIR)\b2m_translator\DOMDocumentFragment.cpp
-    $(CC) $(CCFLAGS) $(SRCDIR)\b2m_translator\DOMDocumentFragment.cpp
-DOMElement.obj: $(HEADERS) $(SRCDIR)\b2m_translator\DOMElement.cpp
-    $(CC) $(CCFLAGS) $(SRCDIR)\b2m_translator\DOMElement.cpp
-DOMEntity.obj: $(HEADERS) $(SRCDIR)\b2m_translator\DOMEntity.cpp
-    $(CC) $(CCFLAGS) $(SRCDIR)\b2m_translator\DOMEntity.cpp
-DOMEntityReference.obj: $(HEADERS) $(SRCDIR)\b2m_translator\DOMEntityReference.cpp
-    $(CC) $(CCFLAGS) $(SRCDIR)\b2m_translator\DOMEntityReference.cpp
-DOMNamedNodeList.obj: $(HEADERS) $(SRCDIR)\b2m_translator\DOMNamedNodeList.cpp
-    $(CC) $(CCFLAGS) $(SRCDIR)\b2m_translator\DOMNamedNodeList.cpp
-DOMNode.obj: $(HEADERS) $(SRCDIR)\b2m_translator\DOMNode.cpp
-    $(CC) $(CCFLAGS) $(SRCDIR)\b2m_translator\DOMNode.cpp
-DOMNodeList.obj: $(HEADERS) $(SRCDIR)\b2m_translator\DOMNodeList.cpp
-    $(CC) $(CCFLAGS) $(SRCDIR)\b2m_translator\DOMNodeList.cpp
-DOMProcessingInstruction.obj: $(HEADERS) $(SRCDIR)\b2m_translator\DOMProcessingInstruction.cpp
-    $(CC) $(CCFLAGS) $(SRCDIR)\b2m_translator\DOMProcessingInstruction.cpp
-DOMText.obj: $(HEADERS) $(SRCDIR)\b2m_translator\DOMText.cpp
-    $(CC) $(CCFLAGS) $(SRCDIR)\b2m_translator\DOMText.cpp
+math_parser.obj: $(HEADERS) $(SRCDIR)\math_parser.c
+    $(CC) $(CCFLAGS) $(SRCDIR)\math_parser.c
 SAX.obj: $(LXHEADERS) $(LXSRCDIR)\SAX.c
     $(CC) $(LXCCFLAGS) $(LXSRCDIR)\SAX.c
 entities.obj: $(LXHEADERS) $(LXSRCDIR)\entities.c
