@@ -1,118 +1,118 @@
-const wchar_t SPACE_BRAILLECHAR = L' ';
-const wchar_t QUOTE_BRAILLECHAR = L'\"';
-const wchar_t HASH_BRAILLECHAR = L'#';
-const wchar_t DOLLAR_BRAILLECHAR = L'$';
-const wchar_t PERCENT_BRAILLECHAR = L'%';
-const wchar_t LEFT_PARENT_BRAILLECHAR = L'(';
-const wchar_t RIGHT_PARENT_BRAILLECHAR = L')';
-const wchar_t STAR_BRAILLECHAR = L'*';
-const wchar_t COMMA_BRAILLECHAR = L',';
-const wchar_t MINUS_BRAILLECHAR = L'-';
-const wchar_t PERIOD_BRAILLECHAR = L'.';
-const wchar_t SLASH_BRAILLECHAR = L'/';
-const wchar_t COLON_BRAILLECHAR = L':';
-const wchar_t SEMICOLON_BRAILLECHAR = L';';
-const wchar_t LESS_THAN_BRAILLECHAR = L'<';
-const wchar_t EQUALS_BRAILLECHAR = L'=';
-const wchar_t GREATER_THAN_BRAILLECHAR = L'>';
-const wchar_t LEFT_SQUARE_BRACKET_BRAILLECHAR = L'[';
-const wchar_t RIGHT_SQUARE_BRACKET_BRAILLECHAR = L']';
-const wchar_t UNDERLINE_BRAILLECHAR = L'_';
-const wchar_t RIGHT_PARENTSESIS_BRAILLECHAR = L'`';
-const wchar_t VERTICALBAR_BRAILLECHAR = L'|';
-const wchar_t TILDE_BRAILLECHAR = L'~';
-const wchar_t UNIT_SYMBOL_BRAILLECHAR = 129;
-const wchar_t LEFT_BRACE_BRAILLECHAR = 156;
-const wchar_t RIGHT_BRACE_BRAILLECHAR = L'o';
-const wchar_t NO_BREAKABLE_SPACE_BRAILLECHAR = 160;
-const wchar_t LEFT_PARENTSESIS_BRAILLECHAR = 179;
-const wchar_t SYMBOL_KEY_BRAILLECHAR = 191;
+const widechar SPACE_BRAILLECHAR = L' ';
+const widechar QUOTE_BRAILLECHAR = L'\"';
+const widechar HASH_BRAILLECHAR = L'#';
+const widechar DOLLAR_BRAILLECHAR = L'$';
+const widechar PERCENT_BRAILLECHAR = L'%';
+const widechar LEFT_PARENT_BRAILLECHAR = L'(';
+const widechar RIGHT_PARENT_BRAILLECHAR = L')';
+const widechar STAR_BRAILLECHAR = L'*';
+const widechar COMMA_BRAILLECHAR = L',';
+const widechar MINUS_BRAILLECHAR = L'-';
+const widechar PERIOD_BRAILLECHAR = L'.';
+const widechar SLASH_BRAILLECHAR = L'/';
+const widechar COLON_BRAILLECHAR = L':';
+const widechar SEMICOLON_BRAILLECHAR = L';';
+const widechar LESS_THAN_BRAILLECHAR = L'<';
+const widechar EQUALS_BRAILLECHAR = L'=';
+const widechar GREATER_THAN_BRAILLECHAR = L'>';
+const widechar LEFT_SQUARE_BRACKET_BRAILLECHAR = L'[';
+const widechar RIGHT_SQUARE_BRACKET_BRAILLECHAR = L']';
+const widechar UNDERLINE_BRAILLECHAR = L'_';
+const widechar RIGHT_PARENTSESIS_BRAILLECHAR = L'`';
+const widechar VERTICALBAR_BRAILLECHAR = L'|';
+const widechar TILDE_BRAILLECHAR = L'~';
+const widechar UNIT_SYMBOL_BRAILLECHAR = 129;
+const widechar LEFT_BRACE_BRAILLECHAR = 156;
+const widechar RIGHT_BRACE_BRAILLECHAR = L'o';
+const widechar NO_BREAKABLE_SPACE_BRAILLECHAR = 160;
+const widechar LEFT_PARENTSESIS_BRAILLECHAR = 179;
+const widechar SYMBOL_KEY_BRAILLECHAR = 191;
 
-const wchar_t NO_BREAKABLE_PROJECTOR_JOINER_BRAILLECHAR = L'\'';
-const wchar_t CLOSING_PROJECTOR_BRAILLECHAR = 234;
-const wchar_t SUBSCRIPT_BRAILLECHAR = 185;
-const wchar_t POWER_BRAILLECHAR = 243;
-const wchar_t SUPERSCRIPT_BRAILLECHAR = 92;
-const wchar_t SQRT_BRAILLECHAR = 230;
-const wchar_t COMPLEX_PROJECTOR_BRAILLECHAR = L'\"';
-const wchar_t DETAILED_PROJECTOR_BRAILLECHAR = L'$';
-const wchar_t SEPARATOR_FRACTION_BRAILLECHAR = 128;
+const widechar NO_BREAKABLE_PROJECTOR_JOINER_BRAILLECHAR = L'\'';
+const widechar CLOSING_PROJECTOR_BRAILLECHAR = 234;
+const widechar SUBSCRIPT_BRAILLECHAR = 185;
+const widechar POWER_BRAILLECHAR = 243;
+const widechar SUPERSCRIPT_BRAILLECHAR = 92;
+const widechar SQRT_BRAILLECHAR = 230;
+const widechar COMPLEX_PROJECTOR_BRAILLECHAR = L'\"';
+const widechar DETAILED_PROJECTOR_BRAILLECHAR = L'$';
+const widechar SEPARATOR_FRACTION_BRAILLECHAR = 128;
 
-const wchar_t STARTING_FRACTION_MARKER = 0xf005;
-const wchar_t ENDING_FRACTION_MARKER = 0xf006;
-const wchar_t LEFT_PARENTSESIS_MARKER = 0xf007;
-const wchar_t RIGHT_PARENTSESIS_MARKER = 0xf008;
-const wchar_t SIMPLEPROJ_CLOSING_MARKER = 0xf009;
-const wchar_t SIMPLEPROJ_SUBSCRIPT_MARKER = 0xf00a;
-const wchar_t SIMPLEPROJ_POWER_MARKER = 0xf00b;
-const wchar_t SEPARATOR_FRACTION_MARKER = 0xf00c;
-const wchar_t LEFT_SQUARE_BRACKET_MARKER = 0xf010;
-const wchar_t RIGHT_SQUARE_BRACKET_MARKER = 0xf011;
-const wchar_t LEFT_BRACE_MARKER = 0xf012;
-const wchar_t RIGHT_BRACE_MARKER = 0xf013;
-const wchar_t STARTING_SIMPLIFIED_FRACTION_MARKER = 0xf014;
-const wchar_t SIMPLEPROJ_SUPERSCRIPT_MARKER = 0xf016;
-const wchar_t SIMPLEPROJ_SQRT_MARKER = 0xf017;
-const wchar_t COMPLEXPROJ_CLOSING_MARKER = 0xf018;
-const wchar_t COMPLEXPROJ_SUBSCRIPT_MARKER = 0xf019;
-const wchar_t COMPLEXPROJ_POWER_MARKER = 0xf01a;
-const wchar_t COMPLEXPROJ_SUPERSCRIPT_MARKER = 0xf01b;
-const wchar_t COMPLEXPROJ_SQRT_MARKER = 0xf01c;
-const wchar_t DETAILEDPROJ_CLOSING_MARKER = 0xf01d;
-const wchar_t DETAILEDPROJ_SUBSCRIPT_MARKER = 0xf01e;
-const wchar_t DETAILEDPROJ_POWER_MARKER = 0xf01f;
-const wchar_t DETAILEDPROJ_SUPERSCRIPT_MARKER = 0xf020;
-const wchar_t DETAILEDPROJ_SQRT_MARKER = 0xf021;
-const wchar_t LEFT_ANGLE_BRACKET_MARKER = 0xf023;
-const wchar_t RIGHT_ANGLE_BRACKET_MARKER = 0xf024;
-const wchar_t SIMPLEPROJ_UNDERSCRIPT_MARKER = 0xf027;
-const wchar_t SIMPLEPROJ_OVERSCRIPT_MARKER = 0xf028;
-const wchar_t COMPLEXPROJ_UNDERSCRIPT_MARKER = 0xf02a;
-const wchar_t COMPLEXPROJ_OVERSCRIPT_MARKER = 0xf02b;
-const wchar_t DETAILEDPROJ_UNDERSCRIPT_MARKER = 0xf02d;
-const wchar_t DETAILEDPROJ_OVERSCRIPT_MARKER = 0xf02e;
+const widechar STARTING_FRACTION_MARKER = 0xf005;
+const widechar ENDING_FRACTION_MARKER = 0xf006;
+const widechar LEFT_PARENTSESIS_MARKER = 0xf007;
+const widechar RIGHT_PARENTSESIS_MARKER = 0xf008;
+const widechar SIMPLEPROJ_CLOSING_MARKER = 0xf009;
+const widechar SIMPLEPROJ_SUBSCRIPT_MARKER = 0xf00a;
+const widechar SIMPLEPROJ_POWER_MARKER = 0xf00b;
+const widechar SEPARATOR_FRACTION_MARKER = 0xf00c;
+const widechar LEFT_SQUARE_BRACKET_MARKER = 0xf010;
+const widechar RIGHT_SQUARE_BRACKET_MARKER = 0xf011;
+const widechar LEFT_BRACE_MARKER = 0xf012;
+const widechar RIGHT_BRACE_MARKER = 0xf013;
+const widechar STARTING_SIMPLIFIED_FRACTION_MARKER = 0xf014;
+const widechar SIMPLEPROJ_SUPERSCRIPT_MARKER = 0xf016;
+const widechar SIMPLEPROJ_SQRT_MARKER = 0xf017;
+const widechar COMPLEXPROJ_CLOSING_MARKER = 0xf018;
+const widechar COMPLEXPROJ_SUBSCRIPT_MARKER = 0xf019;
+const widechar COMPLEXPROJ_POWER_MARKER = 0xf01a;
+const widechar COMPLEXPROJ_SUPERSCRIPT_MARKER = 0xf01b;
+const widechar COMPLEXPROJ_SQRT_MARKER = 0xf01c;
+const widechar DETAILEDPROJ_CLOSING_MARKER = 0xf01d;
+const widechar DETAILEDPROJ_SUBSCRIPT_MARKER = 0xf01e;
+const widechar DETAILEDPROJ_POWER_MARKER = 0xf01f;
+const widechar DETAILEDPROJ_SUPERSCRIPT_MARKER = 0xf020;
+const widechar DETAILEDPROJ_SQRT_MARKER = 0xf021;
+const widechar LEFT_ANGLE_BRACKET_MARKER = 0xf023;
+const widechar RIGHT_ANGLE_BRACKET_MARKER = 0xf024;
+const widechar SIMPLEPROJ_UNDERSCRIPT_MARKER = 0xf027;
+const widechar SIMPLEPROJ_OVERSCRIPT_MARKER = 0xf028;
+const widechar COMPLEXPROJ_UNDERSCRIPT_MARKER = 0xf02a;
+const widechar COMPLEXPROJ_OVERSCRIPT_MARKER = 0xf02b;
+const widechar DETAILEDPROJ_UNDERSCRIPT_MARKER = 0xf02d;
+const widechar DETAILEDPROJ_OVERSCRIPT_MARKER = 0xf02e;
 
-const wchar_t TABLE_ROW_SEPARATOR_MARKER = 0xf030;
-const wchar_t STARTING_TABLE_MARKER = 0xf031;
-const wchar_t ENDING_TABLE_MARKER = 0xf032;
-const wchar_t UNIT_SYMBOL_MARKER = 0xf033;
+const widechar TABLE_ROW_SEPARATOR_MARKER = 0xf030;
+const widechar STARTING_TABLE_MARKER = 0xf031;
+const widechar ENDING_TABLE_MARKER = 0xf032;
+const widechar UNIT_SYMBOL_MARKER = 0xf033;
 
-const wchar_t STARTING_ROOT_MARKER = 0xf051;
-const wchar_t ENDING_ROOT_MARKER = 0xf052;
-const wchar_t SLASH_FRACTION_MARKER = 0xf053;
-const wchar_t STARTING_LOG_FUNCTION_MARKER = 0xf054;
-const wchar_t ENDING_LOG_FUNCTION_MARKER = 0xf055;
-const wchar_t LOG_FUNCTION_MARKER = 0xf056;
+const widechar STARTING_ROOT_MARKER = 0xf051;
+const widechar ENDING_ROOT_MARKER = 0xf052;
+const widechar SLASH_FRACTION_MARKER = 0xf053;
+const widechar STARTING_LOG_FUNCTION_MARKER = 0xf054;
+const widechar ENDING_LOG_FUNCTION_MARKER = 0xf055;
+const widechar LOG_FUNCTION_MARKER = 0xf056;
 
-const wchar_t STARTING_FENCED_MARKER = 0xf057;
-const wchar_t FIRST_ARGUMENT_SEPARATOR_FENCED_MARKER = 0xf058;
-const wchar_t SECOND_ARGUMENT_SEPARATOR_FENCED_MARKER = 0xf059;
-const wchar_t ENDING_FENCED_MARKER = 0xf05a;
+const widechar STARTING_FENCED_MARKER = 0xf057;
+const widechar FIRST_ARGUMENT_SEPARATOR_FENCED_MARKER = 0xf058;
+const widechar SECOND_ARGUMENT_SEPARATOR_FENCED_MARKER = 0xf059;
+const widechar ENDING_FENCED_MARKER = 0xf05a;
 
-const wchar_t* upDigits = L"abcdefghij";
-const wchar_t* lowDigits = L",;:/?+=(*)";
+const widechar* upDigits = L"abcdefghij";
+const widechar* lowDigits = L",;:/?+=(*)";
 const int DECIMAL_COMMA_INDEX = 100;
 
-static wchar_t* g_pwcsTranslatingStr = NULL;
+static widechar* g_pwcsTranslatingStr = NULL;
 static int g_nTranslatingStrLen = 0;
 static int g_translatingIndex = 0;
-static wchar_t* g_pwcsMathBrl = NULL;
+static widechar* g_pwcsMathBrl = NULL;
 static int g_nMathBrlLen = 0;
 static int g_additionalStep = 0;
 
 #define DEFINE_CHECKER(funcName)                                               \
-bool funcName(int index) {                                                \
-if(index < 0 || index >= g_nTranslatingStrLen) return false;                   \
-wchar_t curChar = g_pwcsTranslatingStr[index];                                 \
-wchar_t prevChar = (index > 0) ? g_pwcsTranslatingStr[index - 1] : wcNULL;     \
-wchar_t prevPrevChar = (index > 1) ? g_pwcsTranslatingStr[index - 2] : wcNULL; \
-wchar_t nextChar = ((index + 1) < g_nTranslatingStrLen)                        \
+int funcName(int index) {                                                \
+if(index < 0 || index >= g_nTranslatingStrLen) return 0;                   \
+widechar curChar = g_pwcsTranslatingStr[index];                                 \
+widechar prevChar = (index > 0) ? g_pwcsTranslatingStr[index - 1] : wcNULL;     \
+widechar prevPrevChar = (index > 1) ? g_pwcsTranslatingStr[index - 2] : wcNULL; \
+widechar nextChar = ((index + 1) < g_nTranslatingStrLen)                        \
                        ? g_pwcsTranslatingStr[index + 1]                       \
                        : wcNULL;                                               \
-wchar_t nextNextChar = ((index + 2) < g_nTranslatingStrLen)                    \
+widechar nextNextChar = ((index + 2) < g_nTranslatingStrLen)                    \
                            ? g_pwcsTranslatingStr[index + 2]                   \
                            : wcNULL;                                           \
-wchar_t nextNextNextChar = ((index + 3) < g_nTranslatingStrLen)                    \
+widechar nextNextNextChar = ((index + 3) < g_nTranslatingStrLen)                    \
                            ? g_pwcsTranslatingStr[index + 3]                   \
                            : wcNULL;                                           \
 g_additionalStep = 0;
@@ -125,51 +125,51 @@ DEFINE_CHECKER(isLowDecimalPoint)
   return (curChar == PERIOD_BRAILLECHAR);
 }
 
-bool isUpDigit(int index, int* digitInd) {
+int isUpDigit(int index, int* digitInd) {
   if (index < 0 || index >= g_nTranslatingStrLen)
-    return false;
+    return 0;
   for (int i = 0; upDigits[i] != wcNULL; i++)
     if (g_pwcsTranslatingStr[index] == upDigits[i]) {
       *digitInd = i;
-      return true;
+      return 1;
     }
-  return false;
+  return 0;
 }  // isUpDigit
 
-bool isLowDigit(int index, int* digitInd) {
+int isLowDigit(int index, int* digitInd) {
   if (index < 0 || index >= g_nTranslatingStrLen)
-    return false;
+    return 0;
   for (int i = 0; lowDigits[i] != wcNULL; i++)
     if (g_pwcsTranslatingStr[index] == lowDigits[i]) {
       *digitInd = i;
-      return true;
+      return 1;
     }
-  return false;
+  return 0;
 }  // isLowDigit
 
-bool isDecimalLowDigit(int index, int* digitInd) {
+int isDecimalLowDigit(int index, int* digitInd) {
   if (isLowDigit(index, digitInd))
-    return true;
+    return 1;
   else if (isLowDecimalPoint(index)) {
     *digitInd = DECIMAL_COMMA_INDEX;
-    return true;
+    return 1;
   }
-  return false;
+  return 0;
 }  // isDecimalLowDigit
 
-bool isMinusLowDigit(int index) {
+int isMinusLowDigit(int index) {
   int digitInd;
   return (isLowDigit(index, &digitInd) ||
       (isMinusSign(index) &&
        isLowDigit(index+1, &digitInd)));
 }  // isMinusLowDigit
 
-bool isPartOfDecimalLowNumber(int index);
+int isPartOfDecimalLowNumber(int index);
 
 DEFINE_CHECKER(isEndLineChar)
   if (curChar == L'\r' && nextChar == L'\n') {
     g_additionalStep = 1;
-    return true;
+    return 1;
   }
   return (curChar == L'\r' || curChar == L'\n');
 }
@@ -255,7 +255,7 @@ DEFINE_CHECKER(isRightBrace)
           !(nextNextChar == RIGHT_BRACE_BRAILLECHAR && nextNextNextChar == COMMA_BRAILLECHAR) && // \X226B
           !(nextNextChar == LEFT_BRACE_BRAILLECHAR && nextNextNextChar == PERIOD_BRAILLECHAR)) { // \X2277 \X2279
     g_additionalStep = 1;
-    return true;
+    return 1;
   }
   return (curChar == RIGHT_BRACE_BRAILLECHAR &&
           prevChar != DOLLAR_BRAILLECHAR && // O
@@ -276,18 +276,18 @@ DEFINE_CHECKER(isLeftAngleBracket)
   if (curChar == LEFT_SQUARE_BRACKET_BRAILLECHAR && // \x2329
       nextChar == PERIOD_BRAILLECHAR) {
     g_additionalStep = 1;
-    return true;
+    return 1;
   }
-  return false;
+  return 0;
 }
 
 DEFINE_CHECKER(isRightAngleBracket)
   if (curChar == UNDERLINE_BRAILLECHAR && // \x232A
       nextChar == RIGHT_SQUARE_BRACKET_BRAILLECHAR) {
     g_additionalStep = 1;
-    return true;
+    return 1;
   }
-  return false;
+  return 0;
 }
 
 DEFINE_CHECKER(isClosingSimpleProjector)
@@ -302,18 +302,18 @@ DEFINE_CHECKER(isClosingComplexProjector)
   if (curChar == COMPLEX_PROJECTOR_BRAILLECHAR &&
       nextChar == CLOSING_PROJECTOR_BRAILLECHAR) {
     g_additionalStep = 1;
-    return true;
+    return 1;
   }
-  return false;
+  return 0;
 }
 
 DEFINE_CHECKER(isClosingDetailedProjector)
   if (curChar == DETAILED_PROJECTOR_BRAILLECHAR &&
       nextChar == CLOSING_PROJECTOR_BRAILLECHAR) {
     g_additionalStep = 1;
-    return true;
+    return 1;
   }
-  return false;
+  return 0;
 }
 
 DEFINE_CHECKER(isSubscriptSimpleProjector)
@@ -327,24 +327,24 @@ DEFINE_CHECKER(isSubscriptComplexProjector)
   if (curChar == COMPLEX_PROJECTOR_BRAILLECHAR &&
       nextChar == SUBSCRIPT_BRAILLECHAR) {
     g_additionalStep = 1;
-    return true;
+    return 1;
   }
-  return false;
+  return 0;
 }
 
 DEFINE_CHECKER(isSubscriptDetailedProjector)
   if (curChar == DETAILED_PROJECTOR_BRAILLECHAR &&
       nextChar == SUBSCRIPT_BRAILLECHAR) {
     g_additionalStep = 1;
-    return true;
+    return 1;
   }
-  return false;
+  return 0;
 }
 
 DEFINE_CHECKER(isPowerSimpleProjector)
   if (curChar == POWER_BRAILLECHAR && isAnySpace(index - 1) &&
       nextChar == COMMA_BRAILLECHAR) // \x2227
-    return false;
+    return 0;
   return (curChar == POWER_BRAILLECHAR &&
           prevChar != COMPLEX_PROJECTOR_BRAILLECHAR &&
           prevChar != DETAILED_PROJECTOR_BRAILLECHAR &&
@@ -356,18 +356,18 @@ DEFINE_CHECKER(isPowerComplexProjector)
   if (curChar == COMPLEX_PROJECTOR_BRAILLECHAR &&
       nextChar == POWER_BRAILLECHAR) {
     g_additionalStep = 1;
-    return true;
+    return 1;
   }
-  return false;
+  return 0;
 }
 
 DEFINE_CHECKER(isPowerDetailedProjector)
   if (curChar == DETAILED_PROJECTOR_BRAILLECHAR &&
       nextChar == POWER_BRAILLECHAR) {
     g_additionalStep = 1;
-    return true;
+    return 1;
   }
-  return false;
+  return 0;
 }
 
 DEFINE_CHECKER(isSuperscriptSimpleProjector)
@@ -380,24 +380,24 @@ DEFINE_CHECKER(isSuperscriptComplexProjector)
   if (curChar == COMPLEX_PROJECTOR_BRAILLECHAR &&
       nextChar == SUPERSCRIPT_BRAILLECHAR) {
     g_additionalStep = 1;
-    return true;
+    return 1;
   }
-  return false;
+  return 0;
 }
 
 DEFINE_CHECKER(isSuperscriptDetailedProjector)
   if (curChar == DETAILED_PROJECTOR_BRAILLECHAR &&
       nextChar == SUPERSCRIPT_BRAILLECHAR) {
     g_additionalStep = 1;
-    return true;
+    return 1;
   }
-  return false;
+  return 0;
 }
 
 DEFINE_CHECKER(isSqrtSimpleProjector)
   if (curChar == SQRT_BRAILLECHAR && isAnySpace(index - 1) &&
       nextChar == COMMA_BRAILLECHAR) // \x2228
-    return false;
+    return 0;
   return (curChar == SQRT_BRAILLECHAR &&
           prevChar != COMPLEX_PROJECTOR_BRAILLECHAR &&
           prevChar != DETAILED_PROJECTOR_BRAILLECHAR &&
@@ -409,21 +409,21 @@ DEFINE_CHECKER(isSqrtComplexProjector)
   if (curChar == COMPLEX_PROJECTOR_BRAILLECHAR &&
       nextChar == SQRT_BRAILLECHAR) {
     g_additionalStep = 1;
-    return true;
+    return 1;
   }
-  return false;
+  return 0;
 }
 
 DEFINE_CHECKER(isSqrtDetailedProjector)
   if (curChar == DETAILED_PROJECTOR_BRAILLECHAR &&
       nextChar == SQRT_BRAILLECHAR) {
     g_additionalStep = 1;
-    return true;
+    return 1;
   }
-  return false;
+  return 0;
 }
 
-bool isEndingFraction(int index);
+int isEndingFraction(int index);
 
 DEFINE_CHECKER(isUnderscriptSimpleProjector)
   return (isEndingFraction(index) &&
@@ -435,18 +435,18 @@ DEFINE_CHECKER(isUnderscriptComplexProjector)
   if (curChar == COMPLEX_PROJECTOR_BRAILLECHAR &&
       nextChar == LESS_THAN_BRAILLECHAR) {
     g_additionalStep = 1;
-    return true;
+    return 1;
   }
-  return false;
+  return 0;
 }
 
 DEFINE_CHECKER(isUnderscriptDetailedProjector)
   if (curChar == DETAILED_PROJECTOR_BRAILLECHAR &&
       nextChar == LESS_THAN_BRAILLECHAR) {
     g_additionalStep = 1;
-    return true;
+    return 1;
   }
-  return false;
+  return 0;
 }
 
 DEFINE_CHECKER(isOverscriptSimpleProjector)
@@ -465,26 +465,26 @@ DEFINE_CHECKER(isOverscriptComplexProjector)
   if (curChar == COMPLEX_PROJECTOR_BRAILLECHAR &&
       nextChar == GREATER_THAN_BRAILLECHAR) {
     g_additionalStep = 1;
-    return true;
+    return 1;
   }
-  return false;
+  return 0;
 }
 
 DEFINE_CHECKER(isOverscriptDetailedProjector)
   if (curChar == DETAILED_PROJECTOR_BRAILLECHAR &&
       nextChar == GREATER_THAN_BRAILLECHAR) {
     g_additionalStep = 1;
-    return true;
+    return 1;
   }
-  return false;
+  return 0;
 }
 
 DEFINE_CHECKER(isLogFunction)
   if (curChar == TILDE_BRAILLECHAR && nextChar == L'l') {
     g_additionalStep = 1;
-    return true;
+    return 1;
   }
-  return false;
+  return 0;
 }
 
 DEFINE_CHECKER(isSeparatorFraction)
@@ -517,18 +517,18 @@ DEFINE_CHECKER(isTableRowSeparator)
   if (curChar == LESS_THAN_BRAILLECHAR &&
       nextChar == SEPARATOR_FRACTION_BRAILLECHAR) { // \x2028 \x2424
     g_additionalStep = 1;
-    return true;
+    return 1;
   }
-  return false;
+  return 0;
 }
 
 DEFINE_CHECKER(isTableCellSeparator)
   if (curChar == GREATER_THAN_BRAILLECHAR &&
       nextChar == SEPARATOR_FRACTION_BRAILLECHAR) {
     g_additionalStep = 1;
-    return true;
+    return 1;
   }
-  return false;
+  return 0;
 }
 
 DEFINE_CHECKER(isUnitSymbol)
@@ -542,21 +542,21 @@ DEFINE_CHECKER(isUnitSymbol)
           nextChar != STAR_BRAILLECHAR); // \x29B5 \x29B6
 }
 
-bool isPartOfDecimalLowNumber(int index) {
+int isPartOfDecimalLowNumber(int index) {
   if (index < 0 || index >= g_nTranslatingStrLen)
-    return false;
+    return 0;
   int tempIndex = index - 1;
   int digitInd;
   while (isLowDigit(tempIndex, &digitInd))
     tempIndex--;
   if (tempIndex < 0)
-    return false;
+    return 0;
   if (isMinusSign(tempIndex))
     tempIndex--;
   else if (isLowDecimalPoint(tempIndex)) {
     tempIndex--;
     if (!isLowDigit(tempIndex, &digitInd))
-      return false;
+      return 0;
     do {
       tempIndex--;
     } while (isLowDigit(tempIndex, &digitInd));
@@ -564,35 +564,35 @@ bool isPartOfDecimalLowNumber(int index) {
       tempIndex--;
   }  // if (isLowDecimalPoint(tempIndex))
   if (tempIndex < 0)
-    return false;
+    return 0;
   if (isSubscriptSimpleProjector(tempIndex) ||
       isPowerSimpleProjector(tempIndex) ||
       isSuperscriptSimpleProjector(tempIndex) ||
       isUnderscriptSimpleProjector(tempIndex) ||
       isOverscriptSimpleProjector(tempIndex) ||
       isSeparatorFraction(tempIndex))
-    return true;
+    return 1;
   else if (isUpDigit(tempIndex, &digitInd)) {
     do {
       tempIndex--;
     } while (isUpDigit(tempIndex, &digitInd));
     if (isNumberSign(tempIndex))
-      return true;
+      return 1;
   }  // if (isUpDigit(tempIndex, &digitInd))
-  return false;
+  return 0;
 }  // isPartOfDecimalLowNumber
 
-void addMathBrl(wchar_t chr) {
+void addMathBrl(widechar chr) {
   g_pwcsMathBrl[g_nMathBrlLen++] = chr;
 }
 
-void addTranslatingMathBrl(wchar_t chr) {
+void addTranslatingMathBrl(widechar chr) {
   addMathBrl(chr);
   g_translatingIndex += g_additionalStep;
   g_additionalStep = 0;
 }
 
-void insertMathBrl(int index, wchar_t chr) {
+void insertMathBrl(int index, widechar chr) {
   if (index < 0 || index > g_nMathBrlLen)
     return;
   for (int i = g_nMathBrlLen - 1; i >= index; i--)
@@ -601,13 +601,13 @@ void insertMathBrl(int index, wchar_t chr) {
   g_nMathBrlLen++;
 }  // insertMathBrl
 
-wchar_t convertDigitInd(int digitInd) {
+widechar convertDigitInd(int digitInd) {
   if (digitInd == DECIMAL_COMMA_INDEX)
     return COMMA_BRAILLECHAR;
   return L'a' + digitInd;
 }  // convertDigitInd
 
-bool convertLowDecimalNumber() {
+int convertLowDecimalNumber() {
   int digitInd, digitInd2;
   if (isLowDigit(g_translatingIndex + 1, &digitInd) ||
       (isMinusSign(g_translatingIndex + 1) &&
@@ -618,7 +618,7 @@ bool convertLowDecimalNumber() {
       digitInd = digitInd2;
     }
     addMathBrl(HASH_BRAILLECHAR);
-    while (true) {
+    while (1) {
       addMathBrl(convertDigitInd(digitInd));
       g_translatingIndex++;
       if (!isDecimalLowDigit(g_translatingIndex + 1, &digitInd))
@@ -630,12 +630,12 @@ bool convertLowDecimalNumber() {
     if (isUnderlineSeparator(g_translatingIndex + 1) &&
         isLowDigit(g_translatingIndex + 2, &digitInd))
       g_translatingIndex++;
-    return true;
+    return 1;
   }  // if (isLowDigit
-  return false;
+  return 0;
 }  // convertLowDecimalNumber
 
-enum ELevelType {
+typedef enum {
   LTYPE_BASE,
   LTYPE_SIMPLE_PROJECTOR,
   LTYPE_NOMINATOR_PROJECTOR,
@@ -643,9 +643,9 @@ enum ELevelType {
   LTYPE_COMPLEX_PROJECTOR,
   LTYPE_DETAILED_PROJECTOR,
   LTYPE_DENOMINATOR_FRACTION,
-};
+} ELevelType;
 
-enum EProjectorType {
+typedef enum {
   PTYPE_NONE_PROJECTOR,
   PTYPE_FRACTION_PROJECTOR,
   PTYPE_SUBSCRIPT_PROJECTOR,
@@ -655,21 +655,21 @@ enum EProjectorType {
   PTYPE_UNDERSCRIPT_PROJECTOR,
   PTYPE_OVERSCRIPT_PROJECTOR,
   PTYPE_UNIT_SYMBOL_PROJECTOR
-};
+} EProjectorType;
 
-const int MAX_FRACTIONS = 50;
-const int MAX_FENCEDS = 50;
-const int MAX_LEVELS = 100;
+#define MAX_FRACTIONS 50
+#define MAX_FENCEDS 50
+#define MAX_LEVELS 100
 
-struct LevelInfo {
+typedef struct {
   ELevelType eLevelType;
   EProjectorType eProjectorType;
   int startingFracIndex[MAX_FRACTIONS];
   int startingFracCount;
-  wchar_t openFencedMarker[MAX_FENCEDS];
+  widechar openFencedMarker[MAX_FENCEDS];
   int openFencedIndex[MAX_FENCEDS];
   int openFencedCount;
-};
+} LevelInfo;
 
 static LevelInfo g_levelInfos[MAX_LEVELS];
 static int g_curLevel = 0;
@@ -698,106 +698,106 @@ void backToPreviousLevel() {
   g_curLevel--;
 }
 
-bool isBaseOnCurLevel() {
+int isBaseOnCurLevel() {
   return (g_levelInfos[g_curLevel].eLevelType == LTYPE_BASE);
 }
 
-bool isSimpleProjectorOnCurLevel() {
+int isSimpleProjectorOnCurLevel() {
   return (g_levelInfos[g_curLevel].eLevelType == LTYPE_SIMPLE_PROJECTOR);
 }
 
-bool isNominatorProjectorOnCurLevel() {
+int isNominatorProjectorOnCurLevel() {
   return (g_levelInfos[g_curLevel].eLevelType == LTYPE_NOMINATOR_PROJECTOR);
 }
 
-bool isDenominatorProjectorOnCurLevel() {
+int isDenominatorProjectorOnCurLevel() {
   return (g_levelInfos[g_curLevel].eLevelType == LTYPE_DENOMINATOR_PROJECTOR);
 }
 
-bool isDenominatorProjectorOnPrevLevel() {
+int isDenominatorProjectorOnPrevLevel() {
   if (g_curLevel > 0) {
     return (g_levelInfos[g_curLevel-1].eLevelType ==
         LTYPE_DENOMINATOR_PROJECTOR);
   }
-  return false;
+  return 0;
 }
 
-bool isComplexProjectorOnCurLevel() {
+int isComplexProjectorOnCurLevel() {
   return (g_levelInfos[g_curLevel].eLevelType == LTYPE_COMPLEX_PROJECTOR);
 }
 
-bool isComplexProjectorOnPrevLevel() {
+int isComplexProjectorOnPrevLevel() {
   if (g_curLevel > 0) {
     return (g_levelInfos[g_curLevel-1].eLevelType ==
         LTYPE_COMPLEX_PROJECTOR);
   }
-  return false;
+  return 0;
 }
 
-bool isNoBreakableProjectorOnCurLevel() {
+int isNoBreakableProjectorOnCurLevel() {
   return (isSimpleProjectorOnCurLevel() ||
           isNominatorProjectorOnCurLevel() ||
           isDenominatorProjectorOnCurLevel() ||
           isComplexProjectorOnCurLevel());
 }
 
-bool isDetailedProjectorOnCurLevel() {
+int isDetailedProjectorOnCurLevel() {
   return (g_levelInfos[g_curLevel].eLevelType == LTYPE_DETAILED_PROJECTOR);
 }
 
-bool isDenominatorFractionOnCurLevel() {
+int isDenominatorFractionOnCurLevel() {
   return (g_levelInfos[g_curLevel].eLevelType == LTYPE_DENOMINATOR_FRACTION);
 }
 
-bool isDenominatorFractionOnPrevLevel() {
+int isDenominatorFractionOnPrevLevel() {
   if (g_curLevel > 0) {
     return (g_levelInfos[g_curLevel-1].eLevelType ==
         LTYPE_DENOMINATOR_FRACTION);
   }
-  return false;
+  return 0;
 }
 
-bool isDenominatorFractionOnPrevPrevLevel() {
+int isDenominatorFractionOnPrevPrevLevel() {
   if (g_curLevel > 1) {
     return (g_levelInfos[g_curLevel-2].eLevelType ==
         LTYPE_DENOMINATOR_FRACTION);
   }
-  return false;
+  return 0;
 }
 
-bool isSubscriptProjectorOnCurLevel() {
+int isSubscriptProjectorOnCurLevel() {
   return (g_levelInfos[g_curLevel].eProjectorType == PTYPE_SUBSCRIPT_PROJECTOR);
 }
 
-bool isPowerProjectorOnCurLevel() {
+int isPowerProjectorOnCurLevel() {
   return (g_levelInfos[g_curLevel].eProjectorType == PTYPE_POWER_PROJECTOR);
 }
 
-bool isSuperscriptProjectorOnCurLevel() {
+int isSuperscriptProjectorOnCurLevel() {
   return (g_levelInfos[g_curLevel].eProjectorType == PTYPE_SUPERSCRIPT_PROJECTOR);
 }
 
-bool wasSuperscriptProjectorOnNextLevel() {
+int wasSuperscriptProjectorOnNextLevel() {
   return (g_levelInfos[g_curLevel + 1].eProjectorType == PTYPE_SUPERSCRIPT_PROJECTOR);
 }
 
-bool isSqrtProjectorOnCurLevel() {
+int isSqrtProjectorOnCurLevel() {
   return (g_levelInfos[g_curLevel].eProjectorType == PTYPE_SQRT_PROJECTOR);
 }
 
-bool isUnderscriptProjectorOnCurLevel() {
+int isUnderscriptProjectorOnCurLevel() {
   return (g_levelInfos[g_curLevel].eProjectorType == PTYPE_UNDERSCRIPT_PROJECTOR);
 }
 
-bool isOverscriptProjectorOnCurLevel() {
+int isOverscriptProjectorOnCurLevel() {
   return (g_levelInfos[g_curLevel].eProjectorType == PTYPE_OVERSCRIPT_PROJECTOR);
 }
 
-bool isUnitSymbolProjectorOnCurLevel() {
+int isUnitSymbolProjectorOnCurLevel() {
   return (g_levelInfos[g_curLevel].eProjectorType == PTYPE_UNIT_SYMBOL_PROJECTOR);
 }
 
-bool isAnyStartingFractionOnCurLevel() {
+int isAnyStartingFractionOnCurLevel() {
   return (g_levelInfos[g_curLevel].startingFracCount > 0);
 }
 
@@ -807,24 +807,24 @@ void markStartingFractionOnCurLevel() {
       g_nMathBrlLen;
 }
 
-bool replaceStartingFractionOnCurLevel() {
+int replaceStartingFractionOnCurLevel() {
   if (g_levelInfos[g_curLevel].startingFracCount > 0) {
     g_pwcsMathBrl[g_levelInfos[g_curLevel].startingFracIndex
                       [--g_levelInfos[g_curLevel].startingFracCount]] =
         STARTING_FRACTION_MARKER;
-    return true;
+    return 1;
   }
-  return false;
+  return 0;
 }  // replaceStartingFractionOnCurLevel
 
-bool isOpenFencedOnLevel(int level, wchar_t openFencedMarker) {
+int isOpenFencedOnLevel(int level, widechar openFencedMarker) {
   for (int i = g_levelInfos[level].openFencedCount-1; i >= 0; i++)
     if (g_levelInfos[level].openFencedMarker[i] == openFencedMarker)
-      return true;
-  return false;
+      return 1;
+  return 0;
 }
 
-bool isUnopenedCloseFencedOnCurLevel(int index) {
+int isUnopenedCloseFencedOnCurLevel(int index) {
   return ((isRightParentsesis(index) &&
            !isOpenFencedOnLevel(g_curLevel, LEFT_PARENTSESIS_MARKER)) ||
           (isRightSquareBracket(index) &&
@@ -835,7 +835,7 @@ bool isUnopenedCloseFencedOnCurLevel(int index) {
            !isOpenFencedOnLevel(g_curLevel, LEFT_ANGLE_BRACKET_MARKER)));
 }
 
-void markOpenFencedOnCurLevel(wchar_t openFencedMarker) {
+void markOpenFencedOnCurLevel(widechar openFencedMarker) {
   g_levelInfos[g_curLevel]
       .openFencedMarker[g_levelInfos[g_curLevel].openFencedCount] =
       openFencedMarker;
@@ -844,8 +844,8 @@ void markOpenFencedOnCurLevel(wchar_t openFencedMarker) {
       g_nMathBrlLen;
 }
 
-bool addFencedMarkersOnCurLevel(wchar_t openFencedMarker,
-                             wchar_t closeFencedMarker) {
+int addFencedMarkersOnCurLevel(widechar openFencedMarker,
+                             widechar closeFencedMarker) {
   for (int i = g_levelInfos[g_curLevel].openFencedCount-1; i >= 0; i++)
     if (g_levelInfos[g_curLevel].openFencedMarker[i] == openFencedMarker) {
       int index = g_levelInfos[g_curLevel].openFencedIndex[i];
@@ -855,13 +855,13 @@ bool addFencedMarkersOnCurLevel(wchar_t openFencedMarker,
       insertMathBrl(index, STARTING_FENCED_MARKER);
       g_levelInfos[g_curLevel].openFencedCount = i;
       addTranslatingMathBrl(ENDING_FENCED_MARKER);
-      return true;
+      return 1;
     }
-  return false;
+  return 0;
 }  // replaceFencedOnCurLevel
 
 
-wchar_t* correctBeforeBackTranslation(wchar_t* pwcsTranslatingStr,
+widechar* correctBeforeBackTranslation(widechar* pwcsTranslatingStr,
                                       int nTranslatingStrLen) {
   g_pwcsTranslatingStr = pwcsTranslatingStr;
   g_nTranslatingStrLen = nTranslatingStrLen;
@@ -886,11 +886,11 @@ wchar_t* correctBeforeBackTranslation(wchar_t* pwcsTranslatingStr,
   int digitInd;
 
   int nLeftBraceTableIndex = -1;
-  bool bStartedTable = false;
+  int bStartedTable = 0;
 
   for (g_translatingIndex = 1; g_translatingIndex < nTranslatingStrLen; g_translatingIndex++) {
     if (isSeparatorFraction(g_translatingIndex) && !isAnySpace(g_translatingIndex - 1)) {
-      printf("separator fraction: %d\n", g_translatingIndex);
+      //@printf("separator fraction: %d\n", g_translatingIndex);
       int fencedCounter = 0;
       int tempIndex = g_translatingIndex - 1;
       while (tempIndex >= 0) {
@@ -920,26 +920,26 @@ wchar_t* correctBeforeBackTranslation(wchar_t* pwcsTranslatingStr,
           tempIndex += g_additionalStep;
           startSimplifiedFracIndex[startSimplifiedFracCount] = tempIndex + 1;
           startSimplifiedFracChars[startSimplifiedFracCount++] = 0;
-          printf("starting: %d\n", (tempIndex + 1));
+          //@printf("starting: %d\n", (tempIndex + 1));
           break;
         } else if (isStartingFraction(tempIndex)) {
           startSimplifiedFracIndex[startSimplifiedFracCount] = tempIndex;
           startSimplifiedFracChars[startSimplifiedFracCount++] =
               g_additionalStep + 1;
-          printf("starting fraction: %d\n", tempIndex);
+          //@printf("starting fraction: %d\n", tempIndex);
           break;
         } else if (isLeftParentsesis(tempIndex) ||
                    isLeftSquareBracket(tempIndex) ||
                    isLeftBrace(tempIndex) ||
                    isLeftAngleBracket(tempIndex)) {
           fencedCounter++;
-printf("incrementing fenced - index: %d, counter: %d\n", tempIndex, fencedCounter);
+//@printf("incrementing fenced - index: %d, counter: %d\n", tempIndex, fencedCounter);
         } else if (isRightParentsesis(tempIndex) ||
                    isRightSquareBracket(tempIndex) ||
                    isRightBrace(tempIndex) ||
                    isRightAngleBracket(tempIndex)) {
           fencedCounter--;
-printf("decrementing fenced - index: %d, counter: %d\n", tempIndex, fencedCounter);
+//@printf("decrementing fenced - index: %d, counter: %d\n", tempIndex, fencedCounter);
         }
         tempIndex--;
       }  // while
@@ -1319,10 +1319,10 @@ printf("decrementing fenced - index: %d, counter: %d\n", tempIndex, fencedCounte
     }    // if (isLogFunction(g_translatingIndex))
     else
         if (isNumberSign(g_translatingIndex)) {
-      bool createFrac = false;
+      int createFrac = 0;
       int tempIndex = g_translatingIndex;
       if (isUpDigit(tempIndex + 1, &digitInd)) {
-        while (true) {
+        while (1) {
           tempIndex++;
           if (!isUpDigit(tempIndex + 1, &digitInd))
             break;
@@ -1335,18 +1335,18 @@ printf("decrementing fenced - index: %d, counter: %d\n", tempIndex, fencedCounte
             int tempIndex2 = tempIndex;
             if (isMinusSign(tempIndex2 + 1))
               tempIndex2++;
-            bool bZeroAsLowDigits = isLowZeroDigit(tempIndex + 1);
-            while (true) {
+            int bZeroAsLowDigits = isLowZeroDigit(tempIndex + 1);
+            while (1) {
               tempIndex2++;
               if (!isLowDigit(tempIndex2 + 1, &digitInd))
                 break;
               if (!isLowZeroDigit(tempIndex + 1))
-                bZeroAsLowDigits = false;
+                bZeroAsLowDigits = 0;
             }  // while
             if (!bZeroAsLowDigits &&
                 !((tempIndex2 - tempIndex) == 1 &&
                   isLowZeroOrOneDigit(tempIndex2)))
-              createFrac = true;
+              createFrac = 1;
           }  // if
       }      // if (isUpDigit(g_translatingIndex2+1, &digitInd)) {
       if (createFrac) {
@@ -1441,7 +1441,7 @@ printf("decrementing fenced - index: %d, counter: %d\n", tempIndex, fencedCounte
         insertMathBrl(nLeftBraceTableIndex+3, STARTING_TABLE_MARKER);
         insertMathBrl(nLeftBraceTableIndex, STARTING_FENCED_MARKER);
       }
-      bStartedTable = true;
+      bStartedTable = 1;
       addTranslatingMathBrl(TABLE_ROW_SEPARATOR_MARKER);
     }  // if (isTableRowSeparator(g_translatingIndex) ||
     else if (isUnitSymbol(g_translatingIndex)) {
@@ -1485,30 +1485,30 @@ printf("decrementing fenced - index: %d, counter: %d\n", tempIndex, fencedCounte
 
   {
     int i, j, k, ind;
-    bool bPreviousWasDigit = false;
+    int bPreviousWasDigit = 0;
     for (i = 0; i < g_nMathBrlLen; i++) {
       if (g_pwcsMathBrl[i] == HASH_BRAILLECHAR) {
         j = i;
-        while (true) {
+        while (1) {
           j++;
           if (j == g_nMathBrlLen)
             break;
           if (g_pwcsMathBrl[j] == COMMA_BRAILLECHAR && bPreviousWasDigit) {
-            bPreviousWasDigit = false;
+            bPreviousWasDigit = 0;
             continue;
           }
           for (ind = 0; ind < wcslen(upDigits); ind++)
             if (g_pwcsMathBrl[j] == upDigits[ind])
               break;
           if (ind < wcslen(upDigits))
-            bPreviousWasDigit = true;
+            bPreviousWasDigit = 1;
           else
             break;
         }  // while
 
         if (g_pwcsMathBrl[j] == LEFT_PARENTSESIS_MARKER) {
           k = j;
-          while (true) {
+          while (1) {
             k++;
             if (k == g_nMathBrlLen)
               break;
@@ -1520,7 +1520,7 @@ printf("decrementing fenced - index: %d, counter: %d\n", tempIndex, fencedCounte
           }  // while
           if (k > (j + 1) && g_pwcsMathBrl[k] == RIGHT_PARENTSESIS_MARKER) {
             j = k + 1;
-            bPreviousWasDigit = true;
+            bPreviousWasDigit = 1;
           }
         }  // if (g_pwcsMathBrl[j] == LEFT_PARENTSESIS_MARKER)
 
