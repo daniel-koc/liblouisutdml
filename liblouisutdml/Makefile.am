@@ -50,7 +50,8 @@ liblouisutdml_la_SOURCES =			\
 	utd2brf.c \
 	utd2pef.c \
 	utd2volumes.c \
-	transcriber.c
+	transcriber.c \
+	math_parser.c
 
 EXTRA_DIST = \
 	README \
