@@ -73,9 +73,9 @@ main (void)
     "collect_results: liblouisutdml.dll",
     "    if not exist brailleblasterlib mkdir brailleblasterlib",
     "    copy liblouisutdml.dll brailleblasterlib",
-    "    copy liblouisutdml.dll ..\\..\\bin",
+    "    copy liblouisutdml.dll ..\\..\\bnm_bin",
     "    copy $(LIBLOUIS_PATH)\\windows\\liblouis.dll brailleblasterlib",
-    "    copy $(LIBLOUIS_PATH)\\windows\\liblouis.dll ..\\..\\bin",
+    "    copy $(LIBLOUIS_PATH)\\windows\\liblouis.dll ..\\..\\bnm_bin",
     "    if not exist libslib mkdir libslib",
     "    copy liblouisutdml.lib libslib",
     "    copy $(LIBLOUIS_PATH)\\windows\\liblouis.lib libslib",
@@ -140,15 +140,12 @@ NULL
 };
 
   FILE *makefile_am;
-  FILE *makefile_am_2;
   FILE *configure_ac;
   FILE *Makefile_gen;
   char inbuf[256];
   char version[80];
   char module[50][50];
   int moduleCount = 0;
-  char module_2[50][50];
-  int moduleCount_2 = 0;
   char *curchar;
   int ch;
   int ignoreLine = 1;
@@ -160,12 +157,7 @@ NULL
       fprintf (stderr, "Cannot open Makefile.am.\n");
       exit (1);
     }
-  if ((makefile_am_2 = fopen ("..\\liblouisutdml\\b2m_translator\\Makefile.am", "r")) == NULL)
-    {
-      fprintf (stderr, "Cannot open b2m_translator/Makefile.am.\n");
-      exit (1);
-    }
-	if ((configure_ac = fopen ("..\\configure.ac", "r")) == NULL)
+  if ((configure_ac = fopen ("..\\configure.ac", "r")) == NULL)
     {
       fprintf (stderr, "Cannot open configure.ac.\n");
       exit (1);
@@ -202,32 +194,6 @@ NULL
     }
   fclose (makefile_am);
 
-  // Get module names of b2m_translator
-  ignoreLine = 1;
-  while (fgets (inbuf, sizeof (inbuf), makefile_am_2))
-    {
-      curchar = inbuf;
-      while ((ch = *curchar++) <= 32 && ch != 0);
-      name = curchar - 1;
-      while ((ch = *curchar++) > 32 && ch != ',' && ch != '.');
-      nameLength = curchar - name - 1;
-      name[nameLength] = 0;
-      if (strcmp (name, "liblouisutdml_la_SOURCES") == 0)
-	{
-	  ignoreLine = 0;
-	  continue;
-	}
-      if (ignoreLine)
-	continue;
-      if (name[nameLength + 1] != 'c')
-	continue;
-      strcpy (module_2[moduleCount_2++], name);
-      while ((ch = *curchar++) != 0 && ch != '\\');
-      if (ch != '\\')
-	break;
-    }
-  fclose (makefile_am_2);
-
   // Get version
   while ((fgets (inbuf, sizeof (inbuf), configure_ac)))
     {
@@ -260,14 +226,11 @@ NULL
 	{
   fprintf (Makefile_gen, "OBJ = Jliblouisutdml.obj \\\n");
 	  for (kk = 0; kk < moduleCount; kk++)
+if (kk != (moduleCount - 1))
 	    fprintf (Makefile_gen, "    %s.obj \\\n", module[kk]);
-	  for (kk = 0; kk < moduleCount_2; kk++)
-if (kk != (moduleCount_2 - 1))
-	    fprintf (Makefile_gen, "    %s.obj \\\n", module_2[kk]);
 else
-	    fprintf (Makefile_gen, "    %s.obj \n", module_2[kk]);
-
-		fprintf (Makefile_gen, "LIBXML2_OBJ = \\\n");
+	    fprintf (Makefile_gen, "    %s.obj \n", module[kk]);
+  fprintf (Makefile_gen, "LIBXML2_OBJ = \\\n");
 for (kk = 0; libxml2Module[kk]; kk++)
 if (libxml2Module[kk + 1] != NULL)
 fprintf (Makefile_gen, "    %s.obj \\\n", libxml2Module[kk]);
@@ -290,20 +253,7 @@ fprintf (Makefile_gen, "    %s.obj \n", libxml2Module[kk]);
       fprintf (Makefile_gen, "    $(CC) $(CCFLAGS) $(SRCDIR)\\%s.c\n",
 	       module[kk]);
     }
-  for (kk = 0; kk < moduleCount_2; kk++)
-    {
-      fprintf (Makefile_gen, "%s.obj: $(HEADERS) $(SRCDIR)\\b2m_translator\\%s.cpp\n",
-	       module_2[kk], module_2[kk]);
-    if (strcmp (module_2[k], "loblouisutdml") == 0)
-      fprintf (Makefile_gen, 
-"    $(CC) $(CCFLAGS) /DPACKAGE_VERSION=%s $(SRCDIR)\\b2m_translator\\%s.cpp\n",
-	       version, module_2[kk]);
-    else
-      fprintf (Makefile_gen, "    $(CC) $(CCFLAGS) $(SRCDIR)\\b2m_translator\\%s.cpp\n",
-	       module_2[kk]);
-    }
-
-	// Make the libxml2 object files.
+ // Make the libxml2 object files.
 for (kk = 0; libxml2Module[kk]; kk++)
 {
 fprintf (Makefile_gen, "%s.obj: $(LXHEADERS) $(LXSRCDIR)\\%s.c\n",
