@@ -400,17 +400,6 @@ transcribe_text_file ()
   return 1;
 }
 
-void utf8_to_wchar(char* lpMultiByteStr, widechar* lpWideCharStr, int cchWideCharStrLen)
-{
-int cbMultiByteStrLen = strlen(lpMultiByteStr) + 1;
-lpWideCharStr[0] = 0;
-#ifdef _WIN32
-MultiByteToWideChar( CP_UTF8, 0, lpMultiByteStr, cbMultiByteStrLen, lpWideCharStr, cchWideCharStrLen);
-#else
-utf8_string_to_wc(lpMultiByteStr, &cbMultiByteStrLen, lpWideCharStr, &cchWideCharStrLen);
-#endif
-}
-
 #define MAXBYTES 7
 static int first0Bit[MAXBYTES] = { 0x80, 0xC0, 0xE0, 0xF0, 0xF8, 0xFC, 0XFE };
 
@@ -465,17 +454,6 @@ utf8_string_to_wc (const unsigned char *inStr, int *inSize, widechar *
   *inSize = in;
   *outSize = out;
   return 1;
-}
-
-void wchar_to_utf8(widechar* lpWideCharStr, char* lpMultiByteStr, int cbMultiByteStrLen)
-{
-int nWideCharStrLen = wcslen(lpWideCharStr) + 1;
-lpMultiByteStr[0] = 0;
-#ifdef _WIN32
-WideCharToMultiByte(CP_UTF8, 0, lpWideCharStr, nWideCharStrLen, lpMultiByteStr, cbMultiByteStrLen, NULL, NULL);
-#else
-wc_string_to_utf8(lpWideCharStr, &nWideCharStrLen, lpMultiByteStr, &cbMultiByteStrLen);
-#endif
 }
 
 int

@@ -43,6 +43,94 @@
 #include "louisutdml.h"
 #include "louisutdml_backtranslation.h"
 
+int widecharlen(const widechar *s) {
+  size_t len = 0;
+  while (s[len] != 0)
+  {
+      if (s[++len] == 0)
+        return len;
+      if (s[++len] == 0)
+        return len;
+      if (s[++len] == 0)
+        return len;
+      ++len;
+    }
+  return len;
+}
+
+void widecharncpy(widechar* to, const widechar* from, int length) {
+  int k;
+  if (length < 0) {
+      for (k = 0; from[k]; k++)
+	to[k] = from[k];
+    } else {
+      for (k = 0; k < length && from[k]; k++)
+	to[k] = from[k];
+    }
+  to[k] = 0;
+}
+
+int widecharcmp(const widechar *s1, const widechar *s2) {
+  widechar c1, c2;
+  do {
+      c1 = *s1++;
+      c2 = *s2++;
+      if (c2 == 0)
+        return c1 - c2;
+    } while (c1 == c2);
+  return c1 < c2 ? -1 : 1;
+}
+
+void widecharcat(widechar* to, const widechar* from) {
+  int len = widecharlen(to);
+  widecharncpy(&to[len], from, -1);
+}
+
+// returns true if X and Y are same
+int compare(const widechar* X, const widechar* Y) {
+  while (*X && *Y) {
+    if (*X != *Y)
+      return 0;
+    X++;
+    Y++;
+  }
+
+  return (*Y == 0);
+}
+
+const widechar* widecharstr(const widechar* X, const widechar* Y) {
+  while (*X != 0) {
+    if ((*X == *Y) && compare(X, Y))
+      return X;
+    X++;
+  }
+
+  return NULL;
+}
+
+
+#define WIDESTRING_BUFFER_SIZE 102400
+static widechar widestring_buffer[WIDESTRING_BUFFER_SIZE];
+static int widestring_buf_len = 0;
+
+static widechar* alloc_widestring(const widechar* inString, int length) {
+  widechar* newString;
+  int inStringLen;
+  if (inString == NULL)
+    return NULL;
+  if ((widestring_buf_len + length) >= WIDESTRING_BUFFER_SIZE)
+    memoryError();
+  newString = &widestring_buffer[widestring_buf_len];
+  inStringLen = widecharlen(inString);
+  if (length < inStringLen)
+    inStringLen = length;
+  memcpy(newString, inString, inStringLen*CHARSIZE);
+  newString[inStringLen] = 0;
+  widestring_buf_len += length + 1;
+  return newString;
+}
+
+
 #define MAX_ACTIONS 20
 
 typedef struct {
@@ -69,10 +157,6 @@ int MaxLMTempsymbolsCount = 0;
 int LMTempsymbolsCount = 0;
 
 int LMsymbolsSorted = 0;
-
-#define WIDESTRING_BUFFER_SIZE 8 * BUFSIZE
-static widechar widestring_buffer[WIDESTRING_BUFFER_SIZE];
-static int widestring_buf_len = 0;
 
 #define LMSYMBOLS_RESIZING_STEP 100
 
@@ -119,9 +203,9 @@ LMSymbol* CreateNewLMSymbol() {
   return symbol;
 }  // CreateNewLMSymbol
 
-LMSymbol* CreateTempLMSymbol(wchar_t* l_input,
-                             wchar_t* l_tag,
-                             wchar_t* l_output,
+LMSymbol* CreateTempLMSymbol(widechar* l_input,
+                             widechar* l_tag,
+                             widechar* l_output,
                              TokenType l_ttype) {
   LMSymbol* symbol;
   if (!(symbol = malloc(sizeof(LMSymbol))))
@@ -199,23 +283,6 @@ void DestroyLMSymbolsStruct() {
   widestring_buf_len = 0;
 }  // DestroyLMSymbolsStruct
 
-static widechar* alloc_widestring(const widechar* inString, int length) {
-  widechar* newString;
-  int inStringLen;
-  if (inString == NULL)
-    return NULL;
-  if ((widestring_buf_len + length) >= WIDESTRING_BUFFER_SIZE)
-    memoryError();
-  newString = &widestring_buffer[widestring_buf_len];
-  inStringLen = (int)wcslen(inString);
-  if (length < inStringLen)
-    inStringLen = length;
-  wcsncpy(newString, inString, inStringLen);
-  newString[inStringLen] = L'\0';
-  widestring_buf_len += length + 1;
-  return newString;
-}
-
 static void configureError(FileInfo* nested, char* format, ...) {
   char buffer[1024];
   va_list arguments;
@@ -272,10 +339,10 @@ static int controlCharValue(FileInfo* nested, int actionIndex) {
       k++;
       switch (value[k]) {
         case '"':
-          decoded[decodedLength++] = L'"';
+          decoded[decodedLength++] = '"';
           break;
         case '\\':
-          decoded[decodedLength++] = L'\\';
+          decoded[decodedLength++] = '\\';
           break;
         case 'F':
         case 'f':
@@ -301,8 +368,9 @@ static int controlCharValue(FileInfo* nested, int actionIndex) {
           return 0;
       }
       k++;
-    } else
+    } else {
       decoded[decodedLength++] = (widechar)value[k++];
+    }
   }
   decoded[decodedLength] = 0;
   nested->wideValue = &decoded[0];
@@ -310,18 +378,19 @@ static int controlCharValue(FileInfo* nested, int actionIndex) {
   return 1;
 }
 
+#ifdef TESTING_MATH_SYMBOLS
 static char* controlWidecharValue(widechar* value) {
   int k = 0;
   static unsigned char buf[200];
   int bufLength = 0;
-  int valueLength = wcslen(value);
+  int valueLength = widecharlen(value);
   while (k < valueLength) {
     switch (value[k]) {
-      case L'"':
+      case '"':
         buf[bufLength++] = '\\';
         buf[bufLength++] = '"';
         break;
-      case L'\\':
+      case '\\':
         buf[bufLength++] = '\\';
         buf[bufLength++] = '\\';
         break;
@@ -350,14 +419,16 @@ static char* controlWidecharValue(widechar* value) {
           buf[bufLength++] = (digit < 10) ? ('0' + digit) : ('A' + digit - 10);
           digit = (binaryValue & 0x000f);
           buf[bufLength++] = (digit < 10) ? ('0' + digit) : ('A' + digit - 10);
-        } else
+        } else {
           buf[bufLength++] = (unsigned char)value[k];
+        }
     }
     k++;
   }
   buf[bufLength] = 0;
   return (char*)&buf[0];
 }
+#endif  // TESTING_MATH_SYMBOLS
 
 static int getLine(FileInfo* nested) {
   int lineLen = 0;
@@ -522,6 +593,36 @@ static const char* tokenSubtypes[] = {"UNDEFINED",
                                       "8",
                                       "ARRAY",
                                       "9",
+                                      "VEC",
+                                      "10",
+                                      "CHECK",
+                                      "11",
+                                      "BAR",
+                                      "12",
+                                      "UNDERBRACE",
+                                      "13",
+                                      "OVERBRACE",
+                                      "14",
+                                      "UNDERLINE",
+                                      "15",
+                                      "OVERLINE",
+                                      "16",
+                                      "UNITSYMBOL",
+                                      "17",
+                                      "SQRT",
+                                      "18",
+                                      "SFRAC",
+                                      "19",
+                                      "FRAC",
+                                      "20",
+                                      "ROOT",
+                                      "21",
+                                      "STACKREL",
+                                      "22",
+                                      "ATOP",
+                                      "23",
+                                      "CHOOSE",
+                                      "24",
                                       NULL};
 
 static int compileSymbolsDefs(FileInfo* nested) {
@@ -672,6 +773,7 @@ int read_symbol_definitions_file(const char* symbolDefsFileList) {
   int listLength;
   int currentListPos = 0;
   errorCount = 0;
+  widestring_buf_len = 0;
   DestroyLMSymbolsStruct();
 
   /*Process file list*/
@@ -706,7 +808,7 @@ int read_symbol_definitions_file(const char* symbolDefsFileList) {
     }
   }
 
-  /*  
+#ifdef TESTING_MATH_SYMBOLS
   FILE* out = fopen("math_backtranslation_symbols_temp.defs", "wb");
   if (!out)
     return 1;
@@ -747,7 +849,7 @@ int read_symbol_definitions_file(const char* symbolDefsFileList) {
     fprintf(out, "\r\n");
   }
   fclose(out);
-  */
+  #endif  // TESTING_MATH_SYMBOLS
 
   return 1;
 }

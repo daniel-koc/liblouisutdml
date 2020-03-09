@@ -60,17 +60,32 @@ static char s_logFileName[MAXNAMELEN];
 static char s_settingsString[MAX_SETTINGS_STRING_SIZE];
 static char s_inbuf[BUFSIZE];
 
+int widelen(const widechar *s) {
+  int len = 0;
+  while (s[len] != 0)
+  {
+      if (s[++len] == 0)
+        return len;
+      if (s[++len] == 0)
+        return len;
+      if (s[++len] == 0)
+        return len;
+      ++len;
+    }
+  return len;
+}
+
 _DLL_EXPORT widechar *EXPORT_CALL lbu_versionW ()
 {
-  static widechar s_wcsVersion[MAX_VERSION_SIZE];
+  static widechar s_version[MAX_VERSION_SIZE];
   char* version = lbu_version();
 int versionInSize = strlen(version);
 int versionOutSize = MAX_VERSION_SIZE;
 
-s_wcsVersion[0] = 0;
-utf8_string_to_wc(version, &versionInSize, s_wcsVersion, &versionOutSize);
+s_version[0] = 0;
+utf8_string_to_wc(version, &versionInSize, s_version, &versionOutSize);
 
-return s_wcsVersion;
+return s_version;
 }
 
 _DLL_EXPORT char *EXPORT_CALL
@@ -232,17 +247,17 @@ int settingsStringOutSize = MAX_SETTINGS_STRING_SIZE-1;
 
 if (configFileList != 0)
 {
-configFileListInSize = wcslen(configFileList);
+configFileListInSize = widelen(configFileList);
 wc_string_to_utf8(configFileList, &configFileListInSize, s_configFileList, &configFileListOutSize);
 }
 if (logFileName != 0)
 {
-logFileNameInSize = wcslen(logFileName);
+logFileNameInSize = widelen(logFileName);
 wc_string_to_utf8(logFileName, &logFileNameInSize, s_logFileName, &logFileNameOutSize);
 }
 if (settingsString != 0)
 {
-settingsStringInSize = wcslen(settingsString);
+settingsStringInSize = widelen(settingsString);
 wc_string_to_utf8(settingsString, &settingsStringInSize, s_settingsString, &settingsStringOutSize);
 }
 
@@ -283,22 +298,22 @@ int settingsStringOutSize = MAX_SETTINGS_STRING_SIZE-1;
 
 if (configFileList != 0)
 {
-configFileListInSize = wcslen(configFileList);
+configFileListInSize = widelen(configFileList);
 wc_string_to_utf8(configFileList, &configFileListInSize, s_configFileList, &configFileListOutSize);
 }
 if (inbuf != 0)
 {
-inbufInSize = wcslen(inbuf);
+inbufInSize = widelen(inbuf);
 wc_string_to_utf8(inbuf, &inbufInSize, s_inbuf, &inbufOutSize);
 }
 if (logFileName != 0)
 {
-logFileNameInSize = wcslen(logFileName);
+logFileNameInSize = widelen(logFileName);
 wc_string_to_utf8(logFileName, &logFileNameInSize, s_logFileName, &logFileNameOutSize);
 }
 if (settingsString != 0)
 {
-settingsStringInSize = wcslen(settingsString);
+settingsStringInSize = widelen(settingsString);
 wc_string_to_utf8(settingsString, &settingsStringInSize, s_settingsString, &settingsStringOutSize);
 }
 
@@ -337,17 +352,17 @@ return 0;
 
 if (configFileList != 0)
 {
-configFileListInSize = wcslen(configFileList);
+configFileListInSize = widelen(configFileList);
 wc_string_to_utf8(configFileList, &configFileListInSize, s_configFileList, &configFileListOutSize);
 }
 if (logFileName != 0)
 {
-logFileNameInSize = wcslen(logFileName);
+logFileNameInSize = widelen(logFileName);
 wc_string_to_utf8(logFileName, &logFileNameInSize, s_logFileName, &logFileNameOutSize);
 }
 if (settingsString != 0)
 {
-settingsStringInSize = wcslen(settingsString);
+settingsStringInSize = widelen(settingsString);
 wc_string_to_utf8(settingsString, &settingsStringInSize, s_settingsString, &settingsStringOutSize);
 }
 
@@ -453,27 +468,27 @@ int settingsStringOutSize = MAX_SETTINGS_STRING_SIZE-1;
 
 if (configFileList != 0)
 {
-configFileListInSize = wcslen(configFileList);
+configFileListInSize = widelen(configFileList);
 wc_string_to_utf8(configFileList, &configFileListInSize, s_configFileList, &configFileListOutSize);
 }
 if (inFileName != 0)
 {
-inFileNameInSize = wcslen(inFileName);
+inFileNameInSize = widelen(inFileName);
 wc_string_to_utf8(inFileName, &inFileNameInSize, s_inFileName, &inFileNameOutSize);
 }
 if (outFileName != 0)
 {
-outFileNameInSize = wcslen(outFileName);
+outFileNameInSize = widelen(outFileName);
 wc_string_to_utf8(outFileName, &outFileNameInSize, s_outFileName, &outFileNameOutSize);
 }
 if (logFileName != 0)
 {
-logFileNameInSize = wcslen(logFileName);
+logFileNameInSize = widelen(logFileName);
 wc_string_to_utf8(logFileName, &logFileNameInSize, s_logFileName, &logFileNameOutSize);
 }
 if (settingsString != 0)
 {
-settingsStringInSize = wcslen(settingsString);
+settingsStringInSize = widelen(settingsString);
 wc_string_to_utf8(settingsString, &settingsStringInSize, s_settingsString, &settingsStringOutSize);
 }
 
@@ -540,27 +555,27 @@ int settingsStringOutSize = MAX_SETTINGS_STRING_SIZE-1;
 
 if (configFileList != 0)
 {
-configFileListInSize = wcslen(configFileList);
+configFileListInSize = widelen(configFileList);
 wc_string_to_utf8(configFileList, &configFileListInSize, s_configFileList, &configFileListOutSize);
 }
 if (inFileName != 0)
 {
-inFileNameInSize = wcslen(inFileName);
+inFileNameInSize = widelen(inFileName);
 wc_string_to_utf8(inFileName, &inFileNameInSize, s_inFileName, &inFileNameOutSize);
 }
 if (outFileName != 0)
 {
-outFileNameInSize = wcslen(outFileName);
+outFileNameInSize = widelen(outFileName);
 wc_string_to_utf8(outFileName, &outFileNameInSize, s_outFileName, &outFileNameOutSize);
 }
 if (logFileName != 0)
 {
-logFileNameInSize = wcslen(logFileName);
+logFileNameInSize = widelen(logFileName);
 wc_string_to_utf8(logFileName, &logFileNameInSize, s_logFileName, &logFileNameOutSize);
 }
 if (settingsString != 0)
 {
-settingsStringInSize = wcslen(settingsString);
+settingsStringInSize = widelen(settingsString);
 wc_string_to_utf8(settingsString, &settingsStringInSize, s_settingsString, &settingsStringOutSize);
 }
 
@@ -649,22 +664,22 @@ int settingsStringOutSize = MAX_SETTINGS_STRING_SIZE-1;
 
 if (configFileList != 0)
 {
-configFileListInSize = wcslen(configFileList);
+configFileListInSize = widelen(configFileList);
 wc_string_to_utf8(configFileList, &configFileListInSize, s_configFileList, &configFileListOutSize);
 }
 if (inbuf != 0)
 {
-inbufInSize = wcslen(inbuf);
+inbufInSize = widelen(inbuf);
 wc_string_to_utf8(inbuf, &inbufInSize, s_inbuf, &inbufOutSize);
 }
 if (logFileName != 0)
 {
-logFileNameInSize = wcslen(logFileName);
+logFileNameInSize = widelen(logFileName);
 wc_string_to_utf8(logFileName, &logFileNameInSize, s_logFileName, &logFileNameOutSize);
 }
 if (settingsString != 0)
 {
-settingsStringInSize = wcslen(settingsString);
+settingsStringInSize = widelen(settingsString);
 wc_string_to_utf8(settingsString, &settingsStringInSize, s_settingsString, &settingsStringOutSize);
 }
 
@@ -734,27 +749,27 @@ int settingsStringOutSize = MAX_SETTINGS_STRING_SIZE-1;
 
 if (configFileList != 0)
 {
-configFileListInSize = wcslen(configFileList);
+configFileListInSize = widelen(configFileList);
 wc_string_to_utf8(configFileList, &configFileListInSize, s_configFileList, &configFileListOutSize);
 }
 if (inFileName != 0)
 {
-inFileNameInSize = wcslen(inFileName);
+inFileNameInSize = widelen(inFileName);
 wc_string_to_utf8(inFileName, &inFileNameInSize, s_inFileName, &inFileNameOutSize);
 }
 if (outFileName != 0)
 {
-outFileNameInSize = wcslen(outFileName);
+outFileNameInSize = widelen(outFileName);
 wc_string_to_utf8(outFileName, &outFileNameInSize, s_outFileName, &outFileNameOutSize);
 }
 if (logFileName != 0)
 {
-logFileNameInSize = wcslen(logFileName);
+logFileNameInSize = widelen(logFileName);
 wc_string_to_utf8(logFileName, &logFileNameInSize, s_logFileName, &logFileNameOutSize);
 }
 if (settingsString != 0)
 {
-settingsStringInSize = wcslen(settingsString);
+settingsStringInSize = widelen(settingsString);
 wc_string_to_utf8(settingsString, &settingsStringInSize, s_settingsString, &settingsStringOutSize);
 }
 

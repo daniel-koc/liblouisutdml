@@ -5,6 +5,12 @@
 #include "liblouisutdml.h"
 #include <louis.h>
 
+int widecharlen(const widechar *s);
+void widecharncpy(widechar* to, const widechar* from, int length);
+int widecharcmp(const widechar *s1, const widechar *s2);
+void widecharcat(widechar* to, const widechar* from);
+const widechar* widecharstr(const widechar* X, const widechar* Y);
+
 typedef enum {
 BOOL_UNDEFINED = -1,
 BOOL_FALSE = 0,
@@ -44,25 +50,40 @@ TSUBTYPE_UNDERSCRIPT = 6,
 TSUBTYPE_OVERSCRIPT = 7,
 TSUBTYPE_EQNARRAY = 8,
 TSUBTYPE_ARRAY = 9,
+TSUBTYPE_VEC = 10,
+TSUBTYPE_CHECK = 11,
+TSUBTYPE_BAR = 12,
+TSUBTYPE_UNDERBRACE = 13,
+TSUBTYPE_OVERBRACE = 14,
+TSUBTYPE_UNDERLINE = 15,
+TSUBTYPE_OVERLINE = 16,
+TSUBTYPE_UNITSYMBOL = 17,
+TSUBTYPE_SQRT = 18,
+TSUBTYPE_SFRAC = 19,
+TSUBTYPE_FRAC = 20,
+TSUBTYPE_ROOT = 21,
+TSUBTYPE_STACKREL = 22,
+TSUBTYPE_ATOP = 23,
+TSUBTYPE_CHOOSE = 24,
 } TokenSubtype;
 
 typedef struct
 {
-wchar_t* input;
-wchar_t* rinput;
-wchar_t* tag;
-wchar_t* rtag;
-wchar_t* output;
-wchar_t* ieoutput;
-wchar_t* atname;
-wchar_t* atval;
-wchar_t* ieval;
+widechar* input;
+widechar* rinput;
+widechar* tag;
+widechar* rtag;
+widechar* output;
+widechar* ieoutput;
+widechar* atname;
+widechar* atval;
+widechar* ieval;
 TokenType ttype;
 TokenSubtype tsubtype;
 BOOLEAN invisible;
 BOOLEAN func;
 BOOLEAN acc;  // accent
-wchar_t* codes;
+widechar* codes;
 } LMSymbol;
 
 extern LMSymbol** LMsymbols;
@@ -72,22 +93,7 @@ extern int LMsymbolsSorted;
 #define LM_SYMBOL_NAME(index) LMsymbols[index]->input
 
 LMSymbol* CreateNewLMSymbol();
-LMSymbol* CreateTempLMSymbol(wchar_t* l_input, wchar_t* l_tag, wchar_t* l_output, TokenType l_ttype);
+LMSymbol* CreateTempLMSymbol(widechar* l_input, widechar* l_tag, widechar* l_output, TokenType l_ttype);
 void DestroyTempLMSymbols();
-
-void
-memoryError ();
-char *
-alloc_string (const char *inString);
-char *
-alloc_string_if_not (const char *inString);
-int
-file_exists (const char *completePath);
-int
-find_file (const char *fileName, char *filePath);
-int
-ignore_case_comp (const char *str1, const char *str2, int length);
-int
-find_action (const char **actions, const char *action);
 
 #endif /*louisutdml_forback_h */

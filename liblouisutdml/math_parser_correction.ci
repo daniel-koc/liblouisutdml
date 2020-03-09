@@ -1,41 +1,41 @@
-const widechar SPACE_BRAILLECHAR = L' ';
-const widechar QUOTE_BRAILLECHAR = L'\"';
-const widechar HASH_BRAILLECHAR = L'#';
-const widechar DOLLAR_BRAILLECHAR = L'$';
-const widechar PERCENT_BRAILLECHAR = L'%';
-const widechar LEFT_PARENT_BRAILLECHAR = L'(';
-const widechar RIGHT_PARENT_BRAILLECHAR = L')';
-const widechar STAR_BRAILLECHAR = L'*';
-const widechar COMMA_BRAILLECHAR = L',';
-const widechar MINUS_BRAILLECHAR = L'-';
-const widechar PERIOD_BRAILLECHAR = L'.';
-const widechar SLASH_BRAILLECHAR = L'/';
-const widechar COLON_BRAILLECHAR = L':';
-const widechar SEMICOLON_BRAILLECHAR = L';';
-const widechar LESS_THAN_BRAILLECHAR = L'<';
-const widechar EQUALS_BRAILLECHAR = L'=';
-const widechar GREATER_THAN_BRAILLECHAR = L'>';
-const widechar LEFT_SQUARE_BRACKET_BRAILLECHAR = L'[';
-const widechar RIGHT_SQUARE_BRACKET_BRAILLECHAR = L']';
-const widechar UNDERLINE_BRAILLECHAR = L'_';
-const widechar RIGHT_PARENTSESIS_BRAILLECHAR = L'`';
-const widechar VERTICALBAR_BRAILLECHAR = L'|';
-const widechar TILDE_BRAILLECHAR = L'~';
+const widechar SPACE_BRAILLECHAR = ' ';
+const widechar QUOTE_BRAILLECHAR = '\"';
+const widechar HASH_BRAILLECHAR = '#';
+const widechar DOLLAR_BRAILLECHAR = '$';
+const widechar PERCENT_BRAILLECHAR = '%';
+const widechar LEFT_PARENT_BRAILLECHAR = '(';
+const widechar RIGHT_PARENT_BRAILLECHAR = ')';
+const widechar STAR_BRAILLECHAR = '*';
+const widechar COMMA_BRAILLECHAR = ',';
+const widechar MINUS_BRAILLECHAR = '-';
+const widechar PERIOD_BRAILLECHAR = '.';
+const widechar SLASH_BRAILLECHAR = '/';
+const widechar COLON_BRAILLECHAR = ':';
+const widechar SEMICOLON_BRAILLECHAR = ';';
+const widechar LESS_THAN_BRAILLECHAR = '<';
+const widechar EQUALS_BRAILLECHAR = '=';
+const widechar GREATER_THAN_BRAILLECHAR = '>';
+const widechar LEFT_SQUARE_BRACKET_BRAILLECHAR = '[';
+const widechar RIGHT_SQUARE_BRACKET_BRAILLECHAR = ']';
+const widechar UNDERLINE_BRAILLECHAR = '_';
+const widechar RIGHT_PARENTSESIS_BRAILLECHAR = '`';
+const widechar VERTICALBAR_BRAILLECHAR = '|';
+const widechar TILDE_BRAILLECHAR = '~';
 const widechar UNIT_SYMBOL_BRAILLECHAR = 129;
 const widechar LEFT_BRACE_BRAILLECHAR = 156;
-const widechar RIGHT_BRACE_BRAILLECHAR = L'o';
+const widechar RIGHT_BRACE_BRAILLECHAR = 'o';
 const widechar NO_BREAKABLE_SPACE_BRAILLECHAR = 160;
 const widechar LEFT_PARENTSESIS_BRAILLECHAR = 179;
 const widechar SYMBOL_KEY_BRAILLECHAR = 191;
 
-const widechar NO_BREAKABLE_PROJECTOR_JOINER_BRAILLECHAR = L'\'';
+const widechar NO_BREAKABLE_PROJECTOR_JOINER_BRAILLECHAR = '\'';
 const widechar CLOSING_PROJECTOR_BRAILLECHAR = 234;
 const widechar SUBSCRIPT_BRAILLECHAR = 185;
 const widechar POWER_BRAILLECHAR = 243;
 const widechar SUPERSCRIPT_BRAILLECHAR = 92;
 const widechar SQRT_BRAILLECHAR = 230;
-const widechar COMPLEX_PROJECTOR_BRAILLECHAR = L'\"';
-const widechar DETAILED_PROJECTOR_BRAILLECHAR = L'$';
+const widechar COMPLEX_PROJECTOR_BRAILLECHAR = '\"';
+const widechar DETAILED_PROJECTOR_BRAILLECHAR = '$';
 const widechar SEPARATOR_FRACTION_BRAILLECHAR = 128;
 
 const widechar STARTING_FRACTION_MARKER = 0xf005;
@@ -89,8 +89,9 @@ const widechar FIRST_ARGUMENT_SEPARATOR_FENCED_MARKER = 0xf058;
 const widechar SECOND_ARGUMENT_SEPARATOR_FENCED_MARKER = 0xf059;
 const widechar ENDING_FENCED_MARKER = 0xf05a;
 
-const widechar* upDigits = L"abcdefghij";
-const widechar* lowDigits = L",;:/?+=(*)";
+#define DIGITS_COUNT 10
+const widechar upDigits[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'};
+const widechar lowDigits[] = {',', ';', ':', '/', '?', '+', '=', '(', '*', ')'};
 const int DECIMAL_COMMA_INDEX = 100;
 
 static widechar* g_pwcsTranslatingStr = NULL;
@@ -128,7 +129,7 @@ DEFINE_CHECKER(isLowDecimalPoint)
 int isUpDigit(int index, int* digitInd) {
   if (index < 0 || index >= g_nTranslatingStrLen)
     return 0;
-  for (int i = 0; upDigits[i] != wcNULL; i++)
+  for (int i = 0; i < DIGITS_COUNT; i++)
     if (g_pwcsTranslatingStr[index] == upDigits[i]) {
       *digitInd = i;
       return 1;
@@ -139,7 +140,7 @@ int isUpDigit(int index, int* digitInd) {
 int isLowDigit(int index, int* digitInd) {
   if (index < 0 || index >= g_nTranslatingStrLen)
     return 0;
-  for (int i = 0; lowDigits[i] != wcNULL; i++)
+  for (int i = 0; i < DIGITS_COUNT; i++)
     if (g_pwcsTranslatingStr[index] == lowDigits[i]) {
       *digitInd = i;
       return 1;
@@ -167,11 +168,11 @@ int isMinusLowDigit(int index) {
 int isPartOfDecimalLowNumber(int index);
 
 DEFINE_CHECKER(isEndLineChar)
-  if (curChar == L'\r' && nextChar == L'\n') {
+  if (curChar == '\r' && nextChar == '\n') {
     g_additionalStep = 1;
     return 1;
   }
-  return (curChar == L'\r' || curChar == L'\n');
+  return (curChar == '\r' || curChar == '\n');
 }
 
 DEFINE_CHECKER(isAnySpace)
@@ -209,7 +210,7 @@ DEFINE_CHECKER(isLeftParentsesis)
           !(nextChar == STAR_BRAILLECHAR && nextNextChar == EQUALS_BRAILLECHAR) && // \X228B
           prevChar != LESS_THAN_BRAILLECHAR && // \x27A5
           prevChar != DOLLAR_BRAILLECHAR && // \x27A6
-          !(prevChar == L'z' && prevPrevChar == L' ')); // zł
+          !(prevChar == 'z' && prevPrevChar == ' ')); // zł
 }
 
 DEFINE_CHECKER(isRightParentsesis)
@@ -480,7 +481,7 @@ DEFINE_CHECKER(isOverscriptDetailedProjector)
 }
 
 DEFINE_CHECKER(isLogFunction)
-  if (curChar == TILDE_BRAILLECHAR && nextChar == L'l') {
+  if (curChar == TILDE_BRAILLECHAR && nextChar == 'l') {
     g_additionalStep = 1;
     return 1;
   }
@@ -492,7 +493,7 @@ DEFINE_CHECKER(isSeparatorFraction)
           prevChar != LESS_THAN_BRAILLECHAR && // \x2028 \x2424 mtr separator
           prevChar != GREATER_THAN_BRAILLECHAR && // mtd separator
           prevChar != TILDE_BRAILLECHAR && // ctg
-          !(prevChar == L'h' && prevPrevChar == TILDE_BRAILLECHAR) && // ctgh
+          !(prevChar == 'h' && prevPrevChar == TILDE_BRAILLECHAR) && // ctgh
           !(prevChar == COMMA_BRAILLECHAR && prevPrevChar == TILDE_BRAILLECHAR) && // arcctg
           !(prevChar == LEFT_PARENT_BRAILLECHAR && prevPrevChar == TILDE_BRAILLECHAR)); // arcctgh
 }
@@ -504,7 +505,7 @@ DEFINE_CHECKER(isStartingFraction)
 
 DEFINE_CHECKER(isEndingFraction)
   return (curChar == LESS_THAN_BRAILLECHAR &&
-          !(nextChar >= L'a' && nextChar <= L'z') &&
+          !(nextChar >= 'a' && nextChar <= 'z') &&
           nextChar != CLOSING_PROJECTOR_BRAILLECHAR && // \x03B7
           nextChar != 241 && // \x03B8
           nextChar != COLON_BRAILLECHAR && // \x03C2
@@ -604,7 +605,7 @@ void insertMathBrl(int index, widechar chr) {
 widechar convertDigitInd(int digitInd) {
   if (digitInd == DECIMAL_COMMA_INDEX)
     return COMMA_BRAILLECHAR;
-  return L'a' + digitInd;
+  return 'a' + digitInd;
 }  // convertDigitInd
 
 int convertLowDecimalNumber() {
@@ -1497,10 +1498,10 @@ widechar* correctBeforeBackTranslation(widechar* pwcsTranslatingStr,
             bPreviousWasDigit = 0;
             continue;
           }
-          for (ind = 0; ind < wcslen(upDigits); ind++)
+          for (ind = 0; ind < DIGITS_COUNT; ind++)
             if (g_pwcsMathBrl[j] == upDigits[ind])
               break;
-          if (ind < wcslen(upDigits))
+          if (ind < DIGITS_COUNT)
             bPreviousWasDigit = 1;
           else
             break;
@@ -1512,10 +1513,10 @@ widechar* correctBeforeBackTranslation(widechar* pwcsTranslatingStr,
             k++;
             if (k == g_nMathBrlLen)
               break;
-            for (ind = 0; ind < wcslen(upDigits); ind++)
+            for (ind = 0; ind < DIGITS_COUNT; ind++)
               if (g_pwcsMathBrl[k] == upDigits[ind])
                 break;
-            if (ind == wcslen(upDigits))
+            if (ind == DIGITS_COUNT)
               break;
           }  // while
           if (k > (j + 1) && g_pwcsMathBrl[k] == RIGHT_PARENTSESIS_MARKER) {

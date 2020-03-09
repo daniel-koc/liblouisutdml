@@ -914,7 +914,7 @@ compileConfig (FileInfo * nested)
 	  return 0;
 	  }
 	  break;
-	  case 24:
+	case 24:
 	  topMargin = atof (nested->value);
 	  break;
 	case 25:

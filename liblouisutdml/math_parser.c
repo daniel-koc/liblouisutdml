@@ -1,39 +1,8 @@
 #include "config.h"
 #include <stdio.h>
-#include <stdlib.h>
 
 #include "louisutdml.h"
 #include "louisutdml_backtranslation.h"
-
-size_t widelen(const widechar *s) {
-  size_t len = 0;
-  while (s[len] != 0)
-  {
-      if (s[++len] == 0)
-        return len;
-      if (s[++len] == 0)
-        return len;
-      if (s[++len] == 0)
-        return len;
-      ++len;
-    }
-  return len;
-}
-
-int widecmp(const widechar *s1, const widechar *s2)
-{
-  widechar c1, c2;
-  do
-    {
-      c1 = *s1++;
-      c2 = *s2++;
-      if (c2 == 0)
-        return c1 - c2;
-    }
-  while (c1 == c2);
-  return c1 < c2 ? -1 : 1;
-}
-
 
 #define WIDESTRING_BUFFER_SIZE 8 * BUFSIZE
 static widechar widestring_buffer[WIDESTRING_BUFFER_SIZE];
@@ -47,7 +16,7 @@ static widechar* alloc_widestring(const widechar* inString, int length) {
   if ((widestring_buf_len + length) >= WIDESTRING_BUFFER_SIZE)
     memoryError();
   newString = &widestring_buffer[widestring_buf_len];
-  inStringLen = (int)wcslen(inString);
+  inStringLen = widecharlen(inString);
   if (length < inStringLen)
     inStringLen = length;
   memcpy(newString, inString, inStringLen*CHARSIZE);
@@ -116,7 +85,7 @@ DOMNode* DOM_CreateElement(DOMDocument* pOwnerDocument, const widechar* pStrTagN
   DOMNode* node = DOM_CreateNode(pOwnerDocument, DOM_ELEMENT_NODE);
 int nLen = 0;
 if (pStrTagName) {
-int nLen = wcslen(pStrTagName);
+int nLen = widecharlen(pStrTagName);
   if (!(node->m_pStrTagName = malloc((nLen+1)*CHARSIZE)))
 memoryError();
 memcpy(node->m_pStrTagName, pStrTagName, (nLen+1)*CHARSIZE);
@@ -127,13 +96,13 @@ memcpy(node->m_pStrTagName, pStrTagName, (nLen+1)*CHARSIZE);
 DOMNode* DOM_CreateAttribute(DOMDocument* pOwnerDocument, const widechar* pStrName, const widechar* pStrValue) {
 DOMNode* node = DOM_CreateNode(pOwnerDocument, DOM_ATTRIBUTE_NODE);
 if (pStrName) {
-int nLen = wcslen(pStrName);
+int nLen = widecharlen(pStrName);
   if (!(node->m_pStrName = malloc((nLen+1)*CHARSIZE)))
 memoryError();
 memcpy(node->m_pStrName, pStrName, (nLen+1)*CHARSIZE);
 }
 if (pStrValue) {
-int nLen = wcslen(pStrValue);
+int nLen = widecharlen(pStrValue);
   if (!(node->m_pStrValue = malloc((nLen+1)*CHARSIZE)))
 memoryError();
 memcpy(node->m_pStrValue, pStrValue, (nLen+1)*CHARSIZE);
@@ -144,7 +113,7 @@ memcpy(node->m_pStrValue, pStrValue, (nLen+1)*CHARSIZE);
 DOMNode* DOM_CreateTextNode(DOMDocument* pOwnerDocument, widechar* pStrValue) {
 DOMNode* node = DOM_CreateNode(pOwnerDocument, DOM_TEXT_NODE);
 if (pStrValue) {
-int nLen = wcslen(pStrValue);
+int nLen = widecharlen(pStrValue);
   if (!(node->m_pStrValue = malloc((nLen+1)*CHARSIZE)))
 memoryError();
 memcpy(node->m_pStrValue, pStrValue, (nLen+1)*CHARSIZE);
@@ -196,7 +165,7 @@ DOMNode* DOM_GetPreviousNodeSibling(DOMNode* node) { return node->m_pPreviousNod
 DOMNode* DOM_GetNextNodeSibling(DOMNode* node) { return node->m_pNextNodeSibling; }
 int DOM_HasChildNodes(DOMNode* node) { return (node->m_pFirstNode != NULL); }
 int DOM_IsTagName(DOMNode* node, const widechar* name)
-    { return (node->m_pStrTagName ? (wcscmp(node->m_pStrTagName, name) == 0) : 0); }
+    { return (node->m_pStrTagName ? (widecharcmp(node->m_pStrTagName, name) == 0) : 0); }
 widechar* DOM_GetNodeValue(DOMNode* node) { return node->m_pStrValue; }
 void DOM_SetUnderOverType(DOMNode* node) { node->m_bUnderOverType = 1; }
 int DOM_IsUnderOverType(DOMNode* node) { return node->m_bUnderOverType; }
@@ -246,7 +215,7 @@ pOldChild->m_pParentNode = NULL;
   return NULL;
 }  // RemoveChild
 
-void widecharcat(widechar** ppszStr, int* pnStrLen, int* pnMaxStrLen, widechar* pszNewStr, int nStrNewLen) {
+void AddToString(widechar** ppszStr, int* pnStrLen, int* pnMaxStrLen, widechar* pszNewStr, int nStrNewLen) {
   widechar* pszCatStr;
   int nCatStrLen;
   if (!pszNewStr)
@@ -278,7 +247,7 @@ static widechar wcsQuoteSign[1] = {'\"'};
 widechar* DOM_ToString(DOMNode* node, int* pnStrLen) {
   widechar* pszStr;
 if (DOM_GetNodeType(node) == DOM_TEXT_NODE && node->m_pStrValue) {
-  *pnStrLen = wcslen(node->m_pStrValue);
+  *pnStrLen = widecharlen(node->m_pStrValue);
   if (!(pszStr = malloc((*pnStrLen+1)*CHARSIZE)))
     memoryError();
 memcpy(pszStr, node->m_pStrValue, (*pnStrLen+1)*CHARSIZE);
@@ -296,45 +265,45 @@ return pszStr;
   int nStrNewLen;
 
 if (DOM_GetNodeType(node) == DOM_ELEMENT_NODE) {
-widecharcat(&pszStr, pnStrLen, &nMaxStrLen, wcsLessSign, 1);
-widecharcat(&pszStr, pnStrLen, &nMaxStrLen, node->m_pStrTagName, wcslen(node->m_pStrTagName));
+AddToString(&pszStr, pnStrLen, &nMaxStrLen, wcsLessSign, 1);
+AddToString(&pszStr, pnStrLen, &nMaxStrLen, node->m_pStrTagName, widecharlen(node->m_pStrTagName));
   if (node->m_pFirstAttr) {
     DOMNode* pTmpAttr = node->m_pFirstAttr;
     while (pTmpAttr) {
-      widecharcat(&pszStr, pnStrLen, &nMaxStrLen, wcsSpaceSign, 1);
+      AddToString(&pszStr, pnStrLen, &nMaxStrLen, wcsSpaceSign, 1);
     pszNewStr = DOM_ToString(pTmpAttr, &nStrNewLen);
-widecharcat(&pszStr, pnStrLen, &nMaxStrLen, pszNewStr, nStrNewLen);
+AddToString(&pszStr, pnStrLen, &nMaxStrLen, pszNewStr, nStrNewLen);
 free(pszNewStr);
       pTmpAttr = DOM_GetNextNodeSibling(pTmpAttr);
     }  // while
   }    // if
-  widecharcat(&pszStr, pnStrLen, &nMaxStrLen, wcsGreaterSign, 1);
+  AddToString(&pszStr, pnStrLen, &nMaxStrLen, wcsGreaterSign, 1);
 } else
 if (DOM_GetNodeType(node) == DOM_ATTRIBUTE_NODE) {
   if (node->m_pStrName) {
-widecharcat(&pszStr, pnStrLen, &nMaxStrLen, node->m_pStrName, wcslen(node->m_pStrName));
-widecharcat(&pszStr, pnStrLen, &nMaxStrLen, wcsEqualQuoteSign, 2);
+AddToString(&pszStr, pnStrLen, &nMaxStrLen, node->m_pStrName, widecharlen(node->m_pStrName));
+AddToString(&pszStr, pnStrLen, &nMaxStrLen, wcsEqualQuoteSign, 2);
     if (node->m_pStrValue)
-widecharcat(&pszStr, pnStrLen, &nMaxStrLen, node->m_pStrValue, wcslen(node->m_pStrValue));
-widecharcat(&pszStr, pnStrLen, &nMaxStrLen, wcsQuoteSign, 1);
+AddToString(&pszStr, pnStrLen, &nMaxStrLen, node->m_pStrValue, widecharlen(node->m_pStrValue));
+AddToString(&pszStr, pnStrLen, &nMaxStrLen, wcsQuoteSign, 1);
 }
 }
 
   DOMNode* pTmpNode = node->m_pFirstNode;
   if (pTmpNode && DOM_GetNodeType(pTmpNode) == DOM_ELEMENT_NODE)
-    widecharcat(&pszStr, pnStrLen, &nMaxStrLen, wcsLineSeparator, 1);
+    AddToString(&pszStr, pnStrLen, &nMaxStrLen, wcsLineSeparator, 1);
   while (pTmpNode) {
     pszNewStr = DOM_ToString(pTmpNode, &nStrNewLen);
-widecharcat(&pszStr, pnStrLen, &nMaxStrLen, pszNewStr, nStrNewLen);
+AddToString(&pszStr, pnStrLen, &nMaxStrLen, pszNewStr, nStrNewLen);
 free(pszNewStr);
     pTmpNode = DOM_GetNextNodeSibling(pTmpNode);
   }  // while
 
 if (DOM_GetNodeType(node) == DOM_ELEMENT_NODE) {
-widecharcat(&pszStr, pnStrLen, &nMaxStrLen, wcsLessSlashSign, 2);
-widecharcat(&pszStr, pnStrLen, &nMaxStrLen, node->m_pStrTagName, wcslen(node->m_pStrTagName));
-widecharcat(&pszStr, pnStrLen, &nMaxStrLen, wcsGreaterSign, 1);
-widecharcat(&pszStr, pnStrLen, &nMaxStrLen, wcsLineSeparator, 1);
+AddToString(&pszStr, pnStrLen, &nMaxStrLen, wcsLessSlashSign, 2);
+AddToString(&pszStr, pnStrLen, &nMaxStrLen, node->m_pStrTagName, widecharlen(node->m_pStrTagName));
+AddToString(&pszStr, pnStrLen, &nMaxStrLen, wcsGreaterSign, 1);
+AddToString(&pszStr, pnStrLen, &nMaxStrLen, wcsLineSeparator, 1);
 }
 
   return pszStr;
@@ -391,13 +360,13 @@ DOMNode* DOM_GetItemOfList(DOMNodeList* nodeList, int nIndex) {
 }
 
 
-static widechar g_wcDecimalSign = L',';
-static widechar* g_mathExprSeparator = L"_.";
-static widechar* g_mathColor =
-    L"blue";  // change it to "" (to inherit) or another color
-static widechar* g_mathFontSize =
-    L"1em";  // change to e.g. 1.2em for larger math
-static widechar* g_mathFontFamily = L"mathvariant";  // change to "" to inherit
+static widechar g_wcDecimalSign = ',';
+static widechar g_mathExprSeparator[] = {'_', '.', '\0'};
+static widechar g_mathColor[] =
+    {'b', 'l', 'u', 'e', '\0'};  // change it to "" (to inherit) or another color
+static widechar g_mathFontSize[] =
+    {'1', 'e', 'm', '\0'};  // change to e.g. 1.2em for larger math
+static widechar g_mathFontFamily[] = {'m', 'a', 't', 'h', 'v', 'a', 'r', 'i', 'a', 'n', 't', '\0'};  // change to "" to inherit
                                                     // (works in IE) or another
                                                     // family (e.g. "arial")
 static int g_displayStyle =
@@ -405,60 +374,79 @@ static int g_displayStyle =
 static int g_showAsciiFormulaOnHover = 1;
 static int g_mrowElementsAvoiding = 1;
 
-const widechar* BOX_MISSING_ARGUMENT = L"\u25A1";
+const widechar BOX_MISSING_ARGUMENT[] = {0x25A1, '\0'};
 
 int isIE() {
   return 0;
 }
 
-const widechar wcNULL = L'\0';
+const widechar wcNULL = '\0';
 
-const widechar* MATH_ELNAME = L"math";
-const widechar* MFENCED_ELNAME = L"mfenced";
-const widechar* MI_ELNAME = L"mi";
-const widechar* MN_ELNAME = L"mn";
-const widechar* MO_ELNAME = L"mo";
-const widechar* MOVER_ELNAME = L"mover";
-const widechar* MROW_ELNAME = L"mrow";
-const widechar* MSPACE_ELNAME = L"mspace";
-const widechar* MSTYLE_ELNAME = L"mstyle";
-const widechar* MSUB_ELNAME = L"msub";
-const widechar* MSUBSUP_ELNAME = L"msubsup";
-const widechar* MSUP_ELNAME = L"msup";
-const widechar* MTABLE_ELNAME = L"mtable";
-const widechar* MTD_ELNAME = L"mtd";
-const widechar* MTR_ELNAME = L"mtr";
-const widechar* MUNDER_ELNAME = L"munder";
-const widechar* MUNDEROVER_ELNAME = L"munderover";
-const widechar* SPAN_ELNAME = L"span";
+const widechar MATH_ELNAME[] = {'m', 'a', 't', 'h', '\0'};
+const widechar MFENCED_ELNAME[] = {'m', 'f', 'e', 'n', 'c', 'e', 'd', '\0'};
+const widechar MI_ELNAME[] = {'m', 'i', '\0'};
+const widechar MN_ELNAME[] = {'m', 'n', '\0'};
+const widechar MO_ELNAME[] = {'m', 'o', '\0'};
+const widechar MOVER_ELNAME[] = {'m', 'o', 'v', 'e', 'r', '\0'};
+const widechar MROW_ELNAME[] = {'m', 'r', 'o', 'w', '\0'};
+const widechar MSPACE_ELNAME[] = {'m', 's', 'p', 'a', 'c', 'e', '\0'};
+const widechar MSTYLE_ELNAME[] = {'m', 's', 't', 'y', 'l', 'e', '\0'};
+const widechar MSUB_ELNAME[] = {'m', 's', 'u', 'b', '\0'};
+const widechar MSUBSUP_ELNAME[] = {'m', 's', 'u', 'b', 's', 'u', 'p', '\0'};
+const widechar MSUP_ELNAME[] = {'m', 's', 'u', 'p', '\0'};
+const widechar MTABLE_ELNAME[] = {'m', 't', 'a', 'b', 'l', 'e', '\0'};
+const widechar MTD_ELNAME[] = {'m', 't', 'd', '\0'};
+const widechar MTR_ELNAME[] = {'m', 't', 'r', '\0'};
+const widechar MUNDER_ELNAME[] = {'m', 'u', 'n', 'd', 'e', 'r', '\0'};
+const widechar MUNDEROVER_ELNAME[] = {'m', 'u', 'n', 'd', 'e', 'r', 'o', 'v', 'e', 'r', '\0'};
+const widechar SPAN_ELNAME[] = {'s', 'p', 'a', 'n', '\0'};
 
-const widechar* CLASS_ATTRNAME = L"class";
-const widechar* CLOSE_ATTRNAME = L"close";
-const widechar* COLUMNALIGN_ATTRNAME = L"columnalign";
-const widechar* COLUMNSPACING_ATTRNAME = L"columnspacing";
-const widechar* DISPLAYSTYLE_ATTRNAME = L"displaystyle";
-const widechar* FONTFAMILY_ATTRNAME = L"fontfamily";
-const widechar* HEIGHT_ATTRNAME = L"height";
-const widechar* LINETHICKNESS_ATTRNAME = L"linethickness";
-const widechar* LSPACE_ATTRNAME = L"lspace";
-const widechar* MATHCOLOR_ATTRNAME = L"mathcolor";
-const widechar* MATHSIZE_ATTRNAME = L"mathsize";
-const widechar* MAXSIZE_ATTRNAME = L"maxsize";
-const widechar* MINSIZE_ATTRNAME = L"minsize";
-const widechar* OPEN_ATTRNAME = L"open";
-const widechar* RSPACE_ATTRNAME = L"rspace";
-const widechar* TITLE_ATTRNAME = L"title";
-const widechar* WIDTH_ATTRNAME = L"width";
-const widechar* XMLNS_ATTRNAME = L"xmlns";
+const widechar ACCENT_ATTRNAME[] = {'a', 'c', 'c', 'e', 'n', 't', '\0'};
+const widechar ACCENTUNDER_ATTRNAME[] = {'a', 'c', 'c', 'e', 'n', 't', 'u', 'n', 'd', 'e', 'r', '\0'};
+const widechar CLASS_ATTRNAME[] = {'c', 'l', 'a', 's', 's', '\0'};
+const widechar CLOSE_ATTRNAME[] = {'c', 'l', 'o', 's', 'e', '\0'};
+const widechar COLUMNALIGN_ATTRNAME[] = {'c', 'o', 'l', 'u', 'm', 'n', 'a', 'l', 'i', 'g', 'n', '\0'};
+const widechar COLUMNSPACING_ATTRNAME[] = {'c', 'o', 'l', 'u', 'm', 'n', 's', 'p', 'a', 'c', 'i', 'n', 'g', '\0'};
+const widechar DISPLAYSTYLE_ATTRNAME[] = {'d', 'i', 's', 'p', 'l', 'a', 'y', 's', 't', 'y', 'l', 'e', '\0'};
+const widechar FONTFAMILY_ATTRNAME[] = {'f', 'o', 'n', 't', 'f', 'a', 'm', 'i', 'l', 'y', '\0'};
+const widechar HEIGHT_ATTRNAME[] = {'h', 'e', 'i', 'g', 'h', 't', '\0'};
+const widechar LINETHICKNESS_ATTRNAME[] = {'l', 'i', 'n', 'e', 't', 'h', 'i', 'c', 'k', 'n', 'e', 's', 's', '\0'};
+const widechar LSPACE_ATTRNAME[] = {'l', 's', 'p', 'a', 'c', 'e', '\0'};
+const widechar MATHCOLOR_ATTRNAME[] = {'m', 'a', 't', 'h', 'c', 'o', 'l', 'o', 'r', '\0'};
+const widechar MATHSIZE_ATTRNAME[] = {'m', 'a', 't', 'h', 's', 'i', 'z', 'e', '\0'};
+const widechar MAXSIZE_ATTRNAME[] = {'m', 'a', 'x', 's', 'i', 'z', 'e', '\0'};
+const widechar MINSIZE_ATTRNAME[] = {'m', 'i', 'n', 's', 'i', 'z', 'e', '\0'};
+const widechar OPEN_ATTRNAME[] = {'o', 'p', 'e', 'n', '\0'};
+const widechar RSPACE_ATTRNAME[] = {'r', 's', 'p', 'a', 'c', 'e', '\0'};
+const widechar TITLE_ATTRNAME[] = {'t', 'i', 't', 'l', 'e', '\0'};
+const widechar WIDTH_ATTRNAME[] = {'w', 'i', 'd', 't', 'h', '\0'};
+const widechar XMLNS_ATTRNAME[] = {'x', 'm', 'l', 'n', 's', '\0'};
 
-const widechar* CENTER_ALIGN_ATTRVALUE = L"center ";
-const widechar* FALSE_ATTRVALUE = L"false";
-const widechar* LEFT_ALIGN_ATTRVALUE = L"left ";
-const widechar* MATHML_URL_ATTRVALUE = L"http://www.w3.org/1998/Math/MathML";
-const widechar* RIGHT_ALIGN_ATTRVALUE = L"right ";
-const widechar* RIGHT_CENTER_LEFT_ATTRVALUE = L"right center left";
-const widechar* TRUE_ATTRVALUE = L"true";
-const widechar* UNIT_ATTRVALUE = L"unit";
+const widechar CENTER_ALIGN_ATTRVALUE[] = {'c', 'e', 'n', 't', 'e', 'r', ' ', '\0'};
+const widechar EX_ATTRVALUE[] = {'e', 'x', '\0'};
+const widechar FALSE_ATTRVALUE[] = {'f', 'a', 'l', 's', 'e', '\0'};
+const widechar LEFT_ALIGN_ATTRVALUE[] = {'l', 'e', 'f', 't', ' ', '\0'};
+const widechar MATHML_URL_ATTRVALUE[] = {'h', 't', 't', 'p', ':', '/', '/', 'w', 'w', 'w', '.', 'w', '3', '.', 'o', 'r', 'g', '/', '1', '9', '9', '8', '/', 'M', 'a', 't', 'h', '/', 'M', 'a', 't', 'h', 'M', 'L', '\0'};
+const widechar RIGHT_ALIGN_ATTRVALUE[] = {'r', 'i', 'g', 'h', 't', ' ', '\0'};
+const widechar RIGHT_CENTER_LEFT_ATTRVALUE[] = {'r', 'i', 'g', 'h', 't', ' ', 'c', 'e', 'n', 't', 'e', 'r', ' ', 'l', 'e', 'f', 't', '\0'};
+const widechar SPACE_ATTRVALUE[] = {' ', '\0'};
+const widechar TRUE_ATTRVALUE[] = {'t', 'r', 'u', 'e', '\0'};
+const widechar UNIT_ATTRVALUE[] = {'u', 'n', 'i', 't', '\0'};
+
+const widechar U0EM_ATTRVALUE[] = {'0', 'e', 'm', '\0'};
+const widechar U0EX_ATTRVALUE[] = {'0', 'e', 'x', '\0'};
+const widechar U0POINT5_ATTRVALUE[] = {'0', '.', '5', '\0'};
+const widechar U0POINT167EM_ATTRVALUE[] = {'0', '.', '1', '6', '7', 'e', 'm', '\0'};
+const widechar U0POINT25EM_ATTRVALUE[] = {'0', '.', '2', '5', 'e', 'm', '\0'};
+const widechar U0POINT33EM_ATTRVALUE[] = {'0', '.', '3', '3', 'e', 'm', '\0'};
+const widechar U1POINT2_ATTRVALUE[] = {'1', '.', '2', '\0'};
+const widechar U1POINT2EX_ATTRVALUE[] = {'1', '.', '2', 'e', 'x', '\0'};
+const widechar U1POINT5_ATTRVALUE[] = {'1', '.', '5', '\0'};
+
+const widechar AMPERSANT_SYMBOL[] = {'&', '\0'};
+const widechar AMPERSANT_ENTITY[] = {'&', 'a', 'm', 'p', ';', '\0'};
+const widechar LEFT_BRACE_SYMBOL[] = {'{', '\0'};
+const widechar POINT_SYMBOL[] = {'.', '\0'};
 
 typedef enum {
 LEFT_ALIGN,
@@ -492,17 +480,15 @@ static int g_gatheringLetters = 0;
 TokenType LMpreviousSymbol, LMcurrentSymbol;
 
 int isDigit(widechar wc) {
-  return (L'0' <= wc && wc <= L'9');
+  return ('0' <= wc && wc <= '9');
 }
 
 int isLetter(widechar wc) {
-  static const widechar* s_letters =
-      L"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZąćęłńóśźżĄĆĘŁŃÓŚŹŻ";
-  return (wcschr(s_letters, wc) != NULL);
+  return ((wc >= 'A' && wc <= 'Z') || (wc >= 'a' && wc <= 'z'));
 }
 
 int CompareLMSymbolInput(LPVOID plmSymbol1, LPVOID plmSymbol2) {
-  return wcscmp(((LMSymbol*)plmSymbol1)->input, ((LMSymbol*)plmSymbol2)->input);
+  return widecharcmp(((LMSymbol*)plmSymbol1)->input, ((LMSymbol*)plmSymbol2)->input);
 }  // CompareLMSymbolInput
 
 typedef int (*CompareItemsFunc)(LPVOID p1, LPVOID p2);
@@ -608,7 +594,7 @@ void QuickSort(LPVOID* x, int off, int len) {
 
 int isAmpersant(widechar* s) {
   if (!s) return 0;
-  return (wcscmp(s, L"&") == 0 || wcscmp(s, L"&amp;") == 0);
+  return (widecharcmp(s, AMPERSANT_SYMBOL) == 0 || widecharcmp(s, AMPERSANT_ENTITY) == 0);
 }
 
 DOMNode* createXhtmlElement(const widechar* tagName) {
@@ -648,14 +634,14 @@ int positionInLMsymbols(const widechar* str, int n) {
     h = LMsymbolsCount;
     while (n + 1 < h) {
       m = (n + h) >> 1;
-      if (wcscmp(LM_SYMBOL_NAME(m), str) < 0)
+      if (widecharcmp(LM_SYMBOL_NAME(m), str) < 0)
         n = m;
       else
         h = m;
     }
     return h;
   } else
-    for (i = n; i < LMsymbolsCount && wcscmp(LM_SYMBOL_NAME(i), str) < 0; i++)
+    for (i = n; i < LMsymbolsCount && widecharcmp(LM_SYMBOL_NAME(i), str) < 0; i++)
       ;
   return i;  // i=LMsymbolsCount || LM_SYMBOL_NAME(i) >= str
 }  // positionInLMsymbols
@@ -665,37 +651,38 @@ LMSymbol* LMgetSymbol(const widechar* str) {
   // return NULL if there is none
   int k = 0;  // new pos
   int j = 0;  // old pos
-  int mk;  // match pos
+  int mk = -1;  // match pos
   const int MAX_ST_LEN = 200;
   widechar st[201];
   widechar* tagst;
   widechar* match = NULL;
   int more = 1;
-  int strLen, symbolNameLen, i;
+  int strLen, symbolNameLen, len;
 
   if (str == NULL || *str == wcNULL)
     return NULL;
 
-  strLen = (int)wcslen(str);
+  strLen = widecharlen(str);
   if (strLen > MAX_ST_LEN)
     strLen = MAX_ST_LEN;
-  for (i = 1; i <= strLen && more; i++) {
-    wcsncpy(st, str, i);  // initial substring of length i
-    st[i] = wcNULL;
+  for (len = 1; len <= strLen && more; len++) {
+    widecharncpy(st, str, len);  // initial substring of len characters
+    st[len] = wcNULL;
     j = k;
     k = positionInLMsymbols(st, j);
     if (k < LMsymbolsCount) {
-      symbolNameLen = wcslen(LM_SYMBOL_NAME(k));
-      wcsncpy(st, str, symbolNameLen);
+      symbolNameLen = widecharlen(LM_SYMBOL_NAME(k));
+      widecharncpy(st, str, symbolNameLen);
       st[symbolNameLen] = wcNULL;
-      if (wcscmp(st, LM_SYMBOL_NAME(k)) == 0) {
+      if (widecharcmp(st, LM_SYMBOL_NAME(k)) == 0) {
         match = LM_SYMBOL_NAME(k);
         mk = k;
-        i = symbolNameLen;
+        len = symbolNameLen;
       }
-      more = wcscmp(st, LM_SYMBOL_NAME(k)) >= 0;
-    } else
+      more = widecharcmp(st, LM_SYMBOL_NAME(k)) >= 0;
+    } else {
       more = 0;
+    }
   }
   LMpreviousSymbol = LMcurrentSymbol;
   if (match != NULL) {
@@ -736,19 +723,19 @@ LMSymbol* LMgetSymbol(const widechar* str) {
     tagst = (widechar*)MI_ELNAME;
   }  // if (isLetter(wc))
   else {
-    if (wc == L'&') {
+    if (wc == '&') {
       wc = str[k];
-      if (L'a' <= wc && wc <= L'z') {
+      if ('a' <= wc && wc <= 'z') {
         do {
           k++;
           wc = str[k];
-        } while (L'a' <= wc && wc <= L'z');
-        if (wc == L';')
+        } while ('a' <= wc && wc <= 'z');
+        if (wc == ';')
           k++;
         else
           k = 1;
-      }  // if (L'a' <= wc && wc <= L'z')
-    }    // if (wc == L'&')
+      }  // if ('a' <= wc && wc <= 'z')
+    }    // if (wc == '&')
     tagst = (widechar*)MO_ELNAME;
   }  // else if
 
@@ -798,21 +785,21 @@ ParseResult* LMbuildUnaryAccent(widechar* str,
   */
   DOMNode* node1 =
       createMmlNode(MO_ELNAME, DOM_CreateTextNode(g_document, output));
-  if (wcscmp(symbol->input, L"\\vec") == 0 ||
-      wcscmp(symbol->input, L"\\check") == 0)
+  if (symbol->tsubtype == TSUBTYPE_VEC ||
+      symbol->tsubtype == TSUBTYPE_CHECK)
     // don't allow to stretch
-    DOM_SetAttribute(node1, MAXSIZE_ATTRNAME, L"1.2");
+    DOM_SetAttribute(node1, MAXSIZE_ATTRNAME, U1POINT2_ATTRVALUE);
   // why doesn't "1" work?  \vec nearly disappears in firefox
-  if (isIE() && wcscmp(symbol->input, L"\\bar") == 0)
-    DOM_SetAttribute(node1, MAXSIZE_ATTRNAME, L"0.5");
-  if (wcscmp(symbol->input, L"\\underbrace") == 0 ||
-      wcscmp(symbol->input, L"\\underline") == 0)
-    DOM_SetAttribute(node1, L"accentunder", L"true");
+  if (isIE() && symbol->tsubtype == TSUBTYPE_BAR)
+    DOM_SetAttribute(node1, MAXSIZE_ATTRNAME, U0POINT5_ATTRVALUE);
+  if (symbol->tsubtype == TSUBTYPE_UNDERBRACE ||
+      symbol->tsubtype == TSUBTYPE_UNDERLINE)
+    DOM_SetAttribute(node1, ACCENTUNDER_ATTRNAME, TRUE_ATTRVALUE);
   else
-    DOM_SetAttribute(node1, L"accent", L"true");
+    DOM_SetAttribute(node1, ACCENT_ATTRNAME, TRUE_ATTRVALUE);
   DOM_AppendChild(node, node1);
-  if (wcscmp(symbol->input, L"\\overbrace") == 0 ||
-      wcscmp(symbol->input, L"\\underbrace") == 0)
+  if (symbol->tsubtype == TSUBTYPE_OVERBRACE ||
+      symbol->tsubtype == TSUBTYPE_UNDERBRACE)
     DOM_SetUnderOverType(node);
 
   return CreateParseResult(node, str, symbol->tag);
@@ -839,16 +826,16 @@ ParseResult* LMparseSexpr(
   if (symbol == NULL || symbol->ttype == TTYPE_RIGHTBRACKET)
     return CreateParseResult(NULL, str, NULL);
   if (symbol->ttype == TTYPE_DEFINITION) {
-    int symbolInputLen = (int)wcslen(symbol->input);
-    st = alloc_widestring(symbol->output, (wcslen(symbol->output) +
-                                           wcslen(str) - symbolInputLen));
-    wcscat(st, LMremoveCharsAndBlanks(str, symbolInputLen));
+    int symbolInputLen = widecharlen(symbol->input);
+    st = alloc_widestring(symbol->output, (widecharlen(symbol->output) +
+                                           widecharlen(str) - symbolInputLen));
+    widecharcat(st, LMremoveCharsAndBlanks(str, symbolInputLen));
     str = st;
     symbol = LMgetSymbol(str);
     if (symbol == NULL || symbol->ttype == TTYPE_RIGHTBRACKET)
       return CreateParseResult(NULL, str, NULL);
   }
-  str = LMremoveCharsAndBlanks(str, wcslen(symbol->input));
+  str = LMremoveCharsAndBlanks(str, widecharlen(symbol->input));
 
   switch (symbol->ttype) {
     case TTYPE_SPACE:
@@ -859,14 +846,14 @@ ParseResult* LMparseSexpr(
       if (isIE()) {
         if (symbol->rinput != NULL) {  // botch for missing symbols
           st = alloc_widestring(symbol->rinput,
-                                (wcslen(symbol->rinput) + wcslen(str)));
-          wcscat(st, str);
+                                (widecharlen(symbol->rinput) + widecharlen(str)));
+          widecharcat(st, str);
           str = st;
           symbol = LMgetSymbol(str);
           if (symbol == NULL || symbol->ttype == TTYPE_RIGHTBRACKET)
             return CreateParseResult(NULL, str, NULL);
           symbol->ttype = TTYPE_UNDEROVER;
-          str = LMremoveCharsAndBlanks(str, wcslen(symbol->input));
+          str = LMremoveCharsAndBlanks(str, widecharlen(symbol->input));
         }
       }
       return CreateParseResult(createMmlNode(symbol->tag, DOM_CreateTextNode(g_document,
@@ -885,8 +872,8 @@ ParseResult* LMparseSexpr(
     case TTYPE_LONG:  // added by DRW
       node = createMmlNode(symbol->tag,
                            DOM_CreateTextNode(g_document, symbol->output));
-      DOM_SetAttribute(node, MINSIZE_ATTRNAME, L"1.5");
-      DOM_SetAttribute(node, MAXSIZE_ATTRNAME, L"1.5");
+      DOM_SetAttribute(node, MINSIZE_ATTRNAME, U1POINT5_ATTRVALUE);
+      DOM_SetAttribute(node, MAXSIZE_ATTRNAME, U1POINT5_ATTRVALUE);
       node = createMmlNode(MOVER_ELNAME, node);
       DOM_AppendChild(node, createMmlNode(MSPACE_ELNAME, NULL));
       return CreateParseResult(node, str, symbol->tag);
@@ -897,8 +884,8 @@ ParseResult* LMparseSexpr(
             symbol->ieoutput;  // doesn't expand, but then nor does "\u2216"
       node = createMmlNode(symbol->tag, DOM_CreateTextNode(g_document, output));
       if (symbol->tsubtype == TSUBTYPE_VERT) {
-        DOM_SetAttribute(node, LSPACE_ATTRNAME, L"0em");
-        DOM_SetAttribute(node, RSPACE_ATTRNAME, L"0em");
+        DOM_SetAttribute(node, LSPACE_ATTRNAME, U0EM_ATTRVALUE);
+        DOM_SetAttribute(node, RSPACE_ATTRNAME, U0EM_ATTRVALUE);
       }
       if (symbol->atval != NULL)
         DOM_SetAttribute(node, MAXSIZE_ATTRNAME,
@@ -912,13 +899,13 @@ ParseResult* LMparseSexpr(
       symbol = LMgetSymbol(str);
       if (symbol == NULL)
         return CreateParseResult(NULL, str, NULL);
-      str = LMremoveCharsAndBlanks(str, wcslen(symbol->input));
+      str = LMremoveCharsAndBlanks(str, widecharlen(symbol->input));
       node = createMmlNode(symbol->tag,
                            DOM_CreateTextNode(g_document, symbol->output));
       if (isIE()) {  // to get brackets to expand
         DOMNode* space = createMmlNode(MSPACE_ELNAME, NULL);
-        wcscpy(atvalStr, atval);
-        wcscat(atvalStr, L"ex");
+        widecharncpy(atvalStr, atval, -1);
+        widecharcat(atvalStr, EX_ATTRVALUE);
         DOM_SetAttribute(space, HEIGHT_ATTRNAME, atvalStr);
         node = createMmlNode(MROW_ELNAME, node);
         DOM_AppendChild(node, space);
@@ -933,7 +920,7 @@ ParseResult* LMparseSexpr(
         if (symbol != NULL) {
           if (symbol->tsubtype == TSUBTYPE_DOT)
             symbol->invisible = BOOL_TRUE;
-          str = LMremoveCharsAndBlanks(str, wcslen(symbol->input));
+          str = LMremoveCharsAndBlanks(str, widecharlen(symbol->input));
         }
       }
       result = LMparseExpr(str, 1, 0);
@@ -973,7 +960,7 @@ ParseResult* LMparseSexpr(
           align[alignCount++] = LEFT_ALIGN;
           leftAlignCount++;
         } else {
-          str = LMremoveCharsAndBlanks(str, wcslen(symbol->input));
+          str = LMremoveCharsAndBlanks(str, widecharlen(symbol->input));
           if (symbol->ttype != TTYPE_LEFTBRACKET) {
             align[alignCount++] = LEFT_ALIGN;
             leftAlignCount++;
@@ -981,19 +968,19 @@ ParseResult* LMparseSexpr(
             do {
               symbol = LMgetSymbol(str);
               if (symbol != NULL) {
-                str = LMremoveCharsAndBlanks(str, wcslen(symbol->input));
+                str = LMremoveCharsAndBlanks(str, widecharlen(symbol->input));
                 if (symbol->ttype != TTYPE_RIGHTBRACKET)
-                  for (i = 0; i < wcslen(symbol->input); i++)
+                  for (i = 0; i < widecharlen(symbol->input); i++)
                     switch (symbol->input[i]) {
-                      case L'l':
+                      case 'l':
                         align[alignCount++] = LEFT_ALIGN;
                         leftAlignCount++;
                         break;
-                      case L'c':
+                      case 'c':
                         align[alignCount++] = CENTER_ALIGN;
                         centerAlignCount++;
                         break;
-                      case L'r':
+                      case 'r':
                         align[alignCount++] = RIGHT_ALIGN;
                         rightAlignCount++;
                         break;
@@ -1003,21 +990,21 @@ ParseResult* LMparseSexpr(
             } while (symbol != NULL && symbol->input != NULL && symbol->ttype != TTYPE_RIGHTBRACKET);
         }
 
-        widechar* columnAlign = alloc_widestring(L" ", leftAlignCount*wcslen(LEFT_ALIGN_ATTRVALUE) + centerAlignCount*wcslen(CENTER_ALIGN_ATTRVALUE) + rightAlignCount*wcslen(RIGHT_ALIGN_ATTRVALUE) + 1);
+        widechar* columnAlign = alloc_widestring(SPACE_ATTRVALUE, leftAlignCount*widecharlen(LEFT_ALIGN_ATTRVALUE) + centerAlignCount*widecharlen(CENTER_ALIGN_ATTRVALUE) + rightAlignCount*widecharlen(RIGHT_ALIGN_ATTRVALUE) + 1);
         for (i = 0; i < alignCount; i++)
           switch (align[i]) {
             case LEFT_ALIGN:
-              wcscat(columnAlign, LEFT_ALIGN_ATTRVALUE);
+              widecharcat(columnAlign, LEFT_ALIGN_ATTRVALUE);
               break;
             case CENTER_ALIGN:
-              wcscat(columnAlign, CENTER_ALIGN_ATTRVALUE);
+              widecharcat(columnAlign, CENTER_ALIGN_ATTRVALUE);
               break;
             case RIGHT_ALIGN:
-              wcscat(columnAlign, RIGHT_ALIGN_ATTRVALUE);
+              widecharcat(columnAlign, RIGHT_ALIGN_ATTRVALUE);
           }  // switch for
 
-        st = alloc_widestring(L"{", wcslen(str) + 1);
-        wcscat(st, str);
+        st = alloc_widestring(LEFT_BRACE_SYMBOL, widecharlen(str) + 1);
+        widecharcat(st, str);
         result = LMparseExpr(st, 1, 1);
         // if (result[0] == NULL)
         //   return [createMmlNode("mo", document.createTextNode(symbol.input)),str];
@@ -1029,22 +1016,22 @@ ParseResult* LMparseSexpr(
         // trying to get a *little* bit of space around the array
         // (IE already includes it)
         DOMNode* lspace = createMmlNode(MSPACE_ELNAME, NULL);
-        DOM_SetAttribute(lspace, WIDTH_ATTRNAME, L"0.167em");
+        DOM_SetAttribute(lspace, WIDTH_ATTRNAME, U0POINT167EM_ATTRVALUE);
         DOMNode* rspace = createMmlNode(MSPACE_ELNAME, NULL);
-        DOM_SetAttribute(rspace, WIDTH_ATTRNAME, L"0.167em");
+        DOM_SetAttribute(rspace, WIDTH_ATTRNAME, U0POINT167EM_ATTRVALUE);
         DOMNode* node1 = createMmlNode(MROW_ELNAME, lspace);
         DOM_AppendChild(node1, node);
         DOM_AppendChild(node1, rspace);
         return CreateParseResult(node1, result->str, NULL);
       } else {  // (symbol->tsubtype == TSUBTYPE_EQNARRAY)
-        st = alloc_widestring(L"{", wcslen(str) + 1);
-        wcscat(st, str);
+        st = alloc_widestring(LEFT_BRACE_SYMBOL, widecharlen(str) + 1);
+        widecharcat(st, str);
         result = LMparseExpr(st, 1, 1);
         node = createMmlNode(MTABLE_ELNAME, result->node);
         if (isIE())
-          DOM_SetAttribute(node, COLUMNSPACING_ATTRNAME, L"0.25em"); // best in practice?
+          DOM_SetAttribute(node, COLUMNSPACING_ATTRNAME, U0POINT25EM_ATTRVALUE); // best in practice?
         else
-          DOM_SetAttribute(node, COLUMNSPACING_ATTRNAME, L"0.167em"); // correct (but ignored?)
+          DOM_SetAttribute(node, COLUMNSPACING_ATTRNAME, U0POINT167EM_ATTRVALUE); // correct (but ignored?)
         DOM_SetAttribute(node, COLUMNALIGN_ATTRNAME, RIGHT_CENTER_LEFT_ATTRVALUE);
         DOM_SetAttribute(node, DISPLAYSTYLE_ATTRNAME, TRUE_ATTRVALUE);
         node = createMmlNode(MROW_ELNAME, node);
@@ -1066,14 +1053,14 @@ ParseResult* LMparseSexpr(
             createMmlNode(symbol.tag,document.createTextNode(st)));
           if (st.charAt(st.length-1) == " ") {
             node = createMmlNode(MSPACE_ELNAME);
-            node.setAttribute(WIDTH_ATTRNAME, L"0.33em");	// was 1ex
+            node.setAttribute(WIDTH_ATTRNAME, U0POINT33EM_ATTRVALUE);	// was 1ex
             newFrag.appendChild(node);
           }
           str = LMremoveCharsAndBlanks(str,i+1);
           return [createMmlNode("mrow",newFrag),str, NULL];
     */
     case TTYPE_UNARY:
-      if (wcscmp(symbol->input, L"\\unitsymbol") == 0)  // unitsymbol
+      if (symbol->tsubtype == TSUBTYPE_UNITSYMBOL)  // unitsymbol
         g_gatheringLetters = 1;
       result = LMparseSexpr(str);
       g_gatheringLetters = 0;
@@ -1086,7 +1073,7 @@ ParseResult* LMparseSexpr(
       if (symbol->func == BOOL_TRUE) {  // functions hack
         widechar st = str[0];
         //	if (st=="^" || st=="_" || st=="/" || st=="|" || st==",") {
-        if (st == L'^' || st == L'_' || st == L',') {
+        if (st == '^' || st == '_' || st == ',') {
           return CreateParseResult(
               createMmlNode(symbol->tag,
                             DOM_CreateTextNode(g_document, symbol->output)),
@@ -1098,18 +1085,18 @@ ParseResult* LMparseSexpr(
                             DOM_CreateTextNode(g_document, symbol->output)));
           if (isIE()) {
             DOMNode* space = createMmlNode(MSPACE_ELNAME, NULL);
-            DOM_SetAttribute(space, WIDTH_ATTRNAME, L"0.167em");
+            DOM_SetAttribute(space, WIDTH_ATTRNAME, U0POINT167EM_ATTRVALUE);
             DOM_AppendChild(node, space);
           }
           DOM_AppendChild(node, result->node);
           return CreateParseResult(node, result->str, symbol->tag);
         }
       }
-      if (wcscmp(symbol->input, L"\\sqrt") == 0) {  // sqrt
+      if (symbol->tsubtype == TSUBTYPE_SQRT) {  // sqrt
         if (isIE()) {                               // set minsize, for \surd
           DOMNode* space = createMmlNode(MSPACE_ELNAME, NULL);
-          DOM_SetAttribute(space, HEIGHT_ATTRNAME, L"1.2ex");
-          DOM_SetAttribute(space, WIDTH_ATTRNAME, L"0em");  // probably no effect
+          DOM_SetAttribute(space, HEIGHT_ATTRNAME, U1POINT2EX_ATTRVALUE);
+          DOM_SetAttribute(space, WIDTH_ATTRNAME, U0EM_ATTRVALUE);  // probably no effect
           node = createMmlNode(symbol->tag, result->node);
           //	  node.setAttribute(MINSIZE_ATTRNAME, L"1");	// ignored
           //	  node = createMmlNode(MROW_ELNAME, node);  // hopefully
@@ -1123,7 +1110,7 @@ ParseResult* LMparseSexpr(
           result->tag = symbol->tag;
           return result;
         }
-      } if (wcscmp(symbol->input, L"\\unitsymbol") == 0) {  // unitsymbol
+      } if (symbol->tsubtype == TSUBTYPE_UNITSYMBOL) {  // unitsymbol
         DOMNode* node = result->node;
         while (node) {
           if (DOM_GetNodeType(node) == DOM_ELEMENT_NODE)
@@ -1189,7 +1176,7 @@ ParseResult* LMparseSexpr(
         return result;
       }
     case TTYPE_BINARY:
-      if (wcscmp(symbol->input, L"\\sfrac") == 0) {
+      if (symbol->tsubtype == TSUBTYPE_SFRAC) {
         g_operatorsFrag = DOM_CreateDocumentFragment(g_document);
         g_gatheringOperators = 1;
       }
@@ -1208,12 +1195,12 @@ ParseResult* LMparseSexpr(
             createMmlNode(MO_ELNAME, DOM_CreateTextNode(g_document, symbol->input)),
             str, NULL);
       }
-      if (wcscmp(symbol->input, L"\\root") == 0 ||
-          wcscmp(symbol->input, L"\\stackrel") == 0)
+      if (symbol->tsubtype == TSUBTYPE_ROOT ||
+          symbol->tsubtype == TSUBTYPE_STACKREL)
         DOM_AppendChild(newFrag, result2->node);
       DOM_AppendChild(newFrag, result->node);
-      if (wcscmp(symbol->input, L"\\frac") == 0 ||
-          wcscmp(symbol->input, L"\\sfrac") == 0)
+      if (symbol->tsubtype == TSUBTYPE_FRAC ||
+          symbol->tsubtype == TSUBTYPE_SFRAC)
         DOM_AppendChild(newFrag, result2->node);
       str = result2->str;
       if (g_operatorsFrag != NULL && DOM_HasChildNodes(g_operatorsFrag)) {
@@ -1224,15 +1211,15 @@ ParseResult* LMparseSexpr(
       }
       return CreateParseResult(createMmlNode(symbol->tag, newFrag), str, symbol->tag);
     case TTYPE_INFIX:
-      str = LMremoveCharsAndBlanks(str, wcslen(symbol->input));
+      str = LMremoveCharsAndBlanks(str, widecharlen(symbol->input));
       return CreateParseResult(
           createMmlNode(MO_ELNAME, DOM_CreateTextNode(g_document, symbol->output)),
           str, symbol->tag);
     case TTYPE_FENCED: {
 const int MAX_OPEN_CLOSE_FENCED_SIZE = 20;
-widechar openFenced[21] = {L'\0'};
+widechar openFenced[21] = {'\0'};
 int openFencedLen = 0;
-widechar closeFenced[21] = {L'\0'};
+widechar closeFenced[21] = {'\0'};
 int closeFencedLen = 0;
 widechar* tag = symbol->tag;
 
@@ -1243,7 +1230,7 @@ return CreateParseResult(
 createMmlNode(tag, createMissingArgumentMmlNode()),
 str, NULL);
 }
-str = LMremoveCharsAndBlanks(str, wcslen(symbol->input));
+str = LMremoveCharsAndBlanks(str, widecharlen(symbol->input));
 do {
 symbol = LMgetSymbol(str);
 if (!symbol) { // show box in place of missing argument
@@ -1251,10 +1238,10 @@ return CreateParseResult(
 createMmlNode(tag, createMissingArgumentMmlNode()),
 str, NULL);
 }
-str = LMremoveCharsAndBlanks(str, wcslen(symbol->input));
+str = LMremoveCharsAndBlanks(str, widecharlen(symbol->input));
 if (symbol->ttype != TTYPE_RIGHTBRACKET)
-if ((openFencedLen + (int)wcslen(symbol->output)) <= MAX_OPEN_CLOSE_FENCED_SIZE)
-wcscat(openFenced, symbol->output);
+if ((openFencedLen + widecharlen(symbol->output)) <= MAX_OPEN_CLOSE_FENCED_SIZE)
+widecharcat(openFenced, symbol->output);
 } while (symbol != NULL && symbol->input != NULL && symbol->ttype != TTYPE_RIGHTBRACKET);
 
 symbol = LMgetSymbol(str);
@@ -1264,7 +1251,7 @@ return CreateParseResult(
 createMmlNode(tag, createMissingArgumentMmlNode()),
 str, NULL);
 }
-str = LMremoveCharsAndBlanks(str, wcslen(symbol->input));
+str = LMremoveCharsAndBlanks(str, widecharlen(symbol->input));
 do {
 symbol = LMgetSymbol(str);
 if (!symbol) { // show box in place of missing argument
@@ -1272,10 +1259,10 @@ return CreateParseResult(
 createMmlNode(tag, createMissingArgumentMmlNode()),
 str, NULL);
 }
-str = LMremoveCharsAndBlanks(str, wcslen(symbol->input));
+str = LMremoveCharsAndBlanks(str, widecharlen(symbol->input));
 if (symbol->ttype != TTYPE_RIGHTBRACKET)
-if ((closeFencedLen + (int)wcslen(symbol->output)) <= MAX_OPEN_CLOSE_FENCED_SIZE)
-wcscat(closeFenced, symbol->output);
+if ((closeFencedLen + widecharlen(symbol->output)) <= MAX_OPEN_CLOSE_FENCED_SIZE)
+widecharcat(closeFenced, symbol->output);
 } while (symbol != NULL && symbol->input != NULL && symbol->ttype != TTYPE_RIGHTBRACKET);
 
 result = LMparseSexpr(str);
@@ -1315,10 +1302,10 @@ ParseResult* LMparseIexpr(widechar* str) {
   symbol = LMgetSymbol(str);
 
   if (symbol != NULL && symbol->ttype == TTYPE_REVERTUNARY) {
-    str = LMremoveCharsAndBlanks(str, wcslen(symbol->input));
+    str = LMremoveCharsAndBlanks(str, widecharlen(symbol->input));
     symbol2 = LMgetSymbol(str);
     if (symbol2->acc == BOOL_TRUE) {
-      str = LMremoveCharsAndBlanks(str, wcslen(symbol2->input));
+      str = LMremoveCharsAndBlanks(str, widecharlen(symbol2->input));
       ParseResult* result2 = LMbuildUnaryAccent(str, symbol2, result);
       node = result2->node;
       tag = result2->tag;
@@ -1326,7 +1313,7 @@ ParseResult* LMparseIexpr(widechar* str) {
     }
   } else
   while (symbol != NULL && symbol->ttype == TTYPE_INFIX) {
-    str = LMremoveCharsAndBlanks(str, wcslen(symbol->input));
+    str = LMremoveCharsAndBlanks(str, widecharlen(symbol->input));
     result = LMparseSexpr(str);
     if (result->node == NULL)  // show box in place of missing argument
       result->node = createMissingArgumentMmlNode();
@@ -1342,7 +1329,7 @@ ParseResult* LMparseIexpr(widechar* str) {
       //    underover = (symbol1->ttype == TTYPE_UNDEROVER);
       if (symbol2 != NULL && symbol->tsubtype == TSUBTYPE_SUBSCRIPT &&
           symbol2->tsubtype == TSUBTYPE_SUPERSCRIPT) {
-        str = LMremoveCharsAndBlanks(str, wcslen(symbol2->input));
+        str = LMremoveCharsAndBlanks(str, widecharlen(symbol2->input));
         ParseResult* result2 = LMparseSexpr(str);
         str = result2->str;
         tag =
@@ -1366,7 +1353,7 @@ ParseResult* LMparseIexpr(widechar* str) {
       tag = NULL;  // no space between x^2 and a following sin, cos, etc.
       if (symbol2 != NULL && symbol->tsubtype == TSUBTYPE_UNDERSCRIPT &&
           symbol2->tsubtype == TSUBTYPE_OVERSCRIPT) {
-        str = LMremoveCharsAndBlanks(str, wcslen(symbol2->input));
+        str = LMremoveCharsAndBlanks(str, widecharlen(symbol2->input));
         ParseResult* result2 = LMparseSexpr(str);
         str = result2->str;
         tag =
@@ -1385,11 +1372,11 @@ ParseResult* LMparseIexpr(widechar* str) {
         node = createMmlNode(MROW_ELNAME, node);  // so sum does not stretch
     } else {
       node = createMmlNode(symbol->tag, node);
-      if (wcscmp(symbol->input, L"\\atop") == 0 ||
-          wcscmp(symbol->input, L"\\choose") == 0)
-        DOM_SetAttribute(node, LINETHICKNESS_ATTRNAME, L"0ex");
+      if (symbol->tsubtype == TSUBTYPE_ATOP ||
+          symbol->tsubtype == TSUBTYPE_CHOOSE)
+        DOM_SetAttribute(node, LINETHICKNESS_ATTRNAME, U0EX_ATTRVALUE);
       DOM_AppendChild(node, result->node);
-      if (wcscmp(symbol->input, L"\\choose") == 0)
+      if (symbol->tsubtype == TSUBTYPE_CHOOSE)
         node = createMmlNode(MFENCED_ELNAME, node);
     }
     symbol1 = NULL;
@@ -1416,12 +1403,12 @@ ParseResult* LMparseExpr(widechar* str, int rightbracket, int matrix) {
     symbol = LMgetSymbol(str);
     if (node != NULL) {
       if ((tag &&
-           (wcscmp(tag, MN_ELNAME) == 0 || wcscmp(tag, MI_ELNAME) == 0)) &&
+           (widecharcmp(tag, MN_ELNAME) == 0 || widecharcmp(tag, MI_ELNAME) == 0)) &&
           symbol != NULL && symbol->func == BOOL_TRUE &&
           !g_mrowElementsAvoiding) {
         // Add space before \sin in 2\sin x or x\sin x
         DOMNode* space = createMmlNode(MSPACE_ELNAME, NULL);
-        DOM_SetAttribute(space, WIDTH_ATTRNAME, L"0.167em");
+        DOM_SetAttribute(space, WIDTH_ATTRNAME, U0POINT167EM_ATTRVALUE);
         node = createMmlNode(MROW_ELNAME, node);
         DOM_AppendChild(node, space);
       }
@@ -1443,17 +1430,17 @@ ParseResult* LMparseExpr(widechar* str, int rightbracket, int matrix) {
   // output gdy type=space
   tag = NULL;
   if (symbol != NULL && symbol->ttype == TTYPE_RIGHTBRACKET) {
-    if (wcscmp(symbol->input, L"\\right") == 0) {  // right what?
-      str = LMremoveCharsAndBlanks(str, wcslen(symbol->input));
+    if (symbol->ttype == TTYPE_RIGHTBRACKET && symbol->invisible != BOOL_TRUE) {  // right what?
+      str = LMremoveCharsAndBlanks(str, widecharlen(symbol->input));
       symbol = LMgetSymbol(str);
-      if (symbol != NULL && wcscmp(symbol->input, L".") == 0)
+      if (symbol != NULL && widecharcmp(symbol->input, POINT_SYMBOL) == 0)
         symbol->invisible = BOOL_TRUE;
       if (symbol != NULL)
         tag = symbol->rtag;
     }
     if (symbol != NULL)
       str = LMremoveCharsAndBlanks(str,
-                                   wcslen(symbol->input));  // ready to return
+                                   widecharlen(symbol->input));  // ready to return
 
     if (matrix) {
       DOMNodeList* newFragNodeList = DOM_GetChildNodes(newFrag);
@@ -1551,7 +1538,7 @@ int back_translate_math_string(widechar* text_buffer,
   DOMNode* frag = DOM_CreateDocumentFragment(g_document);
 
   text_buffer[textLength] = wcNULL;
-  int nMathExprSeparatorLen = (int)wcslen(g_mathExprSeparator);
+  int nMathExprSeparatorLen = widecharlen(g_mathExprSeparator);
   int mathExpression = 0;
   widechar* pwcsTranslatingStr;
   int nTranslatingStrLen;
@@ -1562,9 +1549,9 @@ int back_translate_math_string(widechar* text_buffer,
     widechar* pFragTranslatedBuffer;
     int nFragTranslatedLength;
 
-    widechar* pwcsSeparatorStr = wcsstr(pwcsStr, g_mathExprSeparator);
+    widechar* pwcsSeparatorStr = widecharstr(pwcsStr, g_mathExprSeparator);
     if (pwcsSeparatorStr == NULL) {
-      nTranslatingStrLen = (int)wcslen(pwcsStr);
+      nTranslatingStrLen = widecharlen(pwcsStr);
       pwcsTranslatingStr = alloc_widestring(pwcsStr, nTranslatingStrLen);
       if (mathExpression &&
           pwcsTranslatingStr[nTranslatingStrLen - 1] == g_mathExprSeparator[0])
@@ -1588,7 +1575,7 @@ int back_translate_math_string(widechar* text_buffer,
           correctBeforeBackTranslation(pwcsTranslatingStr, nTranslatingStrLen);
       //@wprintf(L"$\"%s\"\n", mathBrl);
       back_translate_with_mathexpr_table(
-          mathBrl, (int)wcslen(mathBrl), &pFragTranslatedBuffer,
+          mathBrl, widecharlen(mathBrl), &pFragTranslatedBuffer,
           &nFragTranslatedLength);
       //@wprintf(L"^\"%s\"\n", (widechar*)pFragTranslatedBuffer);
 
